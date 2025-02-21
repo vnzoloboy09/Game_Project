@@ -1,10 +1,12 @@
 #include "game.h"
-#include "defs.h"
+#include "player.h"
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
-Car* car;
+//SDL_Texture *background = Graphics::loadTexture("imgs/Background.png");
+
+Car* player;
 
 Game::Game() {}
 Game::~Game() {}
@@ -32,7 +34,7 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
-    car = new Car(0, 0, "imgs/car/Yellow_car.png");
+    player = new Player(START_POISITION_X, START_POISITION_Y, "imgs/car/Yellow_car.png");
 }
 
 bool Game::isRunning() {
@@ -50,16 +52,22 @@ void Game::handleEvent() {
 }
 
 void Game::update() {
-    car->update();
+    player->update();
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
-    car->render();
+
+    //SDL_RenderCopy(renderer, background, NULL, NULL);
+    player->render();
+
     SDL_RenderPresent(renderer);
 }
 
 void Game::clear() {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    
+    IMG_Quit();
+    SDL_Quit();
 }

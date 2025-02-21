@@ -1,19 +1,21 @@
 #pragma once
 
 #include <SDL.h>
+#include "vector2D.h"
+#include "graphics.h"
 
 class Car {
-private:
-	SDL_Texture* carTexture;
-	int velocity_x = 5;
-	int velocity_y = 1;
-	int xpos = 0;
-	int ypos = 0;
+protected:
+	SDL_Texture* texture;
+	Vector2D velocity;
+	Vector2D position;
+	int speed = 3;
 	SDL_Rect srcRect, destRect;
 
 public:
-	Car(int x, int y, const char* path);
+	Car();
 	~Car();
-	void update();
-	void render();
+
+	virtual void update();
+	virtual void render();
 };
