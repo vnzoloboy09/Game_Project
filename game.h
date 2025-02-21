@@ -3,13 +3,12 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "defs.h"
+#include "car.h"
 
 class Game {
-public:
+private:
 	SDL_Window* window;
-	SDL_Renderer* renderer;
 	bool running = true;
-	SDL_Event event;
 
 public:
 	Game();
@@ -23,4 +22,7 @@ public:
 	void render();
 	void handleEvent();
 	void clear();
+
+	static SDL_Renderer* renderer;
+	static SDL_Event event;
 };

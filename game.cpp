@@ -1,11 +1,13 @@
 #include "game.h"
 #include "defs.h"
 
-Game::Game() {
-}
+SDL_Renderer* Game::renderer = NULL;
+SDL_Event Game::event;
 
-Game::~Game() {
-}
+Car* car;
+
+Game::Game() {}
+Game::~Game() {}
 
 void Game::initSDL() {
     if (!SDL_Init(SDL_INIT_EVERYTHING)) {
@@ -30,6 +32,7 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
+    car = new Car(0, 0, "imgs/car/Yellow_car.png");
 }
 
 bool Game::isRunning() {
@@ -47,11 +50,13 @@ void Game::handleEvent() {
 }
 
 void Game::update() {
-
+    car->update();
 }
 
 void Game::render() {
-
+    SDL_RenderClear(renderer);
+    car->render();
+    SDL_RenderPresent(renderer);
 }
 
 void Game::clear() {
