@@ -150,6 +150,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="car.cpp" />
+    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,7 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="car.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="defs.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="player.h" />

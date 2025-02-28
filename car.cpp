@@ -8,3 +8,7 @@ void Car::update() {
 
 void Car::render() {
 }
+
+SDL_Rect Car::getRect() {
+	return destRect;
+}

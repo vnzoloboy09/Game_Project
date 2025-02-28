@@ -9,7 +9,7 @@ protected:
 	SDL_Texture* texture;
 	Vector2D velocity;
 	Vector2D position;
-	int speed = 3;
+	float speed = 3;
 	SDL_Rect srcRect, destRect;
 
 public:
@@ -18,4 +18,5 @@ public:
 
 	virtual void update();
 	virtual void render();
+	SDL_Rect getRect();
 };

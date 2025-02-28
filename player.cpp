@@ -21,7 +21,7 @@ void Player::control() {
 
 void Player::update() {
 	control();
-
+	
 	position.x += velocity.x * speed;
 	position.y += velocity.y * speed;
 
@@ -32,12 +32,13 @@ void Player::update() {
 
 	destRect.x = static_cast<int>(position.x);
 	destRect.y = static_cast<int>(position.y);
-	destRect.w = srcRect.w;
-	destRect.h = srcRect.h;
+	destRect.w = srcRect.w * SCALE;
+	destRect.h = srcRect.h * SCALE;
 }
 
 void Player::render() {
 	Graphics::draw(texture, srcRect, destRect);
+	SDL_RenderDrawRect(Game::renderer, &destRect);
 }
 
 Player::~Player() {

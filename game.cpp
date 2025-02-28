@@ -1,12 +1,16 @@
 #include "game.h"
 #include "player.h"
+#include "enemy.h"
+#include "collision.h"
+#include <vector>
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
-//SDL_Texture *background = Graphics::loadTexture("imgs/Background.png");
-
-Car* player;
+Player* player;
+Enemy* e;
+std::vector<Enemy*> enemies;
+Color color = WHITE;
 
 Game::Game() {}
 Game::~Game() {}
@@ -35,6 +39,10 @@ void Game::initSDL() {
 void Game::init() {
     initSDL();
     player = new Player(START_POISITION_X, START_POISITION_Y, "imgs/car/Yellow_car.png");
+    e = new Enemy(0, 0, "imgs/car/Police_1.png");
+    enemies.push_back(e);
+    e = new Enemy(100, 0, "imgs/car/Police_2.png");
+    enemies.push_back(e);
 }
 
 bool Game::isRunning() {
@@ -49,16 +57,31 @@ void Game::handleEvent() {
     default:
         break;
     }
+    for (auto enemy : enemies) {
+        if (Collision::isColliding(enemy, player)) {
+            color = RED;
+            break;
+        }
+        color = WHITE;
+    }
 }
 
 void Game::update() {
+    for (auto enemy : enemies) {
+        enemy->update();
+    }
     player->update();
 }
 
 void Game::render() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
 
-    //SDL_RenderCopy(renderer, background, NULL, NULL);
+    Graphics::setColor(GREEN);
+    for (auto enemy : enemies) {
+        enemy->render();
+    }
+    Graphics::setColor(color);
     player->render();
 
     SDL_RenderPresent(renderer);
