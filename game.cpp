@@ -50,7 +50,6 @@ bool Game::isRunning() {
     return running;
 }
 
-
 void Game::gameOver() {
     std::cerr << "game over!!";
     running = false;

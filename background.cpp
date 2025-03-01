@@ -19,6 +19,8 @@ void Background::update(int scrollspeed) {
 	if (destRect.y >= SCREEN_HEIGHT) {
 		destRect.y = -BACKGROUND_HEIGHT;
 	}
+	/* Having 2 background moving at the same time
+	  when one pass the screen height move it to the top */
 }
 
 void Background::render() {
