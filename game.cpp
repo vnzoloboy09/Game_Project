@@ -2,15 +2,18 @@
 #include "player.h"
 #include "enemy.h"
 #include "collision.h"
+#include "background.h"
 #include <vector>
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
-Player* player;
-Enemy* e;
+Player* player = NULL;
+Enemy* e = NULL;
+Background* background_1 = NULL;
+Background* background_2 = NULL;
 std::vector<Enemy*> enemies;
-Color color = WHITE;
+Color color = BLUE;
 
 Game::Game() {}
 Game::~Game() {}
@@ -38,15 +41,19 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
-    player = new Player(START_POISITION_X, START_POISITION_Y, "imgs/car/Yellow_car.png");
-    e = new Enemy(0, 0, "imgs/car/Police_1.png");
-    enemies.push_back(e);
-    e = new Enemy(100, 0, "imgs/car/Police_2.png");
-    enemies.push_back(e);
+    player = new Player(START_POSITION_X, START_POSITION_Y, "imgs/car/Yellow_car.png");
+    background_1 = new Background("imgs/background.png", 0);
+    background_2 = new Background("imgs/background.png", -BACKGROUND_HEIGHT);
 }
 
 bool Game::isRunning() {
     return running;
+}
+
+
+void Game::gameOver() {
+    std::cerr << "game over!!";
+    running = false;
 }
 
 void Game::handleEvent() {
@@ -57,16 +64,22 @@ void Game::handleEvent() {
     default:
         break;
     }
+
+    player->control();
+
+    // check collision
     for (auto enemy : enemies) {
-        if (Collision::isColliding(enemy, player)) {
-            color = RED;
+        if (Collision::isColliding(player, enemy)) {
+            gameOver();
             break;
         }
-        color = WHITE;
     }
 }
 
 void Game::update() {
+    background_1->update(BACKGROUND_SCROLLING_SPEED);
+    background_2->update(BACKGROUND_SCROLLING_SPEED);
+
     for (auto enemy : enemies) {
         enemy->update();
     }
@@ -76,6 +89,9 @@ void Game::update() {
 void Game::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
+
+    background_1->render();
+    background_2->render();
 
     Graphics::setColor(GREEN);
     for (auto enemy : enemies) {

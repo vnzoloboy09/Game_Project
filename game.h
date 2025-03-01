@@ -16,11 +16,11 @@ public:
 
 	void init();
 	bool isRunning();
+	void gameOver();
 	void update();
 	void render();
 	void handleEvent();
 	void clear();
-	bool isColliding(SDL_Rect& recA, SDL_Rect& recB);
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;

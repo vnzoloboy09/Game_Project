@@ -18,5 +18,7 @@ public:
 
 	virtual void update();
 	virtual void render();
+	
+	Vector2D getPosition();
 	SDL_Rect getRect();
 };

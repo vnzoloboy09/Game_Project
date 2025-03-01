@@ -154,6 +154,7 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="vector2D.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="background.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="vector2D.h" />
   </ItemGroup>
