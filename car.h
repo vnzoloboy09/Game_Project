@@ -10,9 +10,10 @@ protected:
 	SDL_Texture* texture;
 	std::vector<SDL_Texture*> sprites;
 	int current_sprite_id;
+	int first_sprite;
 	Vector2D velocity;
 	Vector2D position;
-	float speed = 3;
+	float speed;
 	SDL_Rect srcRect, destRect;
 
 public:

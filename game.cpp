@@ -3,14 +3,12 @@
 #include "enemy.h"
 #include "collision.h"
 #include "background.h"
-#include <vector>
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
 Player* player = NULL;
 std::vector<Enemy*> enemies;
-Enemy* enemy = NULL;
 Color color = BLUE;
 
 
@@ -45,11 +43,11 @@ void Game::initSDL() {
 void Game::init() {
     initSDL();
     player = new Player(START_POSITION_X, START_POSITION_Y, "imgs/car/Yellow_car.png");
-    enemy = new Enemy(75, 50);
-    enemy->loadSprite("imgs/Car/Police_1.png",
-        "imgs/Car/Police_2.png",
-        "imgs/Car/Police_3.png",
-        "imgs/Car/Police_4.png", NULL);
+	srand(time(0));
+	for (int i = 0; i < MAX_ENEMIES; i++) {
+        enemies.push_back(new Enemy(LANES[rand() % LANES.size()], 
+            -2 * CAR_LENGTH * i, rand() % 4));
+	}
 
     background_1 = new Background("imgs/background.png", 0);
     background_2 = new Background("imgs/background.png", -BACKGROUND_HEIGHT);
@@ -76,31 +74,44 @@ void Game::handleEvent() {
     player->control();
 
     // check collision
-	if (Collision::isColliding(player, enemy)) {
-		color = RED;
-		//gameOver();
+	for (auto enemy : enemies) {
+		if (Collision::isColliding(player, enemy)) {
+			gameOver();
+		}
 	}
-	else {
-		color = BLUE;
+
+    if(score_flag <= 0) {
+		for (auto enemy : enemies) {
+			enemy->addSpeed(1);
+		}
+		score_flag = 5;
 	}
 }
 
 void Game::update() {
+    score += 0.01;
+	score_flag -= 0.01;
     background_1->update(BACKGROUND_SCROLLING_SPEED);
     background_2->update(BACKGROUND_SCROLLING_SPEED);
 
+	for (auto enemy : enemies) {
+		enemy->update();
+	}
+
     player->update();
-    enemy->update();
 }
 
 void Game::render() {
+	std::cerr << static_cast<int>(score) << '\n';
     SDL_RenderClear(renderer);
 
     background_1->render();
     background_2->render();
 
     Graphics::setColor(GREEN);
-    enemy->render();
+	for (auto enemy : enemies) {
+		enemy->render();
+	}
    
     Graphics::setColor(color);
     player->render();

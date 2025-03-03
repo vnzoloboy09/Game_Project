@@ -35,11 +35,6 @@ void Player::update() {
 	position.x += velocity.x * speed;
 	position.y += velocity.y * speed;
 
-	srcRect.w = 32;
-	srcRect.h = 64;
-	srcRect.x = 0;
-	srcRect.y = 0;
-
 	destRect.x = static_cast<int>(position.x);
 	destRect.y = static_cast<int>(position.y);
 	destRect.w = srcRect.w * SCALE;

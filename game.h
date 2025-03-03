@@ -7,6 +7,8 @@ class Game {
 private:
 	SDL_Window* window;
 	bool running = true;
+	float score;
+	float score_flag = 5; // addSpeed every 10 points
 
 public:
 	Game();

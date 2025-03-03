@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
 const int SCREEN_WIDTH = 900;
 const int SCREEN_HEIGHT = 700;
 #define WINDOW_TITLE "Car"
@@ -19,8 +23,10 @@ const int LANE_WIDTH = 96; // 3 times the car width
 const int BACKGROUND_SCROLLING_SPEED = 4;
 const int BACKGROUND_WIDTH = 900;
 const int BACKGROUND_HEIGHT = 740;
+const std::vector<int> LANES = { 132, 228, 324, 420 };
 
-const int TIME_PER_SPRITE = 300;
+const int SPRITE_DELAY = 300;
+const int MAX_ENEMIES = 5;
 
 typedef enum {
 	RED,
