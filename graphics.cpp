@@ -6,6 +6,10 @@ Graphics::~Graphics() {}
 
 SDL_Texture* Graphics::loadTexture(const char* path) {
 	SDL_Surface* tmpsurface = IMG_Load(path);
+    if (tmpsurface == NULL) {
+        std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
+        return NULL;
+    }
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::renderer, tmpsurface);
 	SDL_FreeSurface(tmpsurface);
 	if (texture != NULL) std::cerr << "Loading " << path << '\n';

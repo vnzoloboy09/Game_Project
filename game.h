@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL_image.h>
 #include "defs.h"
+#include <SDL_image.h>
 
 class Game {
 private:
@@ -17,7 +17,7 @@ public:
 	void init();
 	bool isRunning();
 	void gameOver();
-	void update();
+	void update(); 
 	void render();
 	void handleEvent();
 	void clear();

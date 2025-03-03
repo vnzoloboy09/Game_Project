@@ -1,5 +1,5 @@
 #include "player.h"
-#include <SDL.h>h
+#include <SDL.h>
 
 Player::Player(int x, int y, const char* path) {
 	texture = Graphics::loadTexture(path);

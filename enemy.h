@@ -4,7 +4,7 @@
 
 class Enemy : public Car {
 public:
-	Enemy(int x, int y, const char* path);
+	Enemy(int x, int y);
 
 	void update() override;
 	void render() override;

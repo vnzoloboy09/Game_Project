@@ -1,7 +1,6 @@
 #include "enemy.h"
 
-Enemy::Enemy(int x, int y, const char* path) {
-	texture = Graphics::loadTexture(path);
+Enemy::Enemy(int x, int y) {
 	position.x = x;
 	position.y = y;
 
@@ -16,6 +15,15 @@ Enemy::Enemy(int x, int y, const char* path) {
 	destRect.h = srcRect.h * SCALE;
 
 	speed = 1;
+}
+
+Enemy::~Enemy() {
+	SDL_DestroyTexture(texture);
+	texture = NULL;
+	for (auto& sprite : sprites) {
+		SDL_DestroyTexture(sprite);
+		sprite = NULL;
+	}
 }
 
 void Enemy::update() {
@@ -33,6 +41,8 @@ void Enemy::update() {
 }
 
 void Enemy::render() {
-	Graphics::draw(texture, srcRect, destRect);
+	current_sprite_id = SDL_GetTicks() / TIME_PER_SPRITE % sprites.size();
+	//std::cerr << current_sprite_id << '\n';
+	Graphics::draw(sprites[current_sprite_id], srcRect, destRect);
 	SDL_RenderDrawRect(Game::renderer, &destRect);
 }

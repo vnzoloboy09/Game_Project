@@ -20,6 +20,8 @@ const int BACKGROUND_SCROLLING_SPEED = 4;
 const int BACKGROUND_WIDTH = 900;
 const int BACKGROUND_HEIGHT = 740;
 
+const int TIME_PER_SPRITE = 300;
+
 typedef enum {
 	RED,
 	BLUE,
