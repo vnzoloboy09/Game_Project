@@ -10,11 +10,14 @@ const int SCREEN_HEIGHT = 700;
 const int FPS = 60;
 const int timePerFrame = FPS/1000;
 
+const float PI = 3.1415926535;
+
 // For cars
 const int START_POSITION_X = SCREEN_WIDTH / 2 - 16;
 const int START_POSITION_Y = 560;
 const int SCALE = 1;
-const int CAR_LENGTH = 64;
+const int CAR_HEIGHT = 64;
+const int CAR_WIDTH = 32;
 const float MAX_ACCELERATION = 5.0;
 const float MAX_STEERING = 30;
 

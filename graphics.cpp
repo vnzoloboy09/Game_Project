@@ -22,6 +22,13 @@ void Graphics::draw(SDL_Texture* texture, SDL_Rect scrRect, SDL_Rect destRect) {
 	SDL_RenderCopy(Game::renderer, texture, &scrRect, &destRect);
 }
 
+void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
+    double angle, SDL_Point* center, SDL_RendererFlip flip)
+{
+    //Render to screen
+    SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, center, flip);
+}
+
 void Graphics::setColor(Color color) {
     switch (color) {
     case RED:

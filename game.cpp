@@ -46,7 +46,7 @@ void Game::init() {
 	srand(time(0));
 	for (int i = 0; i < MAX_ENEMIES; i++) {
         enemies.push_back(new Enemy(LANES[rand() % LANES.size()], 
-            -2 * CAR_LENGTH * i, rand() % 4));
+            -2 * CAR_HEIGHT * i, rand() % 4));
 	}
 
     background_1 = new Background("imgs/background.png", 0);
@@ -74,11 +74,11 @@ void Game::handleEvent() {
     player->control();
 
     // check collision
-	for (auto enemy : enemies) {
+	/*for (auto enemy : enemies) {
 		if (Collision::isColliding(player, enemy)) {
 			gameOver();
 		}
-	}
+	}*/
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {
@@ -102,7 +102,7 @@ void Game::update() {
 }
 
 void Game::render() {
-	std::cerr << static_cast<int>(score) << '\n';
+	//std::cerr << static_cast<int>(score) << '\n';
     SDL_RenderClear(renderer);
 
     background_1->render();

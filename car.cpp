@@ -8,6 +8,8 @@ Car::Car() {
 	current_sprite_id = 0;
 	speed = 3;
 	texture = NULL;
+	angle = PI;
+	center = NULL;
 }
 Car::~Car() = default;
 

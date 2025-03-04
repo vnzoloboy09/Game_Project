@@ -16,6 +16,9 @@ protected:
 	float speed;
 	SDL_Rect srcRect, destRect;
 
+	double angle;
+	SDL_Point* center;
+
 public:
 	Car();
 	~Car();
