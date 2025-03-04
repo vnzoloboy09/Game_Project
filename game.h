@@ -17,7 +17,7 @@ public:
 	void initSDL();
 
 	void init();
-	bool isRunning();
+	bool isRunning() const;
 	void gameOver();
 	void update(); 
 	void render();

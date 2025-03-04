@@ -53,7 +53,7 @@ void Game::init() {
     background_2 = new Background("imgs/background.png", -BACKGROUND_HEIGHT);
 }
 
-bool Game::isRunning() {
+bool Game::isRunning() const {
     return running;
 }
 
@@ -67,6 +67,13 @@ void Game::handleEvent() {
     switch (event.type) {
     case SDL_QUIT:
         running = false;
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_p) {
+			for (auto enemy : enemies) {
+				enemy->stop();
+			}
+        }
+        break;
     default:
         break;
     }
@@ -75,11 +82,11 @@ void Game::handleEvent() {
 	player->stayInBound();
 
     // check collision
-	/*for (auto enemy : enemies) {
+	for (auto enemy : enemies) {
 		if (Collision::isColliding(player, enemy)) {
-			gameOver();
+            color = RED;
 		}
-	}*/
+	}
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {
@@ -113,9 +120,10 @@ void Game::render() {
 	for (auto enemy : enemies) {
 		enemy->render();
 	}
-   
+    
     Graphics::setColor(color);
     player->render();
+    color = BLUE;
 
     SDL_RenderPresent(renderer);
 }

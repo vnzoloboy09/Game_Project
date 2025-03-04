@@ -23,7 +23,7 @@ void Graphics::draw(SDL_Texture* texture, SDL_Rect scrRect, SDL_Rect destRect) {
 }
 
 void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
-    double angle, SDL_Point* center, SDL_RendererFlip flip)
+    float angle, SDL_Point* center, SDL_RendererFlip flip)
 {
     //Render to screen
     SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, center, flip);

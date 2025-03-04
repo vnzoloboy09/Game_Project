@@ -6,4 +6,5 @@
 class Collision {
 public:
 	static bool isColliding(Car* a, Car* b);
+	static void rotatePoint(float& x, float& y, float cenx, float ceny, float angle);
 };
