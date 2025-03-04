@@ -11,10 +11,14 @@ protected:
 	std::vector<SDL_Texture*> sprites;
 	int current_sprite_id;
 	int first_sprite;
+	SDL_Rect srcRect, destRect;
+
 	Vector2D velocity;
 	Vector2D position;
+	Vector2D acceleration;
 	float speed;
-	SDL_Rect srcRect, destRect;
+	double angle;
+	SDL_Point* center;
 
 public:
 	Car();

@@ -9,6 +9,7 @@ public:
 	void control();
 	void update() override;
 	void render() override;
+	void stayInBound();
 
 	~Player();
 };

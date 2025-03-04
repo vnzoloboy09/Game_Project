@@ -61,3 +61,7 @@ void Enemy::render() {
 void Enemy::addSpeed(float s) {
 	speed += s;
 }
+
+void Enemy::stop() {
+	speed = 0;
+}

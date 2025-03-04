@@ -46,14 +46,14 @@ void Game::init() {
 	srand(time(0));
 	for (int i = 0; i < MAX_ENEMIES; i++) {
         enemies.push_back(new Enemy(LANES[rand() % LANES.size()], 
-            -2 * CAR_LENGTH * i, rand() % 4));
+            -2 * CAR_HEIGHT * i, rand() % 4));
 	}
 
     background_1 = new Background("imgs/background.png", 0);
     background_2 = new Background("imgs/background.png", -BACKGROUND_HEIGHT);
 }
 
-bool Game::isRunning() {
+bool Game::isRunning() const {
     return running;
 }
 
@@ -67,16 +67,24 @@ void Game::handleEvent() {
     switch (event.type) {
     case SDL_QUIT:
         running = false;
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_p) {
+			for (auto enemy : enemies) {
+				enemy->stop();
+			}
+        }
+        break;
     default:
         break;
     }
 
     player->control();
+	player->stayInBound();
 
     // check collision
 	for (auto enemy : enemies) {
 		if (Collision::isColliding(player, enemy)) {
-			gameOver();
+            color = RED;
 		}
 	}
 
@@ -89,10 +97,10 @@ void Game::handleEvent() {
 }
 
 void Game::update() {
-    score += 0.01;
-	score_flag -= 0.01;
-    background_1->update(BACKGROUND_SCROLLING_SPEED);
-    background_2->update(BACKGROUND_SCROLLING_SPEED);
+    score += 0.01f;
+	score_flag -= 0.01f;
+    //background_1->update(BACKGROUND_SCROLLING_SPEED);
+    //background_2->update(BACKGROUND_SCROLLING_SPEED);
 
 	for (auto enemy : enemies) {
 		enemy->update();
@@ -102,7 +110,7 @@ void Game::update() {
 }
 
 void Game::render() {
-	std::cerr << static_cast<int>(score) << '\n';
+	//std::cerr << static_cast<int>(score) << '\n';
     SDL_RenderClear(renderer);
 
     background_1->render();
@@ -112,9 +120,10 @@ void Game::render() {
 	for (auto enemy : enemies) {
 		enemy->render();
 	}
-   
+    
     Graphics::setColor(color);
     player->render();
+    color = BLUE;
 
     SDL_RenderPresent(renderer);
 }

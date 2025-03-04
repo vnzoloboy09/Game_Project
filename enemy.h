@@ -10,6 +10,7 @@ public:
 	void render() override;
 	void setPosition(Vector2D pos);
 	void addSpeed(float s);
+	void stop();
 
 	~Enemy();
 };
