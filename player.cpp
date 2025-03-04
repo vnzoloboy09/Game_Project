@@ -16,7 +16,15 @@ Player::Player(int x, int y, const char* path) {
 	destRect.w = srcRect.w * SCALE;
 	destRect.h = srcRect.h * SCALE;
 
-	angle = 0;
+	angle = 0.0;
+	speed = 4.0f;
+}
+
+void Player::stayInBound() {
+	if (position.x < 0) position.x = 0;
+	if (position.x > SCREEN_WIDTH - destRect.w) position.x = SCREEN_WIDTH - destRect.w;
+	if (position.y < 0) position.y = 0;
+	if (position.y > SCREEN_HEIGHT - destRect.h) position.y = SCREEN_HEIGHT - destRect.h;
 }
 
 void Player::control() {

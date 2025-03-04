@@ -72,13 +72,14 @@ void Game::handleEvent() {
     }
 
     player->control();
+	player->stayInBound();
 
     // check collision
-	/*for (auto enemy : enemies) {
+	for (auto enemy : enemies) {
 		if (Collision::isColliding(player, enemy)) {
 			gameOver();
 		}
-	}*/
+	}
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {
@@ -89,10 +90,10 @@ void Game::handleEvent() {
 }
 
 void Game::update() {
-    score += 0.01;
-	score_flag -= 0.01;
-    background_1->update(BACKGROUND_SCROLLING_SPEED);
-    background_2->update(BACKGROUND_SCROLLING_SPEED);
+    score += 0.01f;
+	score_flag -= 0.01f;
+    //background_1->update(BACKGROUND_SCROLLING_SPEED);
+    //background_2->update(BACKGROUND_SCROLLING_SPEED);
 
 	for (auto enemy : enemies) {
 		enemy->update();
