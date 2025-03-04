@@ -11,11 +11,12 @@ protected:
 	std::vector<SDL_Texture*> sprites;
 	int current_sprite_id;
 	int first_sprite;
-	Vector2D velocity;
-	Vector2D position;
-	float speed;
 	SDL_Rect srcRect, destRect;
 
+	Vector2D velocity;
+	Vector2D position;
+	Vector2D acceleration;
+	float speed;
 	double angle;
 	SDL_Point* center;
 

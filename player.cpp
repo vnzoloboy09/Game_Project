@@ -1,5 +1,6 @@
 #include "player.h"
 #include <SDL.h>
+#include <iostream>
 
 Player::Player(int x, int y, const char* path) {
 	texture = Graphics::loadTexture(path);
@@ -18,6 +19,8 @@ Player::Player(int x, int y, const char* path) {
 
 	angle = 0.0;
 	speed = 4.0f;
+	velocity = { 0.0f, 0.0f };
+	acceleration = { 0.0f, 0.0f };
 }
 
 void Player::stayInBound() {
@@ -43,7 +46,9 @@ void Player::control() {
 		if (keystate[SDL_SCANCODE_S]) angle += 1.5f;
 	}
 
-	if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) velocity = {0, 0};
+	if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) {
+		velocity = { 0.0f, 0.0f };
+	}
 }
 
 void Player::update() {

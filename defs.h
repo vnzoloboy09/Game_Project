@@ -18,8 +18,8 @@ const int START_POSITION_Y = 560;
 const int SCALE = 1;
 const int CAR_HEIGHT = 64;
 const int CAR_WIDTH = 32;
-const float MAX_ACCELERATION = 5.0;
-const float MAX_STEERING = 30;
+const float MAX_ACCELERATION = 20.0f;
+const float MAX_VELOCITY = 20.0f;
 
 //for background
 const int LANE_WIDTH = 96; // 3 times the car width

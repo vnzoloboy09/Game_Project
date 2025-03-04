@@ -75,11 +75,11 @@ void Game::handleEvent() {
 	player->stayInBound();
 
     // check collision
-	for (auto enemy : enemies) {
+	/*for (auto enemy : enemies) {
 		if (Collision::isColliding(player, enemy)) {
 			gameOver();
 		}
-	}
+	}*/
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {
