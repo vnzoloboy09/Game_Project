@@ -18,8 +18,6 @@ Background::Background(const char* path, int x, int y) {
 void Background::update(float x, float y) {
 	srcRect.x = x + 16;
 	srcRect.y = y + 32;
-	srcRect.w = SCREEN_WIDTH;
-	srcRect.h = SCREEN_HEIGHT;
 }
 
 void Background::render() {
