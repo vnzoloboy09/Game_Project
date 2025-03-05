@@ -26,6 +26,7 @@ const int LANE_WIDTH = 96; // 3 times the car width
 const int BACKGROUND_SCROLLING_SPEED = 4;
 const int BACKGROUND_WIDTH = 900;
 const int BACKGROUND_HEIGHT = 740;
+const float BOUND_BLOCK = 2.5f;
 const std::vector<int> LANES = { 132, 228, 324, 420 };
 
 const int SPRITE_DELAY = 300;

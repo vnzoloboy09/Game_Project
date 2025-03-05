@@ -1,10 +1,10 @@
 #pragma once
-
-#include <SDL.h>
-#include "car.h"
+#include "player.h"
+#include "enemy.h"
 
 class Collision {
 public:
-	static bool isColliding(Car* a, Car* b);
-	static void rotatePoint(float& x, float& y, float cenx, float ceny, float angle);
+	static bool isCollidingAABB(Player* a, Enemy* b);
+	static bool isCollidingSAT(Player* a, Enemy* b);
+	static SDL_FPoint rotatePoint(SDL_FPoint point, float cenx, float ceny, float angle);
 };

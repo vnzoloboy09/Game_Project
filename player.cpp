@@ -1,4 +1,7 @@
 #include "player.h"
+#include "collision.h"
+#include "graphics.h"
+#include "game.h"
 #include <SDL.h>
 #include <iostream>
 
@@ -17,6 +20,15 @@ Player::Player(int x, int y, const char* path) {
 	destRect.w = srcRect.w * SCALE;
 	destRect.h = srcRect.h * SCALE;
 
+	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y) });
+	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) });
+	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) });
+	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) });
+
+	for (int i = 0; i < 4; i++) {
+		cur_corners.push_back(base_corners[i]);
+	}
+
 	angle = 0.0;
 	speed = 4.0f;
 	velocity = { 0.0f, 0.0f };
@@ -24,10 +36,21 @@ Player::Player(int x, int y, const char* path) {
 }
 
 void Player::stayInBound() {
-	if (position.x < 0) position.x = 0;
-	if (position.x > SCREEN_WIDTH - destRect.w) position.x = SCREEN_WIDTH - destRect.w;
-	if (position.y < 0) position.y = 0;
-	if (position.y > SCREEN_HEIGHT - destRect.h) position.y = SCREEN_HEIGHT - destRect.h;
+	for (int i = 0; i < 4; i++) {
+		if (cur_corners[i].x >= SCREEN_WIDTH) {
+			position.x -= BOUND_BLOCK;
+		}
+		if (cur_corners[i].x <= 0) {
+			position.x += BOUND_BLOCK;
+		}
+		if (cur_corners[i].y >= SCREEN_HEIGHT) {
+			position.y -= BOUND_BLOCK;
+		}
+		if (cur_corners[i].y <= 0) {
+			position.y += BOUND_BLOCK;
+		}	
+	}
+
 }
 
 void Player::control() {
@@ -55,6 +78,16 @@ void Player::update() {
 	// 180 * PI to convert angle to radian
 	position.x += static_cast<float>(velocity.x * sin(angle / 180 * PI) * speed);
     position.y += static_cast<float>(velocity.y * cos(angle / 180 * PI) * speed);
+
+	base_corners[0] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y) };
+	base_corners[1] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) };
+	base_corners[2] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) };
+	base_corners[3] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) };
+
+	for (int i = 0; i < 4; i++) {
+		cur_corners[i] = Collision::rotatePoint(base_corners[i], 
+			position.x + destRect.w / 2.0f, position.y + destRect.h / 2.0f, angle);
+	}
 
 	destRect.x = static_cast<int>(position.x);
 	destRect.y = static_cast<int>(position.y);
