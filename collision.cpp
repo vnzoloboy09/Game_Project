@@ -24,7 +24,6 @@ SDL_FPoint Collision::rotatePoint(SDL_FPoint point, float cenx, float ceny, floa
 bool Collision::isCollidingSAT(Player* player, Enemy* enemy) {
 	std::vector<SDL_FPoint> player_corners = player->getCorners();
 	std::vector<SDL_FPoint> enemy_corners = enemy->getCorners();
-	const float EPSILON = 0.0001f;
 
 	// loop through the 4 player's corners
 	for (int i = 0; i < 4; i++) {
@@ -47,7 +46,7 @@ bool Collision::isCollidingSAT(Player* player, Enemy* enemy) {
 		}
 
 		// check if the projections are overlapping
-		if (maxPlayer < minEnemy - EPSILON|| maxEnemy < minPlayer - EPSILON) {
+		if (maxPlayer < minEnemy|| maxEnemy < minPlayer) {
 			return false;
 		}
 	}
@@ -73,7 +72,7 @@ bool Collision::isCollidingSAT(Player* player, Enemy* enemy) {
 		}
 
 		// check if the projections are overlapping
-		if (maxPlayer < minEnemy - EPSILON || maxEnemy < minPlayer - EPSILON) {
+		if (maxPlayer < minEnemy|| maxEnemy < minPlayer) {
 			return false;
 		}
 	}

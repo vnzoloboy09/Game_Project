@@ -41,7 +41,7 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
-    player = new Player(0, 0, "imgs/car/Yellow_car.png");
+    player = new Player(START_POSITION_X, START_POSITION_Y, "imgs/car/Yellow_car.png");
 	srand(time(0));
     enemies.push_back(new Enemy(50, 200, rand() % 4));
     enemies.push_back(new Enemy(300, 300, rand() % 4));
@@ -90,21 +90,13 @@ void Game::handleEvent() {
 
     // check collision
 	for (int i = 0; i < enemies.size(); i++) {
+		enemies[i]->chasePlayer(player->getPosition());
 		if (Collision::isCollidingSAT(player, enemies[i])) {
             color = RED;
 			std::cerr << "colliding " << i << "\n";
 		}
 	}
 
-    /*for (int i = 0; i < enemies.size(); i++) {
-        for (int j = i + 1; j < enemies.size(); j++) {
-            if (Collision::isCollidingSAT(enemies[i], enemies[j])) {
-                color = BLACK;
-				enemies[i]->stop();
-				enemies[j]->stop();
-            }
-        }
-    }*/
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {

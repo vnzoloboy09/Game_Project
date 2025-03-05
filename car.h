@@ -18,9 +18,8 @@ protected:
 	Vector2D position;
 	Vector2D acceleration;
 	float speed;
-	double angle;
-	SDL_Point* center;
-
+	float angle;
+    SDL_Point* center;
 public:
 	Car();
 	~Car();

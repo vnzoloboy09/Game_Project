@@ -16,8 +16,8 @@ Background::Background(const char* path, int x, int y) {
 }
 
 void Background::update(float x, float y) {
-	srcRect.x = x + 16;
-	srcRect.y = y + 32;
+	srcRect.x = x + CAR_WIDTH / 2;
+	srcRect.y = y + CAR_HEIGHT / 2;
 }
 
 void Background::render() {

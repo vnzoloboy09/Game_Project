@@ -11,6 +11,7 @@ public:
 	void setPosition(Vector2D pos);
 	void addSpeed(float s);
 	void stop();
+	void chasePlayer(Vector2D player_pos);
 
 	~Enemy();
 };

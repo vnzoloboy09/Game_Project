@@ -28,8 +28,9 @@ Enemy::Enemy(int x, int y, int _first_sprite) {
 
 	first_sprite = _first_sprite;
 
-	speed = 4.0f;
-	angle = -6.0f;
+	speed = 3.0f;
+	velocity = { 1.0f, -1.0f };
+	angle = 0.0f;
 
 	loadSprite("imgs/car/Police_1.png", 
 		"imgs/car/Police_2.png", 
@@ -50,11 +51,33 @@ void Enemy::setPosition(Vector2D pos) {
 	position = pos;
 }
 
+void Enemy::chasePlayer(Vector2D player_pos) {
+	float player_center_x = player_pos.x + static_cast<float>(CAR_WIDTH) / 2.0f;
+	float player_center_y = player_pos.y + static_cast<float>(CAR_HEIGHT) / 2.0f;
+
+	float enemy_center_x = position.x + static_cast<float>(CAR_WIDTH) / 2.0f;
+	float enemy_center_y = position.y + static_cast<float>(CAR_HEIGHT) / 2.0f;
+
+	// top left corner - bottom left corner -> direction
+	SDL_FPoint direction = { cur_corners[0].x - cur_corners[3].x, 
+		cur_corners[0].y - cur_corners[3].y };
+	// a line from enemy center to player center
+	SDL_FPoint line = { player_center_x - enemy_center_x, player_center_y - enemy_center_y };
+
+	// decide to turn left or right arcorrding to the cross product of direction and line
+	float cross = direction.x * line.y - direction.y * line.x;
+	if (cross > 0) {
+		angle += 1.5f;
+	}
+	else if (cross < 0) {
+		angle -= 1.5f;
+	}
+}
+
 void Enemy::update() {
 	// 180 * PI to convert degree to radian
-	angle -= 1.0f;
-	/*position.x += static_cast<float>(-1 * sin(angle / 180 * PI) * speed);
-	position.y += static_cast<float>(1 * cos(angle / 180 * PI) * speed);*/
+	position.x += static_cast<float>(velocity.x * sin(angle / 180 * PI) * speed);
+	position.y += static_cast<float>(velocity.y * cos(angle / 180 * PI) * speed);
 
 	base_corners[0] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y) };
 	base_corners[1] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) };
