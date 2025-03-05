@@ -91,8 +91,8 @@ void Player::update() {
 
 	destRect.x = static_cast<int>(position.x);
 	destRect.y = static_cast<int>(position.y);
-	destRect.w = srcRect.w * SCALE;
-	destRect.h = srcRect.h * SCALE;
+	/*destRect.w = srcRect.w * SCALE;
+	destRect.h = srcRect.h * SCALE;*/
 }
 
 void Player::render() {

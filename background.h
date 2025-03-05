@@ -9,10 +9,10 @@ private:
 	SDL_Rect srcRect, destRect;
 
 public:
-	Background(const char* path, int y);
+	Background(const char* path, int x, int y);
 
 	void render();
-	void update(int scrollspeed);
+	void update(float x, float y);
 
 	~Background();
 };

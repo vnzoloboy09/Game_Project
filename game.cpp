@@ -12,8 +12,7 @@ std::vector<Enemy*> enemies;
 Color color = BLUE;
 
 
-Background* background_1 = NULL;
-Background* background_2 = NULL;
+Background* background = NULL;
 
 
 Game::Game() {}
@@ -49,8 +48,7 @@ void Game::init() {
             -2 * CAR_HEIGHT * i, rand() % 4));
 	}
 
-    background_1 = new Background("imgs/background.png", 0);
-    background_2 = new Background("imgs/background.png", -BACKGROUND_HEIGHT);
+    background = new Background("imgs/background.png", 640, 360);
 }
 
 bool Game::isRunning() const {
@@ -105,22 +103,21 @@ void Game::handleEvent() {
 void Game::update() {
     score += 0.01f;
 	score_flag -= 0.01f;
-    //background_1->update(BACKGROUND_SCROLLING_SPEED);
-    //background_2->update(BACKGROUND_SCROLLING_SPEED);
 
 	for (auto enemy : enemies) {
 		enemy->update();
 	}
 
+	Vector2D pos = player->getPosition();
     player->update();
+    background->update(pos.x, pos.y);
 }
 
 void Game::render() {
 	//std::cerr << static_cast<int>(score) << '\n';
     SDL_RenderClear(renderer);
 
-    background_1->render();
-    background_2->render();
+    background->render();
 
     Graphics::setColor(GREEN);
 	for (auto enemy : enemies) {
