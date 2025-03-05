@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "game.h"
 #include <iostream>
 
 Graphics::Graphics() {}
@@ -23,9 +24,8 @@ void Graphics::draw(SDL_Texture* texture, SDL_Rect scrRect, SDL_Rect destRect) {
 }
 
 void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
-    float angle, SDL_Point* center, SDL_RendererFlip flip)
-{
-    //Render to screen
+    float angle, SDL_Point* center, SDL_RendererFlip flip) {
+
     SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, center, flip);
 }
 

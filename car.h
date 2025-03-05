@@ -3,7 +3,6 @@
 #include <SDL.h>
 #include <vector>
 #include "vector2D.h"
-#include "graphics.h"
 
 class Car {
 protected:
@@ -12,6 +11,8 @@ protected:
 	int current_sprite_id;
 	int first_sprite;
 	SDL_Rect srcRect, destRect;
+	std::vector<SDL_FPoint> base_corners;
+	std::vector<SDL_FPoint> cur_corners;
 
 	Vector2D velocity;
 	Vector2D position;
@@ -30,4 +31,7 @@ public:
 	
 	Vector2D getPosition() const;
 	SDL_Rect getRect() const;
+	std::vector<SDL_FPoint> getCorners() const;
+	SDL_FPoint getAxis(const SDL_FPoint a, const SDL_FPoint b) const;
+	void printCurPoint();
 };

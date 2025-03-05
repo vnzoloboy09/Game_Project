@@ -73,7 +73,13 @@ void Game::handleEvent() {
 				enemy->stop();
 			}
         }
+        if (event.key.keysym.sym == SDLK_r) {
+            player->printCurPoint();
+        }
         break;
+	case SDL_MOUSEBUTTONDOWN:
+		std::cerr << event.button.x << ' ' << event.button.y << '\n';
+		break;
     default:
         break;
     }
@@ -83,7 +89,7 @@ void Game::handleEvent() {
 
     // check collision
 	for (auto enemy : enemies) {
-		if (Collision::isColliding(player, enemy)) {
+		if (Collision::isCollidingSAT(player, enemy)) {
             color = RED;
 		}
 	}

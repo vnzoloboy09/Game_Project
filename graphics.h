@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL_image.h>
-#include "game.h"
+#include "defs.h"
 
 class Graphics {
 public:
