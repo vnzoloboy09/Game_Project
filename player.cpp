@@ -22,8 +22,8 @@ Player::Player(int x, int y, const char* path) {
 
 	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y) });
 	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) });
-	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) });
 	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) });
+	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) });
 
 	for (int i = 0; i < 4; i++) {
 		cur_corners.push_back(base_corners[i]);
@@ -81,8 +81,8 @@ void Player::update() {
 
 	base_corners[0] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y) };
 	base_corners[1] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) };
-	base_corners[2] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) };
-	base_corners[3] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) };
+	base_corners[2] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) };
+	base_corners[3] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) };
 
 	for (int i = 0; i < 4; i++) {
 		cur_corners[i] = Collision::rotatePoint(base_corners[i], 
@@ -100,4 +100,10 @@ void Player::render() {
 }
 
 Player::~Player() {
+	SDL_DestroyTexture(texture);
+	texture = NULL;
+	for (auto& sprite : sprites) {
+		SDL_DestroyTexture(sprite);
+		sprite = NULL;
+	}
 }

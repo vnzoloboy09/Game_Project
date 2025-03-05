@@ -41,12 +41,15 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
-    player = new Player(START_POSITION_X, START_POSITION_Y, "imgs/car/Yellow_car.png");
+    player = new Player(0, 0, "imgs/car/Yellow_car.png");
 	srand(time(0));
-	for (int i = 0; i < MAX_ENEMIES; i++) {
-        enemies.push_back(new Enemy(LANES[rand() % LANES.size()], 
-            -2 * CAR_HEIGHT * i, rand() % 4));
-	}
+    enemies.push_back(new Enemy(50, 200, rand() % 4));
+    enemies.push_back(new Enemy(300, 300, rand() % 4));
+    enemies.push_back(new Enemy(400, 190, rand() % 4));
+    enemies.push_back(new Enemy(550, 210, rand() % 4));
+    enemies.push_back(new Enemy(700, 270, rand() % 4));
+
+
 
     background = new Background("imgs/background.png", 640, 360);
 }
@@ -86,11 +89,22 @@ void Game::handleEvent() {
 	player->stayInBound();
 
     // check collision
-	for (auto enemy : enemies) {
-		if (Collision::isCollidingSAT(player, enemy)) {
+	for (int i = 0; i < enemies.size(); i++) {
+		if (Collision::isCollidingSAT(player, enemies[i])) {
             color = RED;
+			std::cerr << "colliding " << i << "\n";
 		}
 	}
+
+    /*for (int i = 0; i < enemies.size(); i++) {
+        for (int j = i + 1; j < enemies.size(); j++) {
+            if (Collision::isCollidingSAT(enemies[i], enemies[j])) {
+                color = BLACK;
+				enemies[i]->stop();
+				enemies[j]->stop();
+            }
+        }
+    }*/
 
     if(score_flag <= 0) {
 		for (auto enemy : enemies) {

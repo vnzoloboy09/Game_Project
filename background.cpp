@@ -23,3 +23,8 @@ void Background::update(float x, float y) {
 void Background::render() {
 	Graphics::draw(texture, srcRect, destRect);
 }
+
+Background::~Background() {
+	SDL_DestroyTexture(texture);
+	texture = NULL;
+}

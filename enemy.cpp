@@ -19,8 +19,8 @@ Enemy::Enemy(int x, int y, int _first_sprite) {
 
 	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y) });
 	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) });
-	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) });
 	base_corners.push_back({ static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) });
+	base_corners.push_back({ static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) });
 
 	for (int i = 0; i < 4; i++) {
 		cur_corners.push_back(base_corners[i]);
@@ -28,7 +28,9 @@ Enemy::Enemy(int x, int y, int _first_sprite) {
 
 	first_sprite = _first_sprite;
 
-	speed = 4;
+	speed = 4.0f;
+	angle = -6.0f;
+
 	loadSprite("imgs/car/Police_1.png", 
 		"imgs/car/Police_2.png", 
 		"imgs/car/Police_3.png", 
@@ -49,17 +51,15 @@ void Enemy::setPosition(Vector2D pos) {
 }
 
 void Enemy::update() {
-	position.y += speed;
-
-	if (position.y > SCREEN_HEIGHT) {
-		position.y = -64;
-		position.x = LANES[rand() % LANES.size()];
-	}
+	// 180 * PI to convert degree to radian
+	angle -= 1.0f;
+	/*position.x += static_cast<float>(-1 * sin(angle / 180 * PI) * speed);
+	position.y += static_cast<float>(1 * cos(angle / 180 * PI) * speed);*/
 
 	base_corners[0] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y) };
 	base_corners[1] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y) };
-	base_corners[2] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) };
-	base_corners[3] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) };
+	base_corners[2] = { static_cast<float>(destRect.x + destRect.w), static_cast<float>(destRect.y + destRect.h) };
+	base_corners[3] = { static_cast<float>(destRect.x), static_cast<float>(destRect.y + destRect.h) };
 
 	for (int i = 0; i < 4; i++) {
 		cur_corners[i] = Collision::rotatePoint(base_corners[i],
@@ -71,10 +71,9 @@ void Enemy::update() {
 }
 
 void Enemy::render() {
-	current_sprite_id = (SDL_GetTicks() / SPRITE_DELAY % sprites.size());
-	current_sprite_id = (current_sprite_id + first_sprite) % sprites.size();
+	current_sprite_id = (SDL_GetTicks() / SPRITE_DELAY + first_sprite) % sprites.size();
 	//std::cerr << current_sprite_id << '\n';
-	Graphics::draw(sprites[current_sprite_id], srcRect, destRect);
+	Graphics::render(sprites[current_sprite_id], srcRect, destRect, angle, center, SDL_FLIP_NONE);
 	SDL_RenderDrawRect(Game::renderer, &destRect);
 }
 

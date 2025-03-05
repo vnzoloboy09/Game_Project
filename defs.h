@@ -10,7 +10,7 @@ const int SCREEN_HEIGHT = 720;
 const int FPS = 60;
 const int timePerFrame = FPS/1000;
 
-const float PI = 3.1415926535;
+const float PI = 3.1415926f;
 
 // for cars
 const int START_POSITION_X = SCREEN_WIDTH / 2 - 16;
