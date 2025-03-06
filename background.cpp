@@ -1,5 +1,5 @@
 #include "background.h"
-#include <iostream>
+#include "graphics.h"
 
 Background::Background(const char* path, int x, int y) {
 	texture = Graphics::loadTexture(path);
@@ -22,6 +22,10 @@ void Background::update(float x, float y) {
 
 void Background::render() {
 	Graphics::draw(texture, srcRect, destRect);
+}
+
+SDL_Rect Background::getRect(SDL_Rect rect) const {
+	return srcRect;
 }
 
 Background::~Background() {

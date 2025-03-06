@@ -3,17 +3,15 @@
 #include "enemy.h"
 #include "collision.h"
 #include "background.h"
+#include "Graphics.h"
+
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
+Background* background = NULL;
 
 Player* player = NULL;
 std::vector<Enemy*> enemies;
-Color color = BLUE;
-
-
-Background* background = NULL;
-
 
 Game::Game() {}
 Game::~Game() {}
@@ -48,7 +46,6 @@ void Game::init() {
     enemies.push_back(new Enemy(400, 190, rand() % 4));
     enemies.push_back(new Enemy(550, 210, rand() % 4));
     enemies.push_back(new Enemy(700, 270, rand() % 4));
-
 
 
     background = new Background("imgs/background.png", 640, 360);
@@ -92,18 +89,16 @@ void Game::handleEvent() {
 	for (int i = 0; i < enemies.size(); i++) {
 		enemies[i]->chasePlayer(player->getPosition());
 		if (Collision::isCollidingSAT(player, enemies[i])) {
-            color = RED;
-			std::cerr << "colliding " << i << "\n";
+			//Game::gameOver();
+		}
+		for (int j = i + 1; j < enemies.size(); j++) {
+			if (Collision::isCollidingSAT(enemies[i], enemies[j])) {
+				enemies[i]->setPosition(500 + rand()%200, 800);
+				enemies[j]->setPosition(1350, 250 + rand()%250);
+			}
 		}
 	}
 
-
-    if(score_flag <= 0) {
-		for (auto enemy : enemies) {
-			enemy->addSpeed(1);
-		}
-		score_flag = 5;
-	}
 }
 
 void Game::update() {
@@ -125,14 +120,11 @@ void Game::render() {
 
     background->render();
 
-    Graphics::setColor(GREEN);
 	for (auto enemy : enemies) {
 		enemy->render();
 	}
     
-    Graphics::setColor(color);
     player->render();
-    color = BLUE;
 
     SDL_RenderPresent(renderer);
 }

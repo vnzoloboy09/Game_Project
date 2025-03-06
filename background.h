@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL.h>
-#include "graphics.h"
 
 class Background {
 private:
@@ -13,6 +12,7 @@ public:
 
 	void render();
 	void update(float x, float y);
+	SDL_Rect getRect(SDL_Rect rect) const;
 
 	~Background();
 };

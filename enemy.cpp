@@ -47,8 +47,9 @@ Enemy::~Enemy() {
 	}
 }
 
-void Enemy::setPosition(Vector2D pos) {
-	position = pos;
+void Enemy::setPosition(int xpos, int ypos) {
+	position.x = static_cast<float>(xpos);
+	position.y = static_cast<float>(ypos);
 }
 
 void Enemy::chasePlayer(Vector2D player_pos) {
@@ -95,9 +96,7 @@ void Enemy::update() {
 
 void Enemy::render() {
 	current_sprite_id = (SDL_GetTicks() / SPRITE_DELAY + first_sprite) % sprites.size();
-	//std::cerr << current_sprite_id << '\n';
 	Graphics::render(sprites[current_sprite_id], srcRect, destRect, angle, center, SDL_FLIP_NONE);
-	SDL_RenderDrawRect(Game::renderer, &destRect);
 }
 
 void Enemy::addSpeed(float s) {

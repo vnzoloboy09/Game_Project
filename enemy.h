@@ -8,7 +8,7 @@ public:
 
 	void update() override;
 	void render() override;
-	void setPosition(Vector2D pos);
+	void setPosition(int xpos, int ypos);
 	void addSpeed(float s);
 	void stop();
 	void chasePlayer(Vector2D player_pos);

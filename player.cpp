@@ -30,7 +30,7 @@ Player::Player(int x, int y, const char* path) {
 	}
 
 	angle = 0.0;
-	speed = 4.0f;
+	speed = 6.0f;
 	velocity = { 0.0f, 0.0f };
 	acceleration = { 0.0f, 0.0f };
 }
@@ -96,7 +96,6 @@ void Player::update() {
 void Player::render() {
 	//Graphics::draw(texture, srcRect, destRect);
 	Graphics::render(texture, srcRect, destRect, angle, center, SDL_FLIP_NONE);
-	SDL_RenderDrawRect(Game::renderer, &destRect);
 }
 
 Player::~Player() {
