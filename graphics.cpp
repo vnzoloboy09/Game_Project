@@ -24,9 +24,9 @@ void Graphics::draw(SDL_Texture* texture, SDL_Rect scrRect, SDL_Rect destRect) {
 }
 
 void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
-    float angle, SDL_Point* center, SDL_RendererFlip flip) {
+    float angle, SDL_RendererFlip flip) {
 
-    SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, center, flip);
+    SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
 }
 
 void Graphics::setColor(Color color) {

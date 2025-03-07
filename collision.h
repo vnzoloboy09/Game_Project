@@ -1,10 +1,9 @@
 #pragma once
-#include "player.h"
-#include "enemy.h"
+
+#include <vector>
+#include <SDL.h>
 
 class Collision {
 public:
-	static bool isCollidingSAT(Player* a, Enemy* b);
-	static bool isCollidingSAT(Enemy* enemy1, Enemy* enemy2);
-	static SDL_FPoint rotatePoint(SDL_FPoint point, float cenx, float ceny, float angle);
+	static bool isCollidingSAT(std::vector<SDL_FPoint> a, std::vector<SDL_FPoint> b);
 };
