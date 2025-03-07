@@ -21,11 +21,10 @@ public:
 		position.y = y;
 	}
 
-	TransformComponent(float x, float y, int w, int h) {
+	TransformComponent(float x, float y, float sp) {
 		position.x = x;
 		position.y = y;
-		width = w;
-		height = h;
+		speed = sp;
 	}
 
 	void init() override {
