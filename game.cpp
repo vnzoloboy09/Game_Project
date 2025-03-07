@@ -1,17 +1,17 @@
 #include "game.h"
-#include "player.h"
-#include "enemy.h"
 #include "collision.h"
 #include "background.h"
-#include "Graphics.h"
+#include "components.h"
 
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 Background* background = NULL;
+Color color = BLUE;
 
-Player* player = NULL;
-std::vector<Enemy*> enemies;
+Manager manager;
+auto& enemy(manager.addEntity());
+auto& player(manager.addEntity());
 
 Game::Game() {}
 Game::~Game() {}
@@ -39,14 +39,15 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
-    player = new Player(START_POSITION_X, START_POSITION_Y, "imgs/car/Yellow_car.png");
-	srand(time(0));
-    enemies.push_back(new Enemy(50, 200, rand() % 4));
-    enemies.push_back(new Enemy(300, 300, rand() % 4));
-    enemies.push_back(new Enemy(400, 190, rand() % 4));
-    enemies.push_back(new Enemy(550, 210, rand() % 4));
-    enemies.push_back(new Enemy(700, 270, rand() % 4));
 
+	player.addComponent<TransformComponent>();
+	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+	player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>();
+
+    enemy.addComponent<TransformComponent>(300.0f, 300.0f);
+    enemy.addComponent<SpriteComponent>("imgs/car/Police_1.png");
+    enemy.addComponent<ColliderComponent>();
 
     background = new Background("imgs/background.png", 640, 360);
 }
@@ -65,66 +66,29 @@ void Game::handleEvent() {
     switch (event.type) {
     case SDL_QUIT:
         running = false;
-    case SDL_KEYDOWN:
-        if (event.key.keysym.sym == SDLK_p) {
-			for (auto enemy : enemies) {
-				enemy->stop();
-			}
-        }
-        if (event.key.keysym.sym == SDLK_r) {
-            player->printCurPoint();
-        }
-        break;
-	case SDL_MOUSEBUTTONDOWN:
-		std::cerr << event.button.x << ' ' << event.button.y << '\n';
-		break;
     default:
         break;
     }
 
-    player->control();
-	player->stayInBound();
-
-    // check collision
-	for (int i = 0; i < enemies.size(); i++) {
-		enemies[i]->chasePlayer(player->getPosition());
-		if (Collision::isCollidingSAT(player, enemies[i])) {
-			//Game::gameOver();
-		}
-		for (int j = i + 1; j < enemies.size(); j++) {
-			if (Collision::isCollidingSAT(enemies[i], enemies[j])) {
-				enemies[i]->setPosition(500 + rand()%200, 800);
-				enemies[j]->setPosition(1350, 250 + rand()%250);
-			}
-		}
-	}
-
+    if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>().collider,
+        enemy.getComponent<ColliderComponent>().collider)) {
+        color = RED;
+    }
+    else color = BLUE;
 }
 
 void Game::update() {
-    score += 0.01f;
-	score_flag -= 0.01f;
-
-	for (auto enemy : enemies) {
-		enemy->update();
-	}
-
-	Vector2D pos = player->getPosition();
-    player->update();
-    background->update(pos.x, pos.y);
+	manager.refresh();
+	manager.update();
 }
 
 void Game::render() {
-	//std::cerr << static_cast<int>(score) << '\n';
     SDL_RenderClear(renderer);
 
     background->render();
 
-	for (auto enemy : enemies) {
-		enemy->render();
-	}
-    
-    player->render();
+    Graphics::setColor(color);
+	manager.render();
 
     SDL_RenderPresent(renderer);
 }

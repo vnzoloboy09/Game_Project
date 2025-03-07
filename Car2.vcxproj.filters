@@ -9,7 +9,7 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="ECS">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -24,16 +24,7 @@
     <ClCompile Include="graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="car.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="collision.cpp">
@@ -41,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="background.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spriteComponent.h">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,16 +47,7 @@
     <ClInclude Include="graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="car.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vector2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="collision.h">
@@ -70,6 +55,21 @@
     </ClInclude>
     <ClInclude Include="background.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="components.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="transformComponent.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboardController.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="colliderComponent.h">
+      <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
