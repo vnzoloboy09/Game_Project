@@ -39,7 +39,7 @@ public:
 
 	void update() override {
 		for (int i = 0; i < collider.size(); i++) {
-			collider[i] = rotatePoint(collider[i], transform->position.x + transform->width / 2.0f,
+			collider[i] = rotatePoint(transform->corners[i], transform->position.x + transform->width / 2.0f,
 				transform->position.y + transform->height / 2.0f, transform->angle);
 		}
 	}

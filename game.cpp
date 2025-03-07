@@ -69,7 +69,6 @@ void Game::handleEvent() {
     default:
         break;
     }
-
     if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>().collider,
         enemy.getComponent<ColliderComponent>().collider)) {
         color = RED;
