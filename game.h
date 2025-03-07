@@ -3,12 +3,14 @@
 #include "defs.h"
 #include <SDL_image.h>
 
+class ColliderComponent;
+
 class Game {
 private:
 	SDL_Window* window;
 	bool running = true;
 	float score;
-	float score_flag = 5; // addSpeed every 10 points
+	float score_flag = 5;
 
 public:
 	Game();
@@ -24,6 +26,8 @@ public:
 	void handleEvent();
 	void clear();
 
+	static void addTile(int x, int y, int id);
+	static std::vector<ColliderComponent*> colliders;
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 };

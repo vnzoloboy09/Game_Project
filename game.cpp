@@ -1,15 +1,16 @@
 #include "game.h"
 #include "collision.h"
-#include "background.h"
 #include "components.h"
+#include "map.h"
 
+Manager manager;
+Map *map;
 
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
-Background* background = NULL;
-Color color = BLUE;
 
-Manager manager;
+std::vector<ColliderComponent*> Game::colliders;
+
 auto& enemy(manager.addEntity());
 auto& player(manager.addEntity());
 
@@ -40,16 +41,17 @@ void Game::initSDL() {
 void Game::init() {
     initSDL();
 
-	player.addComponent<TransformComponent>();
+    map = new Map();
+    Map::loadMap("imgs/tilemap80x80.map", 16, 16);
+
+	player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
 	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
 	player.addComponent<KeyboardController>();
-    player.addComponent<ColliderComponent>();
+    player.addComponent<ColliderComponent>("player");
 
-    enemy.addComponent<TransformComponent>(300.0f, 300.0f);
+    enemy.addComponent<TransformComponent>(300.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
     enemy.addComponent<SpriteComponent>("imgs/car/Police_1.png");
-    enemy.addComponent<ColliderComponent>();
-
-    background = new Background("imgs/background.png", 640, 360);
+    enemy.addComponent<ColliderComponent>("enemy");
 }
 
 bool Game::isRunning() const {
@@ -66,27 +68,26 @@ void Game::handleEvent() {
     switch (event.type) {
     case SDL_QUIT:
         running = false;
+
     default:
         break;
     }
-    if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>().collider,
-        enemy.getComponent<ColliderComponent>().collider)) {
-        color = RED;
-    }
-    else color = BLUE;
 }
 
 void Game::update() {
 	manager.refresh();
 	manager.update();
+
+    for (auto collider : colliders) {
+        Collision::isCollidingSAT(player.getComponent<ColliderComponent>(), *collider);
+    }
 }
 
 void Game::render() {
+    //Graphics::setColor(WHITE);
     SDL_RenderClear(renderer);
 
-    background->render();
-
-    Graphics::setColor(color);
+    //Graphics::setColor(RED);
 	manager.render();
 
     SDL_RenderPresent(renderer);
@@ -98,4 +99,9 @@ void Game::clear() {
     
     IMG_Quit();
     SDL_Quit();
+}
+
+void Game::addTile(int x, int y, int id) {
+    auto& tile(manager.addEntity());
+    tile.addComponent<TileComponent>(x, y, TILE_SIZE, TILE_SIZE, id);
 }

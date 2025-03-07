@@ -152,8 +152,8 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
-    <ClCompile Include="background.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="map.cpp" />
     <ClCompile Include="spriteComponent.h" />
     <ClCompile Include="vector2D.cpp" />
   </ItemGroup>
@@ -165,8 +165,9 @@
     <ClInclude Include="ECS.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="graphics.h" />
-    <ClInclude Include="background.h" />
     <ClInclude Include="keyboardController.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="tileComponent.h" />
     <ClInclude Include="transformComponent.h" />
     <ClInclude Include="vector2D.h" />
   </ItemGroup>

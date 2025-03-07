@@ -1,6 +1,7 @@
 #include "collision.h"
+#include "colliderComponent.h"
 
-bool Collision::isCollidingSAT(std::vector<SDL_FPoint> a_conrners, std::vector<SDL_FPoint> b_corners) {
+bool Collision::isCollidingSAT(const std::vector<SDL_FPoint> a_conrners, const std::vector<SDL_FPoint> b_corners) {
 	// loop through the 4 a's corners
 	for (int i = 0; i < a_conrners.size(); i++) {
 		int next = (i + 1) % a_conrners.size();
@@ -60,4 +61,15 @@ bool Collision::isCollidingSAT(std::vector<SDL_FPoint> a_conrners, std::vector<S
 	}
 
 	return true;
+}
+
+bool Collision::isCollidingSAT(const ColliderComponent& colA, const ColliderComponent& colB) {
+	std::vector<SDL_FPoint> a_corners = colA.collider;
+	std::vector<SDL_FPoint> b_corners = colB.collider;
+
+	if (isCollidingSAT(a_corners, b_corners)) {
+		std::cerr << colA.tag << " hit " << colB.tag << '\n';
+		return true;
+	}
+	return false;
 }

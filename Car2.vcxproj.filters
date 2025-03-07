@@ -30,11 +30,11 @@
     <ClCompile Include="collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="background.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="spriteComponent.h">
       <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,9 +53,6 @@
     <ClInclude Include="collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="background.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ECS.h">
       <Filter>ECS</Filter>
     </ClInclude>
@@ -69,6 +66,12 @@
       <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="colliderComponent.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tileComponent.h">
       <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
