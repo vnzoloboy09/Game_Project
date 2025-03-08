@@ -40,3 +40,10 @@ typedef enum {
 	WHITE,
 	BLACK
 } Color;
+
+enum groupLables : unsigned int {
+	groupMap,
+	groupPlayers,
+	groupEnemies,
+	groupColliders
+};

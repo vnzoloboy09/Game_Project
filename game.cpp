@@ -42,16 +42,18 @@ void Game::init() {
     initSDL();
 
     map = new Map();
-    Map::loadMap("imgs/tilemap80x80.map", 16, 16);
+    Map::loadMap("imgs/tilemap80x80.map", MAP_WIDTH / TILE_SIZE, MAP_HEIGHT / TILE_SIZE);
 
 	player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
 	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
 	player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
+    player.addGroup(groupPlayers);
 
     enemy.addComponent<TransformComponent>(300.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
     enemy.addComponent<SpriteComponent>("imgs/car/Police_1.png");
     enemy.addComponent<ColliderComponent>("enemy");
+    enemy.addGroup(groupEnemies);
 }
 
 bool Game::isRunning() const {
@@ -83,12 +85,16 @@ void Game::update() {
     }
 }
 
+auto& tiles(manager.getGroup(groupMap));
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
+
 void Game::render() {
-    //Graphics::setColor(WHITE);
     SDL_RenderClear(renderer);
 
-    //Graphics::setColor(RED);
-	manager.render();
+    for (auto& t : tiles) t->render();
+    for (auto& p : players) p->render();
+    for (auto& e : enemies) e->render();
 
     SDL_RenderPresent(renderer);
 }
@@ -104,4 +110,5 @@ void Game::clear() {
 void Game::addTile(int x, int y, int id) {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, TILE_SIZE, TILE_SIZE, id);
+    tile.addGroup(groupMap);
 }
