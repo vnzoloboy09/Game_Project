@@ -2,6 +2,7 @@
 #include "collision.h"
 #include "components.h"
 #include "map.h"
+#include "defs.h"
 
 Manager manager;
 Map *map;
@@ -12,6 +13,7 @@ SDL_Event Game::event;
 std::vector<ColliderComponent*> Game::colliders;
 
 auto& enemy(manager.addEntity());
+auto& enemy2(manager.addEntity());
 auto& player(manager.addEntity());
 
 Game::Game() {}
@@ -40,9 +42,10 @@ void Game::initSDL() {
 
 void Game::init() {
     initSDL();
+    srand(time(0));
 
     map = new Map();
-    Map::loadMap("imgs/tilemap80x80.map", MAP_WIDTH / TILE_SIZE, MAP_HEIGHT / TILE_SIZE);
+    Map::loadMap("imgs/tilemap80x80.map", 16, 16);
 
 	player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
 	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
@@ -51,10 +54,19 @@ void Game::init() {
     player.addGroup(groupPlayers);
 
     enemy.addComponent<TransformComponent>(300.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
-    enemy.addComponent<SpriteComponent>("imgs/car/Police_1.png");
+    enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
     enemy.addComponent<ColliderComponent>("enemy");
     enemy.addGroup(groupEnemies);
+
+    enemy2.addComponent<TransformComponent>(500.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
+    enemy2.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+    enemy2.addComponent<ColliderComponent>("enemy");
+    enemy2.addGroup(groupEnemies);
 }
+
+auto& tiles(manager.getGroup(groupMap));
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
 
 bool Game::isRunning() const {
     return running;
@@ -84,10 +96,6 @@ void Game::update() {
         Collision::isCollidingSAT(player.getComponent<ColliderComponent>(), *collider);
     }
 }
-
-auto& tiles(manager.getGroup(groupMap));
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
 
 void Game::render() {
     SDL_RenderClear(renderer);

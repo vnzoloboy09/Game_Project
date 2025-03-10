@@ -1,6 +1,7 @@
 #include "map.h"
 #include "game.h"
 #include "fstream"
+#include "defs.h"
 
 Map::Map() {}
 Map::~Map() {}

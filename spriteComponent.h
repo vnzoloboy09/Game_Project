@@ -1,18 +1,32 @@
 #pragma once  
 
-#include "components.h"  
+#include "components.h"
+#include "game.h"
 
 class SpriteComponent : public Component {  
 private:  
    TransformComponent* transform;  
    SDL_Texture* texture;  
-   SDL_Rect srcRect, destRect;  
+   SDL_Rect srcRect, destRect;
+
+   int frames;
+   int speed;
+   bool isAnimated = false;
+   int start_frame;
 
 public:  
    SpriteComponent() = default;  
    SpriteComponent(const char* path) {  
        setTex(path);  
    }  
+
+   SpriteComponent(const char* path, int nFrames, int mSpeed) {
+       isAnimated = true;
+       frames = nFrames;
+       speed = mSpeed;
+       start_frame = rand() % frames;
+       setTex(path);
+   }
 
    ~SpriteComponent() {  
        SDL_DestroyTexture(texture);  
@@ -37,6 +51,10 @@ public:
    }  
 
    void update() override {  
+       if (isAnimated) {
+           srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed + start_frame) % frames);
+       }
+
        destRect.x = static_cast<int>(transform->position.x);  
        destRect.y = static_cast<int>(transform->position.y);  
    }  

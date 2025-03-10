@@ -1,7 +1,8 @@
 #pragma once
 
-#include "defs.h"
 #include <SDL_image.h>
+#include <vector>
+#include <time.h>
 
 class ColliderComponent;
 

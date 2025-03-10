@@ -45,10 +45,20 @@ public:
 		corners.push_back({ position.x, position.y + height });
 	}
 
+	int x() const { return position.x; }
+	int y() const { return position.y; }
+
+	void setPos(float x, float y) {
+		position.x = x;
+		position.y = y;
+	}
+
 	void update() override {
 		// 180 * PI to convert angle to radian
-		position.x += static_cast<float>(velocity.x * sin(angle / 180 * PI) * speed);
-		position.y += static_cast<float>(velocity.y * cos(angle / 180 * PI) * speed);
+		// -90 since the imgs is import 90 degree
+		float angleRad = (angle - 90) / 180 * M_PI;
+		position.x += static_cast<float>(velocity.x * cos(angleRad) * speed);
+		position.y += static_cast<float>(velocity.y * sin(angleRad) * speed);
 
 		corners[0] = { position.x, position.y };
 		corners[1] = { position.x + width, position.y };

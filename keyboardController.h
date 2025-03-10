@@ -16,8 +16,8 @@ public:
 	void update() override {
 		const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-		if (keystate[SDL_SCANCODE_W]) transform->velocity = { 1, -1 };
-		if (keystate[SDL_SCANCODE_S]) transform->velocity = { -1, 1 };
+		if (keystate[SDL_SCANCODE_W]) transform->velocity = { 1, 1 };
+		if (keystate[SDL_SCANCODE_S]) transform->velocity = { -1, -1 };
 
 		if (keystate[SDL_SCANCODE_D]) {
 			if (keystate[SDL_SCANCODE_W]) transform->angle += 1.5f;
