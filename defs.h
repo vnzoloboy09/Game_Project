@@ -15,7 +15,8 @@ const float PI = 3.1415926f;
 // for tiles
 const int TILE_SIZE = 32;
 constexpr auto dirt = 0;
-constexpr auto grass = 1;
+constexpr auto light_grass = 1;
+constexpr auto dark_grass = 2;
 
 // for cars
 const int START_POSITION_X = SCREEN_WIDTH / 2 - 16;

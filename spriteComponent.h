@@ -45,7 +45,7 @@ public:
        srcRect.h = transform->height;  
 
        destRect.x = static_cast<int>(transform->position.x);  
-       destRect.y = static_cast<int>(transform->position.y);  
+       destRect.y = static_cast<int>(transform->position.y);
        destRect.w = srcRect.w;  
        destRect.h = srcRect.h;  
    }  
@@ -55,8 +55,8 @@ public:
            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed + start_frame) % frames);
        }
 
-       destRect.x = static_cast<int>(transform->position.x);  
-       destRect.y = static_cast<int>(transform->position.y);  
+       destRect.x = static_cast<int>(transform->position.x) - Game::camera.x;
+       destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
    }  
 
    void render() override {  

@@ -25,10 +25,12 @@ public:
 	void update(); 
 	void render();
 	void handleEvent();
+	void cameraUpdate();
 	void clear();
 
 	static void addTile(int x, int y, int id);
 	static std::vector<ColliderComponent*> colliders;
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
+	static SDL_Rect camera;
 };

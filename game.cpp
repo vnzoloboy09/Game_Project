@@ -10,6 +10,8 @@ Map *map;
 SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
+SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
+
 std::vector<ColliderComponent*> Game::colliders;
 
 auto& enemy(manager.addEntity());
@@ -43,9 +45,9 @@ void Game::initSDL() {
 void Game::init() {
     initSDL();
     srand(time(0));
-
+    
     map = new Map();
-    Map::loadMap("imgs/tilemap80x80.map", 16, 16);
+    Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 
 	player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
 	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
@@ -91,10 +93,7 @@ void Game::handleEvent() {
 void Game::update() {
 	manager.refresh();
 	manager.update();
-
-    for (auto collider : colliders) {
-        Collision::isCollidingSAT(player.getComponent<ColliderComponent>(), *collider);
-    }
+    cameraUpdate();
 }
 
 void Game::render() {
@@ -115,8 +114,18 @@ void Game::clear() {
     SDL_Quit();
 }
 
+void Game::cameraUpdate() {
+    camera.x = player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2;
+    camera.y = player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2;
+
+    if (camera.x < 0) camera.x = 0;
+    if (camera.y < 0) camera.y = 0;
+    if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
+    if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
+}
+
 void Game::addTile(int x, int y, int id) {
     auto& tile(manager.addEntity());
-    tile.addComponent<TileComponent>(x, y, TILE_SIZE, TILE_SIZE, id);
+    tile.addComponent<TileComponent>(x, y, id);
     tile.addGroup(groupMap);
 }

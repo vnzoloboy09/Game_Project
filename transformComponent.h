@@ -45,9 +45,6 @@ public:
 		corners.push_back({ position.x, position.y + height });
 	}
 
-	int x() const { return position.x; }
-	int y() const { return position.y; }
-
 	void setPos(float x, float y) {
 		position.x = x;
 		position.y = y;
