@@ -42,19 +42,15 @@ void Game::initSDL() {
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
-void Game::init() {
-    initSDL();
-    srand(time(0));
-    
-    map = new Map();
-    Map::loadMap("imgs/tilemap80x80.map", 80, 80);
-
-	player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
-	player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
-	player.addComponent<KeyboardController>();
+void Game::initPlayer() {
+    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
+    player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+    player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
+}
 
+void Game::initEnemy() {
     enemy.addComponent<TransformComponent>(300.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
     enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
     enemy.addComponent<ColliderComponent>("enemy");
@@ -64,6 +60,19 @@ void Game::init() {
     enemy2.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
     enemy2.addComponent<ColliderComponent>("enemy");
     enemy2.addGroup(groupEnemies);
+}
+
+void Game::initMap() {
+    map = new Map();
+    Map::loadMap("imgs/tilemap80x80.map", 80, 80);
+}
+
+void Game::init() {
+    initSDL();
+    srand(time(0));
+    initMap();
+    initPlayer();
+    initEnemy();
 }
 
 auto& tiles(manager.getGroup(groupMap));

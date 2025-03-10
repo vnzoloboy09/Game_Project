@@ -25,6 +25,7 @@ public:
        frames = nFrames;
        speed = mSpeed;
        start_frame = rand() % frames;
+       std::cerr << start_frame << '\n';
        setTex(path);
    }
 

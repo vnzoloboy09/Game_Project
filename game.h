@@ -19,6 +19,9 @@ public:
 
 	void initSDL();
 
+	void initPlayer();
+	void initEnemy();
+	void initMap();
 	void init();
 	bool isRunning() const;
 	void gameOver();
