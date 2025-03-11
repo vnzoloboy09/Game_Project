@@ -14,8 +14,6 @@ SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 std::vector<ColliderComponent*> Game::colliders;
 
 auto& player(manager.addEntity());
-auto& enemy(manager.addEntity());
-auto& enemy2(manager.addEntity());
 
 Game::Game() {}
 Game::~Game() {}
@@ -42,7 +40,7 @@ void Game::initSDL() {
 }
 
 void Game::initPlayer() {
-    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT, 5.0f);
+    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
     player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
@@ -50,17 +48,14 @@ void Game::initPlayer() {
 } 
 
 void Game::initEnemy() {
-    enemy.addComponent<TransformComponent>(600.0f, 600.0f, CAR_WIDTH, CAR_HEIGHT);
-    enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
-    enemy.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
-    enemy.addComponent<ColliderComponent>("enemy");
-    enemy.addGroup(groupEnemies);
-    
-    enemy2.addComponent<TransformComponent>(500.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
-    enemy2.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
-    enemy2.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
-    enemy2.addComponent<ColliderComponent>("enemy");
-    enemy2.addGroup(groupEnemies);
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        auto& enemy(manager.addEntity());
+        enemy.addComponent<TransformComponent>();
+        enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+        enemy.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
+        enemy.addComponent<ColliderComponent>("enemy");
+        enemy.addGroup(groupEnemies);
+    }
 }
 
 void Game::initMap() {
@@ -98,17 +93,13 @@ void Game::handleEvent() {
     default:
         break;
     }
-
-    if (Collision::isCollidingSAT(enemy.getComponent<ColliderComponent>(), enemy2.getComponent<ColliderComponent>())) {
-        enemy.getComponent<TransformComponent>().setPos(0, 0);
-        enemy2.getComponent<TransformComponent>().setPos(800, 800);
-    }
 }
 
 void Game::update() {
+    cameraUpdate(); 
 	manager.refresh();
 	manager.update();
-    cameraUpdate(); 
+    respawnEnemies();
 }
 
 void Game::render() {
@@ -130,13 +121,34 @@ void Game::clear() {
 }
 
 void Game::cameraUpdate() {
-    camera.x = player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2;
-    camera.y = player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2;
+    camera.x = std::round(player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2.0f);
+    camera.y = std::round(player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2.0f);
 
     if (camera.x < 0) camera.x = 0;
     if (camera.y < 0) camera.y = 0;
     if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
     if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
+}
+
+void Game::respawnEnemies() {
+    // random spawn position if got hit by another enemy
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        for (int j = i + 1; j < MAX_ENEMIES; j++) {
+            if (Collision::isCollidingSAT(
+                enemies[i]->getComponent<ColliderComponent>(),
+                enemies[j]->getComponent<ColliderComponent>()
+            )) {
+                if ((rand() % 2) % 2) {
+                    enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
+                    enemies[j]->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT);
+                }
+                else {
+                    enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
+                    enemies[j]->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT);
+                }
+            }
+        }
+    }
 }
 
 void Game::addTile(int x, int y, int id) {

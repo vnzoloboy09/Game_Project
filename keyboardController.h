@@ -19,7 +19,7 @@ public:
 		// -90 since the imgs is import 90 degree rather then 0 degree
 		float angleRad = (transform->angle - 90) / 180 * M_PI;
 
-		if (keystate[SDL_SCANCODE_W]) transform->velocity = { cos(angleRad), sin(angleRad)};
+		if (keystate[SDL_SCANCODE_W]) transform->velocity = { cos(angleRad), sin(angleRad) };
 		if (keystate[SDL_SCANCODE_S]) transform->velocity = { -cos(angleRad), -sin(angleRad) };
 
 		if (keystate[SDL_SCANCODE_D]) {

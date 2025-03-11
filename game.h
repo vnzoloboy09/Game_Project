@@ -30,6 +30,7 @@ public:
 	void render();
 	void handleEvent();
 	void cameraUpdate();
+	void respawnEnemies();
 	void clear();
 
 	static void addTile(int x, int y, int id);

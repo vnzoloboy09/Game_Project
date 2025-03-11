@@ -7,10 +7,10 @@ public:
 	Vector2D position;
 	Vector2D velocity;
 	std::vector<SDL_FPoint> corners;
-	int width = 32;
-	int height = 64;
+	int width = CAR_WIDTH;
+	int height = CAR_HEIGHT;
 	float angle = 0.0f; // degree
-	float speed = 4.0f;
+	float speed = ENEMY_SPEED;
 
 	TransformComponent() {
 		position.Zero();
@@ -37,7 +37,7 @@ public:
 	}
 
 	SDL_FPoint rotatePoint(SDL_FPoint point, float cenx, float ceny, float angle) {
-		float radian = angle / 180 * PI;
+		float radian = angle / 180 * M_PI;
 		float s = sin(radian);
 		float c = cos(radian);
 

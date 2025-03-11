@@ -10,8 +10,6 @@ const int SCREEN_HEIGHT = 720;
 const int FPS = 60;
 const int timePerFrame = FPS/1000;
 
-const float PI = 3.1415926f;
-
 // for tiles
 const int TILE_SIZE = 32;
 constexpr auto dirt = 0;
@@ -21,18 +19,17 @@ constexpr auto dark_grass = 2;
 // for cars
 const int START_POSITION_X = SCREEN_WIDTH / 2 - 16;
 const int START_POSITION_Y = SCREEN_HEIGHT / 2 - 32;
-const int SCALE = 1;
 const int CAR_HEIGHT = 64;
 const int CAR_WIDTH = 32;
-const float MAX_ACCELERATION = 20.0f;
-const float MAX_VELOCITY = 20.0f;
+const float ENEMY_SPEED = 4.0f;
+const float PLAYER_SPEED = 5.0f;
+const int MAX_ENEMIES = 10;
 
 // for map
 const int MAP_WIDTH = 2560;
 const int MAP_HEIGHT = 2560;
 
 const int SPRITE_DELAY = 300;
-const int MAX_ENEMIES = 5;
 
 typedef enum {
 	RED,
