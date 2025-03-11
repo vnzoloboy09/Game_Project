@@ -11,12 +11,11 @@ SDL_Renderer* Game::renderer = NULL;
 SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
-
 std::vector<ColliderComponent*> Game::colliders;
 
+auto& player(manager.addEntity());
 auto& enemy(manager.addEntity());
 auto& enemy2(manager.addEntity());
-auto& player(manager.addEntity());
 
 Game::Game() {}
 Game::~Game() {}
@@ -43,21 +42,23 @@ void Game::initSDL() {
 }
 
 void Game::initPlayer() {
-    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT);
+    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT, 5.0f);
     player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
-}
+} 
 
 void Game::initEnemy() {
-    enemy.addComponent<TransformComponent>(300.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
+    enemy.addComponent<TransformComponent>(600.0f, 600.0f, CAR_WIDTH, CAR_HEIGHT);
     enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+    enemy.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
     enemy.addComponent<ColliderComponent>("enemy");
     enemy.addGroup(groupEnemies);
-
+    
     enemy2.addComponent<TransformComponent>(500.0f, 300.0f, CAR_WIDTH, CAR_HEIGHT);
     enemy2.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+    enemy2.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
     enemy2.addComponent<ColliderComponent>("enemy");
     enemy2.addGroup(groupEnemies);
 }
@@ -97,12 +98,17 @@ void Game::handleEvent() {
     default:
         break;
     }
+
+    if (Collision::isCollidingSAT(enemy.getComponent<ColliderComponent>(), enemy2.getComponent<ColliderComponent>())) {
+        enemy.getComponent<TransformComponent>().setPos(0, 0);
+        enemy2.getComponent<TransformComponent>().setPos(800, 800);
+    }
 }
 
 void Game::update() {
 	manager.refresh();
 	manager.update();
-    cameraUpdate();
+    cameraUpdate(); 
 }
 
 void Game::render() {

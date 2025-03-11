@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <vector>
 #include <time.h>
+#include "vector2D.h"
 
 class ColliderComponent;
 

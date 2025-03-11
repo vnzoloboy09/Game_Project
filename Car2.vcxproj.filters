@@ -77,5 +77,8 @@
     <ClInclude Include="tileComponent.h">
       <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="chaseComponent.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

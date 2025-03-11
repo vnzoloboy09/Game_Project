@@ -9,7 +9,7 @@ public:
 	std::vector<SDL_FPoint> corners;
 	int width = 32;
 	int height = 64;
-	float angle = 0.0f;
+	float angle = 0.0f; // degree
 	float speed = 4.0f;
 
 	TransformComponent() {
@@ -36,6 +36,26 @@ public:
 		speed = sp;
 	}
 
+	SDL_FPoint rotatePoint(SDL_FPoint point, float cenx, float ceny, float angle) {
+		float radian = angle / 180 * PI;
+		float s = sin(radian);
+		float c = cos(radian);
+
+		// translate point back to origin:
+		point.x -= cenx;
+		point.y -= ceny;
+
+		// rotate point
+		float xnew = point.x * c - point.y * s;
+		float ynew = point.x * s + point.y * c;
+
+		// translate point back:
+		point.x = xnew + cenx;
+		point.y = ynew + ceny;
+
+		return point;
+	};
+
 	void init() override {
 		velocity.Zero();
 
@@ -51,15 +71,17 @@ public:
 	}
 
 	void update() override {
-		// 180 * PI to convert angle to radian
-		// -90 since the imgs is import 90 degree
-		float angleRad = (angle - 90) / 180 * M_PI;
-		position.x += static_cast<float>(velocity.x * cos(angleRad) * speed);
-		position.y += static_cast<float>(velocity.y * sin(angleRad) * speed);
+		position.x += static_cast<float>(velocity.x * speed);
+		position.y += static_cast<float>(velocity.y * speed);
 
 		corners[0] = { position.x, position.y };
 		corners[1] = { position.x + width, position.y };
 		corners[2] = { position.x + width, position.y + height };
 		corners[3] = { position.x, position.y + height };
+
+		for (int i = 0; i < 4; i++) {
+			corners[i] = rotatePoint(corners[i], static_cast<int>(position.x + width / 2.0f),
+				static_cast<int>(position.y + height / 2.0f), angle);
+		}
 	}
 };

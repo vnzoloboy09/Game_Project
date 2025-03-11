@@ -159,6 +159,7 @@
     <ClCompile Include="vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="chaseComponent.h" />
     <ClInclude Include="colliderComponent.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="components.h" />

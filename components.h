@@ -8,3 +8,4 @@
 #include "keyboardController.h"
 #include "colliderComponent.h"
 #include "tileComponent.h"
+#include "chaseComponent.h"
