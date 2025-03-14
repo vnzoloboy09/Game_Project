@@ -45,3 +45,8 @@ enum groupLables : unsigned int {
 	groupEnemies,
 	groupColliders
 };
+
+typedef enum {
+	GAME_STAGE,
+	MENU_STAGE
+} tStage;

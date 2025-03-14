@@ -16,6 +16,9 @@
     <Filter Include="Extra">
       <UniqueIdentifier>{c39ed0a4-a015-4d20-a2df-f069f81ac5cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{ce71839a-8f2f-4c81-b0b0-2e09ba0337c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="vector2D.cpp">
       <Filter>Extra</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +96,12 @@
       <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="stageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

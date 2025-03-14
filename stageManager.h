@@ -1,6 +1,8 @@
 #pragma once
 
 #include "game.h"
+#include "menu.h"
+#include "defs.h"
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 
@@ -8,10 +10,10 @@ class StageManager {
 private:
 	SDL_Window* window;
 	Game* game;
-	bool* current_stage;
+	Menu* menu;
 	bool running;
-	bool game_stage;
-	bool menu_stage;
+	bool stage_is_running;
+	SDL_Point mouse;
 
 public:
 	StageManager();
@@ -21,16 +23,15 @@ public:
 	void init();
 	bool isRunning() const;
 	void stopCurrentStage();
-	void changeStageTo(bool &stage);
 	void presentGameStage();
 	void presentMenuStage();
 	void presentStage();
-	void handleEvent();
+	void handleGameEvent();
+	void handleMenuEvent();
 	void clear();
 	
-
 	static SDL_Renderer* renderer;
-	static unsigned int stage;
 	static SDL_Event event;
 	static TTF_Font* font;
+	static tStage stage;
 };

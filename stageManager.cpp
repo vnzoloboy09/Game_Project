@@ -1,22 +1,18 @@
 #include "stageManager.h"
-#include "defs.h"
 #include "graphics.h"
 
-unsigned int StageManager::stage = 1;
 SDL_Event StageManager::event;
 
 SDL_Renderer* StageManager::renderer = NULL;
 TTF_Font* StageManager::font;
-
-SDL_Texture* menu_text;
-SDL_Texture* press;
+tStage StageManager::stage;
 
 StageManager::StageManager() {
-	game_stage = false;
-	menu_stage = true;
-	current_stage = &menu_stage;
+	stage = MENU_STAGE;
+	stage_is_running = true;
 	running = true;
 }
+
 StageManager::~StageManager() = default;
 
 void StageManager::initSDL() {
@@ -57,10 +53,12 @@ void StageManager::initSDL() {
 void StageManager::init() {
 	initSDL();
 	srand(time(0));
+
 	game = new Game();
 	game->init();
-	menu_text = Graphics::loadText("this is a MENU", font, { 255, 0, 0 });
-	press = Graphics::loadText("press 9 to play", font, { 255, 0, 0 });
+
+	menu = new Menu(); 
+	menu->init();
 }
 
 bool StageManager::isRunning() const {
@@ -68,16 +66,33 @@ bool StageManager::isRunning() const {
 }
 
 void StageManager::stopCurrentStage() {
-	*current_stage = false;
+	stage_is_running = false;
 }
 
-void StageManager::changeStageTo(bool &stage) {
-	stopCurrentStage();
-	current_stage = &stage;
-	*current_stage = true;
+void StageManager::handleMenuEvent() {
+	SDL_PollEvent(&event);
+	SDL_GetMouseState(&mouse.x, &mouse.y);
+	switch (event.type) {
+	case SDL_QUIT:
+		stopCurrentStage();
+		running = false;
+
+	default:
+		break;
+	}
+
+	for (auto button : menu->getButtons()) {
+		if (button->isHover(mouse.x, mouse.y) &&
+			event.type == SDL_MOUSEBUTTONDOWN) {
+			if (button->getTag() == "play") {
+				stopCurrentStage();
+				stage = GAME_STAGE;
+			}
+		}
+	}
 }
 
-void StageManager::handleEvent() {
+void StageManager::handleGameEvent() {
 	SDL_PollEvent(&event);
 	switch (event.type) {
 	case SDL_QUIT:
@@ -85,11 +100,9 @@ void StageManager::handleEvent() {
 		running = false;
 
 	case SDL_KEYDOWN:
-		if (event.key.keysym.sym == SDLK_0) {
-			changeStageTo(menu_stage);
-		}
-		if (event.key.keysym.sym == SDLK_9) {
-			changeStageTo(game_stage);
+		if (event.key.keysym.sym == SDLK_ESCAPE) {
+			stopCurrentStage();
+			stage = MENU_STAGE;
 		}
 	default:
 		break;
@@ -100,10 +113,10 @@ void StageManager::presentGameStage() {
 	Uint32 frameStart;
 	int frametime;
 
-	while (game_stage) {
+	while (stage_is_running) {
 		frameStart = SDL_GetTicks();
 
-		handleEvent();
+		handleGameEvent();
 		game->update();
 		game->render();
 
@@ -116,24 +129,21 @@ void StageManager::presentGameStage() {
 }
 
 void StageManager::presentMenuStage() {
-	while (menu_stage) {
-		handleEvent();
-		Graphics::setColor(WHITE);
-		SDL_RenderClear(StageManager::renderer);
-
-		Graphics::draw(menu_text, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 200, 400, 100);
-		Graphics::draw(press, SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2, 300, 100);
-
-		SDL_RenderPresent(StageManager::renderer);
+	while (stage_is_running) {
+		handleMenuEvent();
+		menu->render();
 	}
 }
 
 void StageManager::presentStage() {
+	stage_is_running = true;
 	switch (stage) {
-	case 1:
+	case GAME_STAGE:
 		presentGameStage();
-	case 2:
+		break;
+	case MENU_STAGE:
 		presentMenuStage();
+		break;
 	default:
 		break;
 	}

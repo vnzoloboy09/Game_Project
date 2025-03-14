@@ -41,8 +41,7 @@ void Game::initMap() {
 }
 
 void Game::init() {
-    //initSDL();
-    //initMap();
+    initMap();
     initPlayer();
     initEnemy();
 }
