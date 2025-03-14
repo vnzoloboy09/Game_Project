@@ -3,12 +3,10 @@
 #include "components.h"
 #include "map.h"
 #include "defs.h"
+#include "stageManager.h"
 
 Manager manager;
 Map *map;
-
-SDL_Renderer* Game::renderer = NULL;
-SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 std::vector<ColliderComponent*> Game::colliders;
@@ -17,27 +15,6 @@ auto& player(manager.addEntity());
 
 Game::Game() {}
 Game::~Game() {}
-
-void Game::initSDL() {
-    if (!SDL_Init(SDL_INIT_EVERYTHING)) {
-        SDL_Quit();
-    }
-    window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false);
-
-    if (window == NULL) SDL_Quit();
-
-    if (!(IMG_Init(IMG_INIT_PNG))) SDL_Quit();
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED
-        | SDL_RENDERER_PRESENTVSYNC);
-
-    if (renderer == NULL) SDL_Quit();
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-}
 
 void Game::initPlayer() {
     player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
@@ -64,9 +41,8 @@ void Game::initMap() {
 }
 
 void Game::init() {
-    initSDL();
-    srand(time(0));
-    initMap();
+    //initSDL();
+    //initMap();
     initPlayer();
     initEnemy();
 }
@@ -85,14 +61,6 @@ void Game::gameOver() {
 }
 
 void Game::handleEvent() {
-    SDL_PollEvent(&event);
-    switch (event.type) {
-    case SDL_QUIT:
-        running = false;
-
-    default:
-        break;
-    }
 }
 
 void Game::update() {
@@ -103,21 +71,17 @@ void Game::update() {
 }
 
 void Game::render() {
-    SDL_RenderClear(renderer);
+    SDL_RenderClear(StageManager::renderer);
 
     for (auto& t : tiles) t->render();
     for (auto& p : players) p->render();
     for (auto& e : enemies) e->render();
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(StageManager::renderer);
 }
 
 void Game::clear() {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
     
-    IMG_Quit();
-    SDL_Quit();
 }
 
 void Game::cameraUpdate() {
@@ -131,7 +95,7 @@ void Game::cameraUpdate() {
 }
 
 void Game::respawnEnemies() {
-    // random spawn position if got hit by another enemy
+    // spawn at random position outside of the map if got hit by another enemy
     for (int i = 0; i < MAX_ENEMIES; i++) {
         for (int j = i + 1; j < MAX_ENEMIES; j++) {
             if (Collision::isCollidingSAT(

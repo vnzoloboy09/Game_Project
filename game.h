@@ -2,16 +2,14 @@
 
 #include <SDL_image.h>
 #include <vector>
-#include <time.h>
 #include "vector2D.h"
 
 class ColliderComponent;
 
 class Game {
 private:
-	SDL_Window* window;
 	bool running = true;
-	float score;
+	float score = 0;
 	float score_flag = 5;
 
 public:
@@ -35,7 +33,5 @@ public:
 
 	static void addTile(int x, int y, int id);
 	static std::vector<ColliderComponent*> colliders;
-	static SDL_Renderer* renderer;
-	static SDL_Event event;
 	static SDL_Rect camera;
 };

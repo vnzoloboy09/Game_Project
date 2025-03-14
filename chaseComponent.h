@@ -1,7 +1,7 @@
 #pragma once
 
 #include "components.h"
-#include "game.h"
+#include "stageManager.h"
 
 class ChaseComponent : public Component {
 private:
@@ -47,12 +47,12 @@ public:
 	}
 
     void render() override {  
-       SDL_SetRenderDrawColor(Game::renderer, 255, 0, 0, 255);  
-       SDL_RenderDrawLine(Game::renderer, static_cast<int>(self_center.x),  
+       SDL_SetRenderDrawColor(StageManager::renderer, 255, 0, 0, 255);
+       SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
            static_cast<int>(self_center.y), static_cast<int>(target_center.x), 
 		   static_cast<int>(target_center.y));  
-       SDL_SetRenderDrawColor(Game::renderer, 0, 0, 255, 255);  
-       SDL_RenderDrawLine(Game::renderer, static_cast<int>(self_center.x), 
+       SDL_SetRenderDrawColor(StageManager::renderer, 0, 0, 255, 255);
+       SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
 		   static_cast<int>(self_center.y), static_cast<int>(self_center.x + 50*direction.x), 
 		   static_cast<int>(self_center.y + 50*direction.y));  
     }
