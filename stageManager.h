@@ -8,7 +8,10 @@ class StageManager {
 private:
 	SDL_Window* window;
 	Game* game;
+	bool* current_stage;
 	bool running;
+	bool game_stage;
+	bool menu_stage;
 
 public:
 	StageManager();
@@ -17,6 +20,8 @@ public:
 	void initSDL();
 	void init();
 	bool isRunning() const;
+	void stopCurrentStage();
+	void changeStageTo(bool &stage);
 	void presentGameStage();
 	void presentMenuStage();
 	void presentStage();

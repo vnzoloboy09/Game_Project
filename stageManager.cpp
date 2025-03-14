@@ -8,10 +8,13 @@ SDL_Event StageManager::event;
 SDL_Renderer* StageManager::renderer = NULL;
 TTF_Font* StageManager::font;
 
-SDL_Rect rect = { 100, 100, 100 ,100 };
+SDL_Texture* menu_text;
+SDL_Texture* press;
 
 StageManager::StageManager() {
-	stage = 1;
+	game_stage = false;
+	menu_stage = true;
+	current_stage = &menu_stage;
 	running = true;
 }
 StageManager::~StageManager() = default;
@@ -48,7 +51,7 @@ void StageManager::initSDL() {
 		std::cerr << TTF_GetError() << '\n';
 		SDL_Quit();
 	}
-	StageManager::font = Graphics::loadFont("fonts/SuperPixel.ttf", 100);
+	StageManager::font = Graphics::loadFont("fonts/Pixellntv.ttf", 100);
 }
 
 void StageManager::init() {
@@ -56,20 +59,38 @@ void StageManager::init() {
 	srand(time(0));
 	game = new Game();
 	game->init();
+	menu_text = Graphics::loadText("this is a MENU", font, { 255, 0, 0 });
+	press = Graphics::loadText("press 9 to play", font, { 255, 0, 0 });
 }
 
 bool StageManager::isRunning() const {
 	return running;
 }
 
+void StageManager::stopCurrentStage() {
+	*current_stage = false;
+}
+
+void StageManager::changeStageTo(bool &stage) {
+	stopCurrentStage();
+	current_stage = &stage;
+	*current_stage = true;
+}
+
 void StageManager::handleEvent() {
 	SDL_PollEvent(&event);
 	switch (event.type) {
 	case SDL_QUIT:
+		stopCurrentStage();
 		running = false;
 
 	case SDL_KEYDOWN:
-		if (event.key.keysym.sym == SDLK_0) stage = 2;
+		if (event.key.keysym.sym == SDLK_0) {
+			changeStageTo(menu_stage);
+		}
+		if (event.key.keysym.sym == SDLK_9) {
+			changeStageTo(game_stage);
+		}
 	default:
 		break;
 	}
@@ -79,7 +100,7 @@ void StageManager::presentGameStage() {
 	Uint32 frameStart;
 	int frametime;
 
-	while (game->isRunning() && this->isRunning()) {
+	while (game_stage) {
 		frameStart = SDL_GetTicks();
 
 		handleEvent();
@@ -95,11 +116,16 @@ void StageManager::presentGameStage() {
 }
 
 void StageManager::presentMenuStage() {
-	SDL_RenderClear(StageManager::renderer);
+	while (menu_stage) {
+		handleEvent();
+		Graphics::setColor(WHITE);
+		SDL_RenderClear(StageManager::renderer);
 
-	SDL_RenderDrawRect(StageManager::renderer, &rect);
+		Graphics::draw(menu_text, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 200, 400, 100);
+		Graphics::draw(press, SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2, 300, 100);
 
-	SDL_RenderPresent(StageManager::renderer);
+		SDL_RenderPresent(StageManager::renderer);
+	}
 }
 
 void StageManager::presentStage() {

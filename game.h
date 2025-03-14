@@ -8,7 +8,6 @@ class ColliderComponent;
 
 class Game {
 private:
-	bool running = true;
 	float score = 0;
 	float score_flag = 5;
 

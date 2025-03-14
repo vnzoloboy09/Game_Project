@@ -51,13 +51,8 @@ auto& tiles(manager.getGroup(groupMap));
 auto& players(manager.getGroup(groupPlayers));
 auto& enemies(manager.getGroup(groupEnemies));
 
-bool Game::isRunning() const {
-    return running;
-}
-
 void Game::gameOver() {
     std::cerr << "game over!!";
-    running = false;
 }
 
 void Game::handleEvent() {
