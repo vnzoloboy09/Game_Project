@@ -18,9 +18,15 @@ Button::Button(const char* path, int x, int y, int w, int h, const char* tg) {
 
 	current_destRect = destRect;
 	tag = tg;
+	isSelected = false;
+}
+
+void Button::select(const bool sel) {
+	isSelected = sel;
 }
 
 bool Button::isHover(int &x, int &y) {
+	if (isSelected) return true;
 	if (current_destRect.x <= x && x <= current_destRect.x + current_destRect.w &&
 		current_destRect.y <= y && y <= current_destRect.y + current_destRect.h)
 	{
@@ -32,6 +38,9 @@ bool Button::isHover(int &x, int &y) {
 }
 
 void Button::render() {
+	if (isSelected) {
+		Graphics::drawRect(current_destRect, GREEN, 3); // 3 is the thickness of the rect
+	}
 	Graphics::render(texture, srcRect, current_destRect, 0, SDL_FLIP_NONE);
 }
 

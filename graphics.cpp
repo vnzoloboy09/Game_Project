@@ -24,7 +24,7 @@ void Graphics::draw(SDL_Texture* texture, int x, int y, int w, int h) {
 	SDL_RenderCopy(StageManager::renderer, texture, NULL, &destRect);
 }
 
-void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
+void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
     float angle, SDL_RendererFlip flip) {
 
     SDL_RenderCopyEx(StageManager::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
@@ -51,6 +51,17 @@ SDL_Texture* Graphics::loadText(const char* text, TTF_Font* font, SDL_Color text
     else std::cerr << TTF_GetError() << '\n';
 
     return texture;
+}
+
+void Graphics::drawRect(SDL_Rect rect, Color color, int thickness) {
+    Graphics::setColor(color);
+    for (int i = 0; i < thickness; ++i) {
+        SDL_RenderDrawRect(StageManager::renderer, &rect);
+        rect.x -= 1;
+        rect.y -= 1;
+        rect.w += 2;
+        rect.h += 2;
+    }
 }
 
 void Graphics::setColor(Color color) {

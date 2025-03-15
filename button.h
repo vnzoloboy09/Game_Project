@@ -7,8 +7,8 @@ private:
 	SDL_Texture* texture;
 	SDL_Rect destRect, srcRect, destRectZoom;
 	SDL_Rect current_destRect;
-	bool is_hover;
 	const char* tag;
+	bool isSelected;
 
 public:
 	Button();
@@ -16,6 +16,7 @@ public:
 	~Button();
 
 	void render();
+	void select(const bool sel);
 	const char* getTag();
 	bool isHover(int &x, int &y);
 };

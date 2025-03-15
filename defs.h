@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <cstdlib>
 #include <ctime>
 
@@ -36,7 +35,8 @@ typedef enum {
 	BLUE,
 	GREEN,
 	WHITE,
-	BLACK
+	BLACK,
+	YELLOW
 } Color;
 
 enum groupLables : unsigned int {
@@ -48,5 +48,6 @@ enum groupLables : unsigned int {
 
 typedef enum {
 	GAME_STAGE,
-	MENU_STAGE
+	MENU_STAGE,
+	CHOOSE_STAGE
 } tStage;

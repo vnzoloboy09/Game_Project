@@ -1,8 +1,7 @@
 #pragma once
 
 #include "game.h"
-#include "menu.h"
-#include "defs.h"
+#include "chooseMenu.h"
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 
@@ -11,6 +10,7 @@ private:
 	SDL_Window* window;
 	Game* game;
 	Menu* menu;
+	ChooseMenu* chooseMenu;
 	bool running;
 	bool stage_is_running;
 	SDL_Point mouse;
@@ -23,11 +23,16 @@ public:
 	void init();
 	bool isRunning() const;
 	void stopCurrentStage();
+
 	void presentGameStage();
 	void presentMenuStage();
+	void presentChooseMenuStage();
 	void presentStage();
+
+
 	void handleGameEvent();
 	void handleMenuEvent();
+	void handleChooseMenuEvent();
 	void clear();
 	
 	static SDL_Renderer* renderer;

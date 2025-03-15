@@ -1,5 +1,6 @@
 #include "stageManager.h"
 #include "graphics.h"
+#include <iostream>
 
 SDL_Event StageManager::event;
 
@@ -52,13 +53,15 @@ void StageManager::initSDL() {
 
 void StageManager::init() {
 	initSDL();
-	srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
 
 	game = new Game();
 	game->init();
 
 	menu = new Menu(); 
 	menu->init();
+	chooseMenu = new ChooseMenu();
+	chooseMenu->init();
 }
 
 bool StageManager::isRunning() const {
@@ -87,9 +90,46 @@ void StageManager::handleMenuEvent() {
 			if (button->getTag() == "play") {
 				stopCurrentStage();
 				stage = GAME_STAGE;
+				break;
+			}
+			if (button->getTag() == "choose") {
+				stopCurrentStage();
+				stage = CHOOSE_STAGE;
 			}
 		}
 	}
+}
+
+void StageManager::handleChooseMenuEvent() {  
+	SDL_PollEvent(&event);  
+	SDL_GetMouseState(&mouse.x, &mouse.y);  
+	switch (event.type) {  
+	case SDL_QUIT:  
+		stopCurrentStage();  
+		running = false;  
+		break;  
+	case SDL_KEYDOWN:  
+		if (event.key.keysym.sym == SDLK_ESCAPE) {  
+			stopCurrentStage();  
+			stage = MENU_STAGE;  
+		}  
+		break;  
+	default:  
+		break;  
+	}  
+
+	for (auto button : chooseMenu->getButtons()) {  
+		if (button->isHover(mouse.x, mouse.y) && event.type == SDL_MOUSEBUTTONDOWN) {  
+			button->select(true);  
+			std::string tag = button->getTag();  
+			if (tag == "red_car") game->playerSkin = RED;
+			else if (tag == "blue_car") game->playerSkin = BLUE;
+			else game->playerSkin = YELLOW;
+			for (auto other_button : chooseMenu->getButtons()) {  
+				if (button->getTag() != other_button->getTag()) other_button->select(false);  
+			}  
+		}  
+	}  
 }
 
 void StageManager::handleGameEvent() {
@@ -102,7 +142,7 @@ void StageManager::handleGameEvent() {
 	case SDL_KEYDOWN:
 		if (event.key.keysym.sym == SDLK_ESCAPE) {
 			stopCurrentStage();
-			stage = MENU_STAGE;
+			stage = CHOOSE_STAGE;
 		}
 	default:
 		break;
@@ -110,6 +150,9 @@ void StageManager::handleGameEvent() {
 }
 
 void StageManager::presentGameStage() {
+	SDL_Delay(300);
+	game->reInit();
+	
 	Uint32 frameStart;
 	int frametime;
 
@@ -129,9 +172,34 @@ void StageManager::presentGameStage() {
 }
 
 void StageManager::presentMenuStage() {
+	Uint32 frameStart;
+	int frametime;
 	while (stage_is_running) {
+		frameStart = SDL_GetTicks();
+
 		handleMenuEvent();
 		menu->render();
+
+		frametime = SDL_GetTicks() - frameStart;
+		if (frametime < timePerFrame) {
+			SDL_Delay(timePerFrame - frametime);
+		}
+	}
+}
+
+void StageManager::presentChooseMenuStage() {
+	Uint32 frameStart;
+	int frametime;
+	while (stage_is_running) {
+		frameStart = SDL_GetTicks();
+
+		handleChooseMenuEvent();
+		chooseMenu->render();
+
+		frametime = SDL_GetTicks() - frameStart;
+		if (frametime < timePerFrame) {
+			SDL_Delay(timePerFrame - frametime);
+		}
 	}
 }
 
@@ -143,6 +211,9 @@ void StageManager::presentStage() {
 		break;
 	case MENU_STAGE:
 		presentMenuStage();
+		break;
+	case CHOOSE_STAGE:
+		presentChooseMenuStage();
 		break;
 	default:
 		break;

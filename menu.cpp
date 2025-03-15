@@ -7,12 +7,15 @@ Menu::Menu() {
 	destRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 }
 
+Menu::~Menu() {
+	SDL_DestroyTexture(background);
+}
+
 void Menu::init() {
 	background = Graphics::loadTexture("imgs/menu/background.png");
-	Button* button = new Button("imgs/menu/play_button.png", 0, 0, 200, 100, "play");
-	buttons.push_back(button);
-	button = new Button("imgs/menu/choose_button.png", 500, 500, 300, 100, "choose");
-	buttons.push_back(button);
+	// the numbers are the button {xpos, ypos, width, height}
+	buttons.push_back(new Button("imgs/menu/play_button.png", 520, 270, 200, 100, "play"));
+	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 450, 300, 100, "choose"));
 }
 
 std::vector<Button*> Menu::getButtons() {

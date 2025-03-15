@@ -2,7 +2,6 @@
 #include "collision.h"
 #include "components.h"
 #include "map.h"
-#include "defs.h"
 #include "stageManager.h"
 
 Manager manager;
@@ -10,6 +9,7 @@ Map *map;
 
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 std::vector<ColliderComponent*> Game::colliders;
+Color Game::playerSkin;
 
 auto& player(manager.addEntity());
 
@@ -17,8 +17,20 @@ Game::Game() {}
 Game::~Game() {}
 
 void Game::initPlayer() {
-    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_Y, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
-    player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
+    switch (playerSkin) {
+    case YELLOW:
+        player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+        break;
+    case RED:
+        player.addComponent<SpriteComponent>("imgs/car/red_car.png");
+        break;
+    case BLUE:
+        player.addComponent<SpriteComponent>("imgs/car/blue_car.png");
+        break;
+    default:
+        break;
+    }
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
@@ -50,11 +62,29 @@ auto& tiles(manager.getGroup(groupMap));
 auto& players(manager.getGroup(groupPlayers));
 auto& enemies(manager.getGroup(groupEnemies));
 
-void Game::gameOver() {
-    std::cerr << "game over!!";
+void Game::reInit() {
+    player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
+    player.getComponent<TransformComponent>().angle = 0.0f;
+    switch (playerSkin) {
+    case YELLOW:
+        player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+        break;
+    case RED:
+        player.addComponent<SpriteComponent>("imgs/car/red_car.png");
+        break;
+    case BLUE:
+        player.addComponent<SpriteComponent>("imgs/car/blue_car.png");
+        break;
+    default:
+        break;
+    }
+    for (auto e : enemies) {
+        e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
+    }
 }
 
-void Game::handleEvent() {
+void Game::gameOver() {
+    std::cerr << "game over!!";
 }
 
 void Game::update() {

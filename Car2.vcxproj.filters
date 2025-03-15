@@ -54,18 +54,15 @@
     <ClCompile Include="button.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="chooseMenu.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="collision.h">
@@ -95,14 +92,23 @@
     <ClInclude Include="chaseComponent.h">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="stageManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="chooseMenu.h">
+      <Filter>Menu</Filter>
     </ClInclude>
     <ClInclude Include="menu.h">
-      <Filter>Header Files</Filter>
+      <Filter>Menu</Filter>
     </ClInclude>
     <ClInclude Include="button.h">
-      <Filter>Header Files</Filter>
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics.h">
+      <Filter>Extra</Filter>
+    </ClInclude>
+    <ClInclude Include="stageManager.h">
+      <Filter>Extra</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2D.h">
+      <Filter>Extra</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
