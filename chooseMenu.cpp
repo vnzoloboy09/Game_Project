@@ -2,7 +2,7 @@
 #include "graphics.h"
 
 ChooseMenu::ChooseMenu() {
-	background = Graphics::loadTexture("imgs/menu/background.png");
+	background = Graphics::loadTexture("imgs/menu/choose_background.png");
 	srcRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	destRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 }

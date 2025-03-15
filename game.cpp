@@ -67,13 +67,13 @@ void Game::reInit() {
     player.getComponent<TransformComponent>().angle = 0.0f;
     switch (playerSkin) {
     case YELLOW:
-        player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
         break;
     case RED:
-        player.addComponent<SpriteComponent>("imgs/car/red_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/red_car.png");
         break;
     case BLUE:
-        player.addComponent<SpriteComponent>("imgs/car/blue_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/blue_car.png");
         break;
     default:
         break;
