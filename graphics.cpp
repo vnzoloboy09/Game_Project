@@ -1,5 +1,5 @@
 #include "graphics.h"
-#include "game.h"
+#include "stageManager.h"
 #include <iostream>
 
 Graphics::Graphics() {}
@@ -11,7 +11,7 @@ SDL_Texture* Graphics::loadTexture(const char* path) {
         std::cerr << "Failed to load image: " << IMG_GetError() << std::endl;
         return NULL;
     }
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::renderer, tmpsurface);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(StageManager::renderer, tmpsurface);
 	SDL_FreeSurface(tmpsurface);
 	if (texture != NULL) std::cerr << "Loading " << path << '\n';
 	else std::cerr << IMG_GetError() << '\n';
@@ -19,32 +19,67 @@ SDL_Texture* Graphics::loadTexture(const char* path) {
 	return texture;
 }
 
-void Graphics::draw(SDL_Texture* texture, SDL_Rect scrRect, SDL_Rect destRect) {
-	SDL_RenderCopy(Game::renderer, texture, &scrRect, &destRect);
+void Graphics::draw(SDL_Texture* texture, int x, int y, int w, int h) {
+    SDL_Rect destRect = { x, y, w, h };
+	SDL_RenderCopy(StageManager::renderer, texture, NULL, &destRect);
 }
 
-void Graphics::render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect,
+void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
     float angle, SDL_RendererFlip flip) {
 
-    SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
+    SDL_RenderCopyEx(StageManager::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
+}
+
+TTF_Font* Graphics::loadFont(const char* path, int size) {
+    TTF_Font* gFont = TTF_OpenFont(path, size);
+    if (gFont == NULL) {
+        std::cerr << TTF_GetError();
+    }
+    return gFont;
+}
+
+SDL_Texture* Graphics::loadText(const char* text, TTF_Font* font, SDL_Color textColor) {
+    SDL_Surface* tmpSur = TTF_RenderText_Solid(font, text, textColor);
+    if (tmpSur == NULL) {
+        std::cerr << "Failed to load text: " << TTF_GetError() << std::endl;
+        return NULL;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(StageManager::renderer, tmpSur);
+    SDL_FreeSurface(tmpSur);
+
+    if (texture != NULL) std::cerr << "Loading text: " << text << '\n';
+    else std::cerr << TTF_GetError() << '\n';
+
+    return texture;
+}
+
+void Graphics::drawRect(SDL_Rect rect, Color color, int thickness) {
+    Graphics::setColor(color);
+    for (int i = 0; i < thickness; ++i) {
+        SDL_RenderDrawRect(StageManager::renderer, &rect);
+        rect.x -= 1;
+        rect.y -= 1;
+        rect.w += 2;
+        rect.h += 2;
+    }
 }
 
 void Graphics::setColor(Color color) {
     switch (color) {
     case RED:
-        SDL_SetRenderDrawColor(Game::renderer, 255, 0, 0, 255);
+        SDL_SetRenderDrawColor(StageManager::renderer, 255, 0, 0, 255);
         break;
     case GREEN:
-        SDL_SetRenderDrawColor(Game::renderer, 0, 255, 0, 255);
+        SDL_SetRenderDrawColor(StageManager::renderer, 0, 255, 0, 255);
         break;
     case BLUE:
-        SDL_SetRenderDrawColor(Game::renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(StageManager::renderer, 0, 0, 255, 255);
         break;
     case WHITE:
-        SDL_SetRenderDrawColor(Game::renderer, 255, 255, 255, 255);
+        SDL_SetRenderDrawColor(StageManager::renderer, 255, 255, 255, 255);
         break;
     case BLACK:
-        SDL_SetRenderDrawColor(Game::renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(StageManager::renderer, 0, 0, 0, 255);
         break;
     }
 }
