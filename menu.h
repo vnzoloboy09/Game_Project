@@ -3,19 +3,24 @@
 #include <SDL_image.h>
 #include <vector>
 #include "button.h"
+#include "stage.h"
 
-class Menu {
+class Menu : public Stage{
 protected:
 	SDL_Texture* background;
 
 	SDL_Rect srcRect, destRect;
 	std::vector<Button*> buttons;
+	SDL_Point mouse;
 
 public:
 	Menu();
 	~Menu();
 
-	virtual void init();
+	void init() override;
+	void reInit() override;
+	void update() override;
+	void handleEvent() override;
 	std::vector<Button*> getButtons();
 	void render();
 };

@@ -1,18 +1,15 @@
 #pragma once
 
-#include "game.h"
-#include "chooseMenu.h"
 #include <SDL_ttf.h>
 #include <SDL_image.h>
+#include <memory>
+#include <unordered_map>
+#include "stage.h"
+#include <string>
 
 class StageManager {
 private:
 	SDL_Window* window;
-	Game* game;
-	Menu* menu;
-	ChooseMenu* chooseMenu;
-	bool running;
-	bool stage_is_running;
 	SDL_Point mouse;
 
 public:
@@ -22,21 +19,16 @@ public:
 	void initSDL();
 	void init();
 	bool isRunning() const;
-	void stopCurrentStage();
+	void addStage(const std::string& name, std::unique_ptr<Stage> stage);
 
-	void presentGameStage();
-	void presentMenuStage();
-	void presentChooseMenuStage();
 	void presentStage();
-
-
-	void handleGameEvent();
-	void handleMenuEvent();
-	void handleChooseMenuEvent();
 	void clear();
 	
+	static std::unordered_map<std::string, std::unique_ptr<Stage>> stages;
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static TTF_Font* font;
-	static tStage stage;
+	static bool running;
+	static Stage* current_stage;
+	static void changeStage(const std::string& name);
 };

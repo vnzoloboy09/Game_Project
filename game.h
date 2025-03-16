@@ -3,10 +3,11 @@
 #include <SDL_image.h>
 #include <vector>
 #include "defs.h"
+#include "stage.h"
 
 class ColliderComponent;
 
-class Game {
+class Game : public Stage {
 private:
 	float score = 0;
 	float score_flag = 5;
@@ -18,11 +19,12 @@ public:
 	void initPlayer();
 	void initEnemy();
 	void initMap();
-	void init();
-	void reInit();
+	void init() override;
+	void reInit() override;
 	void gameOver();
-	void update(); 
-	void render();
+	void handleEvent() override;
+	void update() override; 
+	void render() override;
 	void cameraUpdate();
 	void respawnEnemies();
 	void clear();

@@ -176,6 +176,7 @@
     <ClInclude Include="keyboardController.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="stage.h" />
     <ClInclude Include="stageManager.h" />
     <ClInclude Include="tileComponent.h" />
     <ClInclude Include="transformComponent.h" />

@@ -9,7 +9,6 @@ Map *map;
 
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 std::vector<ColliderComponent*> Game::colliders;
-Color Game::playerSkin;
 
 auto& player(manager.addEntity());
 
@@ -85,6 +84,23 @@ void Game::reInit() {
 
 void Game::gameOver() {
     std::cerr << "game over!!";
+}
+
+void Game::handleEvent() {
+    SDL_PollEvent(&StageManager::event);
+    switch (StageManager::event.type) {
+    case SDL_QUIT:
+        StageManager::current_stage->deactivate();
+        StageManager::running = false;
+
+    case SDL_KEYDOWN:
+        if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
+            StageManager::current_stage->deactivate();
+            StageManager::changeStage("ChooseMenu");
+        }
+    default:
+        break;
+    }
 }
 
 void Game::update() {

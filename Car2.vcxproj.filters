@@ -110,5 +110,8 @@
     <ClInclude Include="vector2D.h">
       <Filter>Extra</Filter>
     </ClInclude>
+    <ClInclude Include="stage.h">
+      <Filter>Extra</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

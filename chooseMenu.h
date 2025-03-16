@@ -10,4 +10,6 @@ public:
 	~ChooseMenu();
 
 	void init() override;
+	void update() override;
+	void handleEvent() override;
 };
