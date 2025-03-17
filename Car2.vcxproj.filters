@@ -113,5 +113,8 @@
     <ClInclude Include="stage.h">
       <Filter>Extra</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,9 +1,13 @@
 #pragma once
 
 #include <SDL_image.h>
+#include <unordered_map>
 #include <vector>
+#include <memory>
+#include <string>
 #include "defs.h"
 #include "stage.h"
+#include "UI.h"
 
 class ColliderComponent;
 
@@ -11,6 +15,8 @@ class Game : public Stage {
 private:
 	float score = 0;
 	float score_flag = 5;
+	std::unordered_map<std::string, std::unique_ptr<UI>> UIS;
+	int playerHealth;
 
 public:
 	Game();
@@ -19,14 +25,18 @@ public:
 	void initPlayer();
 	void initEnemy();
 	void initMap();
+	void initUI();
 	void init() override;
 	void reInit() override;
 	void gameOver();
+
 	void handleEvent() override;
-	void update() override; 
+	void handleCollision();
+	void update() override;
 	void render() override;
+
+	void stayInBound();
 	void cameraUpdate();
-	void respawnEnemies();
 	void clear();
 
 	static void addTile(int x, int y, int id);

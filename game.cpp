@@ -33,7 +33,8 @@ void Game::initPlayer() {
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
-} 
+    playerHealth = PLAYER_BASE_HEALTH;
+}
 
 void Game::initEnemy() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
@@ -51,10 +52,18 @@ void Game::initMap() {
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 }
 
+void Game::initUI() {
+    UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 0, 0, 32 * 3, 32, 2));
+    UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 32, 27, playerHealth, 2, 2));
+    UIS["healthBar"]->activate();
+    UIS["health"]->activate();
+}
+
 void Game::init() {
     initMap();
     initPlayer();
     initEnemy();
+    initUI();
 }
 
 auto& tiles(manager.getGroup(groupMap));
@@ -64,6 +73,8 @@ auto& enemies(manager.getGroup(groupEnemies));
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
+    playerHealth = PLAYER_BASE_HEALTH;
+    UIS["health"]->setDest(32, 27, playerHealth, 2);
     switch (playerSkin) {
     case YELLOW:
         player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
@@ -83,6 +94,8 @@ void Game::reInit() {
 }
 
 void Game::gameOver() {
+    StageManager::current_stage->deactivate();
+    StageManager::changeStage("Menu");
     std::cerr << "game over!!";
 }
 
@@ -101,13 +114,15 @@ void Game::handleEvent() {
     default:
         break;
     }
+    handleCollision();
+    stayInBound();
+    if (playerHealth <= 0) gameOver();
 }
 
 void Game::update() {
     cameraUpdate(); 
 	manager.refresh();
 	manager.update();
-    respawnEnemies();
 }
 
 void Game::render() {
@@ -116,6 +131,9 @@ void Game::render() {
     for (auto& t : tiles) t->render();
     for (auto& p : players) p->render();
     for (auto& e : enemies) e->render();
+    for (auto& ui : UIS) {
+        if(ui.second->isActive()) ui.second->render();
+    }
 
     SDL_RenderPresent(StageManager::renderer);
 }
@@ -134,9 +152,20 @@ void Game::cameraUpdate() {
     if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
 }
 
-void Game::respawnEnemies() {
+void Game::handleCollision() {
     // spawn at random position outside of the map if got hit by another enemy
     for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
+            enemies[i]->getComponent<ColliderComponent>())) {
+            playerHealth -= 10;
+            UIS["health"]->setDest(32, 27, playerHealth, 2);
+            if ((rand() % 2) % 2) {
+                enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
+            }
+            else {
+                enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
+            }
+        }
         for (int j = i + 1; j < MAX_ENEMIES; j++) {
             if (Collision::isCollidingSAT(
                 enemies[i]->getComponent<ColliderComponent>(),
@@ -151,6 +180,24 @@ void Game::respawnEnemies() {
                     enemies[j]->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT);
                 }
             }
+        }
+    }
+}
+
+void Game::stayInBound() {
+    player.getComponent<TransformComponent>().position;
+    for (int i = 0; i < 4; i++) {
+        if (player.getComponent<TransformComponent>().corners[i].x >= MAP_WIDTH) {
+            player.getComponent<TransformComponent>().position.x -= BOUND_BLOCK;
+        }
+        if (player.getComponent<TransformComponent>().corners[i].x <= 0) {
+            player.getComponent<TransformComponent>().position.x += BOUND_BLOCK;
+        }
+        if (player.getComponent<TransformComponent>().corners[i].y >= MAP_HEIGHT) {
+            player.getComponent<TransformComponent>().position.y -= BOUND_BLOCK;
+        }
+        if (player.getComponent<TransformComponent>().corners[i].y <= 0) {
+            player.getComponent<TransformComponent>().position.y += BOUND_BLOCK;
         }
     }
 }

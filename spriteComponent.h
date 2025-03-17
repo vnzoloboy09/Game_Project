@@ -41,7 +41,7 @@ public:
 
        srcRect.x = 0;  
        srcRect.y = 0;  
-       srcRect.w = transform->width;  
+       srcRect.w = transform->width;
        srcRect.h = transform->height;  
 
        destRect.x = static_cast<int>(transform->position.x);  
