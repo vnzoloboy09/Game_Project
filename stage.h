@@ -10,6 +10,8 @@ public:
 
 	virtual void init() = 0;
 	virtual void reInit() = 0;
+	virtual void keyEvent() = 0;
+	virtual void mouseEvent() = 0;
 	virtual void handleEvent() = 0;
 	virtual void update() = 0;
 	virtual void render() = 0;

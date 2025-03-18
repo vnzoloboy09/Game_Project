@@ -51,7 +51,7 @@ void StageManager::initSDL() {
 		std::cerr << TTF_GetError() << '\n';
 		SDL_Quit();
 	}
-	StageManager::font = Graphics::loadFont("fonts/Pixellntv.ttf", 100);
+	StageManager::font = Graphics::loadFont("fonts/Pixellntv.ttf", 50);
 }
 
 void StageManager::addStage(const std::string& name, std::unique_ptr<Stage> stage) {
@@ -94,6 +94,7 @@ void StageManager::presentStage() {
 	for (auto& s : stages) {
 		if (s.second->isActive()) {
 			s.second->reInit();
+
 			Uint32 frameStart;
 			int frametime;
 			while (s.second->isActive()) {

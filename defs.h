@@ -31,6 +31,7 @@ const int MAP_HEIGHT = 2560;
 const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = 2.5;
 const int PLAYER_BASE_HEALTH = 77;
+const int SCORE_POS = 1200;
 
 typedef enum {
 	RED,

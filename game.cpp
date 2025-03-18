@@ -1,8 +1,9 @@
+#include "stageManager.h"
 #include "game.h"
 #include "collision.h"
 #include "components.h"
 #include "map.h"
-#include "stageManager.h"
+#include <sstream>
 
 Manager manager;
 Map *map;
@@ -55,8 +56,10 @@ void Game::initMap() {
 void Game::initUI() {
     UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 0, 0, 32 * 3, 32, 2));
     UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 32, 27, playerHealth, 2, 2));
+    UIS["score"] = std::move(std::make_unique<UI>("0.00", StageManager::font, SCORE_POS, 0));
     UIS["healthBar"]->activate();
     UIS["health"]->activate();
+    UIS["score"]->activate();
 }
 
 void Game::init() {
@@ -91,6 +94,7 @@ void Game::reInit() {
     for (auto e : enemies) {
         e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
     }
+    score = 0.0f;
 }
 
 void Game::gameOver() {
@@ -99,8 +103,7 @@ void Game::gameOver() {
     std::cerr << "game over!!";
 }
 
-void Game::handleEvent() {
-    SDL_PollEvent(&StageManager::event);
+void Game::keyEvent() {
     switch (StageManager::event.type) {
     case SDL_QUIT:
         StageManager::current_stage->deactivate();
@@ -114,15 +117,38 @@ void Game::handleEvent() {
     default:
         break;
     }
+}
+
+void Game::mouseEvent() {}
+
+void Game::handleEvent() {
+    SDL_PollEvent(&StageManager::event);
+    keyEvent();
+    mouseEvent();
     handleCollision();
     stayInBound();
     if (playerHealth <= 0) gameOver();
 }
 
-void Game::update() {
-    cameraUpdate(); 
-	manager.refresh();
-	manager.update();
+void Game::scoreUpdate() {
+    timeElapsed += 0.1f;
+    if (timeElapsed > incrementInterval) {
+        score += 0.25f;  
+        timeElapsed = 0.0f;
+    }
+    std::ostringstream os;
+    os << static_cast<int>(score);
+
+    UIS["score"]->setTexture(os.str().c_str(), StageManager::font);
+    std::cerr << os.str().size() << '\n';
+    UIS["score"]->setDest(SCORE_POS - 30*(os.str().size()), 0); // prevent score render out of screen
+} 
+
+void Game::update() {  
+   cameraUpdate();   
+   scoreUpdate();
+   manager.refresh();  
+   manager.update();  
 }
 
 void Game::render() {

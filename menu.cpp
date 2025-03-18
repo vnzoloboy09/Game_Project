@@ -23,9 +23,7 @@ void Menu::reInit() {}
 
 void Menu::update() {}
 
-void Menu::handleEvent() {
-	SDL_PollEvent(&StageManager::event);
-	SDL_GetMouseState(&mouse.x, &mouse.y);
+void Menu::keyEvent() {
 	switch (StageManager::event.type) {
 	case SDL_QUIT:
 		StageManager::current_stage->deactivate();
@@ -35,7 +33,10 @@ void Menu::handleEvent() {
 	default:
 		break;
 	}
+}
 
+void Menu::mouseEvent() {
+	SDL_GetMouseState(&mouse.x, &mouse.y);
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y) &&
 			StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
@@ -50,6 +51,12 @@ void Menu::handleEvent() {
 			}
 		}
 	}
+}
+
+void Menu::handleEvent() {
+	SDL_PollEvent(&StageManager::event);
+	keyEvent();
+	mouseEvent();
 }
 
 std::vector<Button*> Menu::getButtons() {

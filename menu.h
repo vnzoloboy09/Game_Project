@@ -19,8 +19,10 @@ public:
 
 	void init() override;
 	void reInit() override;
-	void update() override;
+	void mouseEvent() override;
+	void keyEvent() override;
 	void handleEvent() override;
+ 	void update() override;
 	std::vector<Button*> getButtons();
 	void render();
 };

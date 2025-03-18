@@ -17,28 +17,13 @@ void ChooseMenu::init() {
 	buttons.push_back(new Button("imgs/car/yellow_car.png", 
 		325, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "yellow_car"));
 	buttons.push_back(new Button("imgs/car/red_car.png", 
-		575, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "red_car"));
+		580, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "red_car"));
 	buttons.push_back(new Button("imgs/car/blue_car.png", 
-		825, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "blue_car"));
+		835, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "blue_car"));
 }
 
-void ChooseMenu::handleEvent() {
-	SDL_PollEvent(&StageManager::event);
+void ChooseMenu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
-	switch (StageManager::event.type) {
-	case SDL_QUIT:
-		StageManager::current_stage->deactivate();
-		StageManager::running = false;
-		break;
-	case SDL_KEYDOWN:
-		if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
-			StageManager::current_stage->deactivate();
-			StageManager::changeStage("Menu");
-		}
-		break;
-	default:
-		break;
-	}
 
 	for (auto button : getButtons()) {
 		Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
@@ -53,6 +38,29 @@ void ChooseMenu::handleEvent() {
 			}
 		}
 	}
+}
+
+void ChooseMenu::keyEvent() {
+	switch (StageManager::event.type) {
+	case SDL_QUIT:
+		StageManager::current_stage->deactivate();
+		StageManager::running = false;
+		break;
+	case SDL_KEYDOWN:
+		if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
+			StageManager::current_stage->deactivate();
+			StageManager::changeStage("Menu");
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void ChooseMenu::handleEvent() {
+	SDL_PollEvent(&StageManager::event);
+	keyEvent();
+	mouseEvent();
 }
 
 void ChooseMenu::update() {}

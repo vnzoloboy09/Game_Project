@@ -13,10 +13,12 @@ class ColliderComponent;
 
 class Game : public Stage {
 private:
-	float score = 0;
-	float score_flag = 5;
+	float score = 0.0f;
+	SDL_Texture* scoreText;
 	std::unordered_map<std::string, std::unique_ptr<UI>> UIS;
 	int playerHealth;
+	float timeElapsed = 0.0f;
+	float incrementInterval = 2.0f;
 
 public:
 	Game();
@@ -30,12 +32,15 @@ public:
 	void reInit() override;
 	void gameOver();
 
+	void keyEvent() override;
+	void mouseEvent() override;
 	void handleEvent() override;
 	void handleCollision();
 	void update() override;
 	void render() override;
 
 	void stayInBound();
+	void scoreUpdate();
 	void cameraUpdate();
 	void clear();
 

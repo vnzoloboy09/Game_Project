@@ -13,8 +13,7 @@ SDL_Texture* Graphics::loadTexture(const char* path) {
     }
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(StageManager::renderer, tmpsurface);
 	SDL_FreeSurface(tmpsurface);
-	if (texture != NULL) std::cerr << "Loading " << path << '\n';
-	else std::cerr << IMG_GetError() << '\n';
+	if (texture == NULL) std::cerr << IMG_GetError() << '\n';
 
 	return texture;
 }
@@ -27,7 +26,12 @@ void Graphics::draw(SDL_Texture* texture, int x, int y, int w, int h) {
 void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
     float angle, SDL_RendererFlip flip) {
 
-    SDL_RenderCopyEx(StageManager::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
+    if (srcRect.x !=  0 || srcRect.y != 0 || srcRect.w != 0 || srcRect.h != 0) {
+        SDL_RenderCopyEx(StageManager::renderer, texture, &srcRect, &destRect, angle, NULL, flip);
+    }
+    else {
+        SDL_RenderCopyEx(StageManager::renderer, texture, NULL, &destRect, angle, NULL, flip);
+    }
 }
 
 TTF_Font* Graphics::loadFont(const char* path, int size) {
@@ -46,9 +50,7 @@ SDL_Texture* Graphics::loadText(const char* text, TTF_Font* font, SDL_Color text
     }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(StageManager::renderer, tmpSur);
     SDL_FreeSurface(tmpSur);
-
-    if (texture != NULL) std::cerr << "Loading text: " << text << '\n';
-    else std::cerr << TTF_GetError() << '\n';
+    if (texture == NULL) std::cerr << TTF_GetError() << '\n';
 
     return texture;
 }
