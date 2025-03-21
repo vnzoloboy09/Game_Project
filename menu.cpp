@@ -17,6 +17,8 @@ void Menu::init() {
 	// the numbers are the button {xpos, ypos, width, height}
 	buttons.push_back(new Button("imgs/menu/play_button.png", 520, 270, 200, 100, "play"));
 	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 450, 300, 100, "choose"));
+
+	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 }
 
 void Menu::reInit() {}
@@ -38,16 +40,18 @@ void Menu::keyEvent() {
 void Menu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
 	for (auto button : getButtons()) {
-		if (button->isHover(mouse.x, mouse.y) &&
-			StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-			if (button->getTag() == "play") {
-				StageManager::current_stage->deactivate();
-				StageManager::changeStage("Game");
-				break;
-			}
-			if (button->getTag() == "choose") {
-				StageManager::current_stage->deactivate();
-				StageManager::changeStage("ChooseMenu");
+		if (button->isHover(mouse.x, mouse.y)) {
+			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
+				Graphics::play(buttonClicked);
+				if (button->getTag() == "play") {
+					StageManager::current_stage->deactivate();
+					StageManager::changeStage("Game");
+					break;
+				}
+				else if (button->getTag() == "choose") {
+					StageManager::current_stage->deactivate();
+					StageManager::changeStage("ChooseMenu");
+				}
 			}
 		}
 	}

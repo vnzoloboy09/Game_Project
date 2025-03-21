@@ -31,7 +31,7 @@ bool Collision::isCollidingSAT(const std::vector<SDL_FPoint> a_conrners, const s
 		if (maxA < minB || maxB < minA) return false;
 	}
 
-	// loop through the 4 b's corners
+	// loop through the 4 b's corners same as a's
 	for (int i = 0; i < b_corners.size(); i++) {
 		int next = (i + 1) % b_corners.size();
 		SDL_FPoint axis = { b_corners[next].x - b_corners[i].x, 

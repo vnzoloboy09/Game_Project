@@ -98,6 +98,8 @@ void Game::reInit() {
     for (auto e : enemies) {
         e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
     }
+
+    pauseMenu->deactivate();
 }
 
 void Game::gameOver() {

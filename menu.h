@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <vector>
 #include "button.h"
 #include "stage.h"
@@ -12,6 +13,7 @@ protected:
 	SDL_Rect srcRect, destRect;
 	std::vector<Button*> buttons;
 	SDL_Point mouse;
+	Mix_Chunk* buttonClicked;
 
 public:
 	Menu();

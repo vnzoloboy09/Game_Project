@@ -66,6 +66,21 @@ void Graphics::drawRect(SDL_Rect rect, Color color, int thickness) {
     }
 }
 
+Mix_Chunk* Graphics::loadSound(const char* path) {
+    Mix_Chunk* gChunk = Mix_LoadWAV(path);
+    if (gChunk == NULL) {
+        std::cerr << Mix_GetError();
+    }
+    return gChunk;
+}
+
+void Graphics::play(Mix_Chunk* chunk) {  
+   if (chunk != nullptr) {  
+       Mix_PlayChannel(-1, chunk, 0);  
+       SDL_Delay(100); // prevent stage change faster than chunk 
+   }  
+}
+
 void Graphics::setColor(Color color) {
     switch (color) {
     case RED:

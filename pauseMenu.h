@@ -4,7 +4,8 @@
 
 class PauseMenu : public Menu {
 private:
-	
+	SDL_Texture* title;
+
 public:
 	PauseMenu();
 	~PauseMenu();

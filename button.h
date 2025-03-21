@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_mixer.h>
 
 class Button {
 private:
@@ -9,6 +10,8 @@ private:
 	SDL_Rect current_destRect;
 	const char* tag;
 	bool isSelected;
+	bool playChunk = false;
+	Mix_Chunk* buttonHover;
 
 public:
 	Button();

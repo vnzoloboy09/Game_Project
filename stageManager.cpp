@@ -52,6 +52,12 @@ void StageManager::initSDL() {
 		SDL_Quit();
 	}
 	StageManager::font = Graphics::loadFont("fonts/Pixellntv.ttf", 50);
+
+	// init mixer 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		std::cerr << Mix_GetError() << '\n';
+	}
+
 }
 
 void StageManager::addStage(const std::string& name, std::unique_ptr<Stage> stage) {
@@ -119,5 +125,6 @@ void StageManager::clear() {
 
 	IMG_Quit();
 	TTF_Quit();
+	Mix_Quit();
 	SDL_Quit();
 }

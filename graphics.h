@@ -2,6 +2,7 @@
 
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include "defs.h"
 
 class Graphics {
@@ -18,6 +19,10 @@ public:
 		float angle, SDL_RendererFlip flip);
 
 	static TTF_Font* loadFont(const char* path, int size);
+
+	static Mix_Chunk* loadSound(const char* path);
+	static void play(Mix_Chunk* chunk);
+	
 	// render text
 	static SDL_Texture* loadText(const char* text, TTF_Font* font, SDL_Color textColor);
 };

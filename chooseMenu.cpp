@@ -14,6 +14,8 @@ ChooseMenu::~ChooseMenu() {
 }
 
 void ChooseMenu::init() {
+	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
+
 	buttons.push_back(new Button("imgs/car/yellow_car.png", 
 		325, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "yellow_car"));
 	buttons.push_back(new Button("imgs/car/red_car.png", 
@@ -29,18 +31,21 @@ void ChooseMenu::mouseEvent() {
 
 	for (auto button : getButtons()) {
 		Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
-		if (button->isHover(mouse.x, mouse.y) && StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-			std::string tag = button->getTag();
-			if (tag == "back_button") {
-				StageManager::changeStage("Menu");
-				break;
-			}
-			button->select(true);
-			if (tag == "red_car") game->playerSkin = RED;
-			else if (tag == "blue_car") game->playerSkin = BLUE;
-			else game->playerSkin = YELLOW;
-			for (auto other_button : getButtons()) {
-				if (button->getTag() != other_button->getTag()) other_button->select(false);
+		if (button->isHover(mouse.x, mouse.y)) {
+			if(StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
+				Graphics::play(buttonClicked);
+				std::string tag = button->getTag();
+				if (tag == "back_button") {
+					StageManager::changeStage("Menu");
+					break;
+				}
+				button->select(true);
+				if (tag == "red_car") game->playerSkin = RED;
+				else if (tag == "blue_car") game->playerSkin = BLUE;
+				else game->playerSkin = YELLOW;
+				for (auto other_button : getButtons()) {
+					if (button->getTag() != other_button->getTag()) other_button->select(false);
+				}
 			}
 		}
 	}
