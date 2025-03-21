@@ -9,8 +9,7 @@
 
 class StageManager {
 private:
-	SDL_Window* window;
-	SDL_Point mouse;
+	SDL_Window* window = NULL;
 
 public:
 	StageManager();

@@ -8,7 +8,7 @@ SDL_Event StageManager::event;
 
 SDL_Renderer* StageManager::renderer = NULL;
 TTF_Font* StageManager::font;
-bool StageManager::running = true;
+bool StageManager::running;
 Color Game::playerSkin;
 std::unordered_map<std::string, std::unique_ptr<Stage>> StageManager::stages;
 Stage* StageManager::current_stage = NULL;

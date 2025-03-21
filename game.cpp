@@ -54,8 +54,11 @@ void Game::initMap() {
 }
 
 void Game::initUI() {
-    UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 0, 0, 32 * 3, 32, 2));
-    UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 32, 27, playerHealth, 2, 2));
+    pauseMenu = new PauseMenu;
+    pauseMenu->init();
+
+    UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 16, 0, 32 * 3, 32, 2));
+    UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 48, 27, playerHealth, 2, 2));
     UIS["score"] = std::move(std::make_unique<UI>("0.00", StageManager::font, SCORE_POS, 0));
     UIS["healthBar"]->activate();
     UIS["health"]->activate();
@@ -77,7 +80,8 @@ void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
     playerHealth = PLAYER_BASE_HEALTH;
-    UIS["health"]->setDest(32, 27, playerHealth, 2);
+    UIS["health"]->setDest(48, 27, playerHealth, 2);
+    score = 0.0f;
     switch (playerSkin) {
     case YELLOW:
         player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
@@ -94,7 +98,6 @@ void Game::reInit() {
     for (auto e : enemies) {
         e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
     }
-    score = 0.0f;
 }
 
 void Game::gameOver() {
@@ -111,8 +114,8 @@ void Game::keyEvent() {
 
     case SDL_KEYDOWN:
         if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
-            StageManager::current_stage->deactivate();
-            StageManager::changeStage("ChooseMenu");
+            if (pauseMenu->isActive()) pauseMenu->deactivate();
+            else pauseMenu->activate();
         }
     default:
         break;
@@ -122,12 +125,17 @@ void Game::keyEvent() {
 void Game::mouseEvent() {}
 
 void Game::handleEvent() {
-    SDL_PollEvent(&StageManager::event);
-    keyEvent();
-    mouseEvent();
-    handleCollision();
-    stayInBound();
-    if (playerHealth <= 0) gameOver();
+    if (pauseMenu->isActive()) {
+        pauseMenu->handleEvent();
+    }
+    else {
+        SDL_PollEvent(&StageManager::event);
+        keyEvent();
+        mouseEvent();
+        handleCollision();
+        stayInBound();
+        if (playerHealth <= 0) gameOver();
+    }
 }
 
 void Game::scoreUpdate() {
@@ -140,15 +148,17 @@ void Game::scoreUpdate() {
     os << static_cast<int>(score);
 
     UIS["score"]->setTexture(os.str().c_str(), StageManager::font);
-    std::cerr << os.str().size() << '\n';
     UIS["score"]->setDest(SCORE_POS - 30*(os.str().size()), 0); // prevent score render out of screen
 } 
 
 void Game::update() {  
-   cameraUpdate();   
-   scoreUpdate();
-   manager.refresh();  
-   manager.update();  
+    if (!pauseMenu->isActive()) {
+        cameraUpdate();
+        scoreUpdate();
+        manager.refresh();
+        manager.update();
+    }
+    else pauseMenu->update();
 }
 
 void Game::render() {
@@ -160,6 +170,7 @@ void Game::render() {
     for (auto& ui : UIS) {
         if(ui.second->isActive()) ui.second->render();
     }
+    if (pauseMenu->isActive()) pauseMenu->render();
 
     SDL_RenderPresent(StageManager::renderer);
 }
@@ -179,12 +190,12 @@ void Game::cameraUpdate() {
 }
 
 void Game::handleCollision() {
-    // spawn at random position outside of the map if got hit by another enemy
     for (int i = 0; i < MAX_ENEMIES; i++) {
+        // decrease player health if got hit
         if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
             enemies[i]->getComponent<ColliderComponent>())) {
             playerHealth -= 10;
-            UIS["health"]->setDest(32, 27, playerHealth, 2);
+            UIS["health"]->setDest(48, 27, playerHealth, 2);
             if ((rand() % 2) % 2) {
                 enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
             }
@@ -192,6 +203,8 @@ void Game::handleCollision() {
                 enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
             }
         }
+
+        // spawn enemy at random position outside of the map if got hit by another enemy
         for (int j = i + 1; j < MAX_ENEMIES; j++) {
             if (Collision::isCollidingSAT(
                 enemies[i]->getComponent<ColliderComponent>(),

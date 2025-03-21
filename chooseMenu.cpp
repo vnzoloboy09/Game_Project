@@ -20,6 +20,8 @@ void ChooseMenu::init() {
 		580, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "red_car"));
 	buttons.push_back(new Button("imgs/car/blue_car.png", 
 		835, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "blue_car"));
+	buttons.push_back(new Button("imgs/menu/back_button.png",
+		16, 16, CAR_WIDTH * 2, CAR_WIDTH * 2, "back_button"));
 }
 
 void ChooseMenu::mouseEvent() {
@@ -28,8 +30,12 @@ void ChooseMenu::mouseEvent() {
 	for (auto button : getButtons()) {
 		Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
 		if (button->isHover(mouse.x, mouse.y) && StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-			button->select(true);
 			std::string tag = button->getTag();
+			if (tag == "back_button") {
+				StageManager::changeStage("Menu");
+				break;
+			}
+			button->select(true);
 			if (tag == "red_car") game->playerSkin = RED;
 			else if (tag == "blue_car") game->playerSkin = BLUE;
 			else game->playerSkin = YELLOW;

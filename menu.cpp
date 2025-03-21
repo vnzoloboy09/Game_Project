@@ -66,7 +66,7 @@ std::vector<Button*> Menu::getButtons() {
 void Menu::render() {
 	SDL_RenderClear(StageManager::renderer);
 
-	Graphics::draw(background, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
 	for (auto button : buttons) {
 		button->render();
 	}

@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 #include "defs.h"
-#include "stage.h"
+#include "pauseMenu.h"
 #include "UI.h"
 
 class ColliderComponent;
@@ -14,11 +14,11 @@ class ColliderComponent;
 class Game : public Stage {
 private:
 	float score = 0.0f;
-	SDL_Texture* scoreText;
 	std::unordered_map<std::string, std::unique_ptr<UI>> UIS;
 	int playerHealth;
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
+	PauseMenu* pauseMenu;
 
 public:
 	Game();
@@ -38,6 +38,8 @@ public:
 	void handleCollision();
 	void update() override;
 	void render() override;
+
+	void pause();
 
 	void stayInBound();
 	void scoreUpdate();
