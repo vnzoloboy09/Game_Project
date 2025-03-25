@@ -1,32 +1,28 @@
-#include "pauseMenu.h"
+#include "deathMenu.h"
 #include "graphics.h"
 #include "stageManager.h"
 #include "game.h"
 
-PauseMenu::PauseMenu() {
+DeathMenu::DeathMenu() {
 	background = Graphics::loadTexture("imgs/menu/pause_background.png");
-	title = Graphics::loadTexture("imgs/menu/pause_title.png");
 	srcRect = { 0, 0, 0, 0 };
 	destRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 }
 
-PauseMenu::~PauseMenu() {
+DeathMenu::~DeathMenu() {
 	SDL_DestroyTexture(background);
-	SDL_DestroyTexture(title);
 }
 
-void PauseMenu::init() {
+void DeathMenu::init() {
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 
-	buttons.push_back(new Button("imgs/menu/continue_button.png",
-		200, 200, 300, 100, "continue"));
 	buttons.push_back(new Button("imgs/menu/restart_button.png",
-		200, 350, 300, 100, "restart"));
+		SCREEN_WIDTH/2-150, 350, 300, 100, "restart"));
 	buttons.push_back(new Button("imgs/menu/exit_button.png",
-		200, 500, 300, 100, "exit"));
+		SCREEN_WIDTH / 2 - 150, 500, 300, 100, "exit"));
 }
 
-void PauseMenu::keyEvent() {
+void DeathMenu::keyEvent() {
 	switch (StageManager::event.type) {
 	case SDL_QUIT:
 		StageManager::quit();
@@ -34,6 +30,7 @@ void PauseMenu::keyEvent() {
 	case SDL_KEYDOWN:
 		if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
 			deactivate();
+			StageManager::changeStage("Menu");
 		}
 		break;
 	default:
@@ -41,19 +38,16 @@ void PauseMenu::keyEvent() {
 	}
 }
 
-void PauseMenu::mouseEvent() {
+void DeathMenu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
+	Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
 
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
 				Graphics::play(buttonClicked);
 				std::string tag = button->getTag();
-				if (tag == "continue") {
-					deactivate();
-				}
-				else if (tag == "restart") {
-					Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
+				if (tag == "restart") {
 					game->reInit();
 					deactivate();
 				}
@@ -66,22 +60,21 @@ void PauseMenu::mouseEvent() {
 
 }
 
-void PauseMenu::handleEvent() {
+void DeathMenu::handleEvent() {
 	SDL_PollEvent(&StageManager::event);
 	keyEvent();
 	mouseEvent();
 }
 
-void PauseMenu::update() {
+void DeathMenu::update() {
 
 }
 
-void PauseMenu::render() {
+void DeathMenu::render() {
 	SDL_SetRenderDrawBlendMode(StageManager::renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetTextureAlphaMod(background, 140);
 	SDL_SetTextureColorMod(background, 255, 255, 255);
 	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
-	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
 	for (auto button : buttons) {
 		button->render();
 	}

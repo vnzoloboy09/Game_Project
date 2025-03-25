@@ -60,6 +60,9 @@
     <ClCompile Include="pauseMenu.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="deathMenu.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pauseMenu.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="deathMenu.h">
       <Filter>Menu</Filter>
     </ClInclude>
   </ItemGroup>

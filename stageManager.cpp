@@ -7,8 +7,9 @@
 SDL_Event StageManager::event;
 
 SDL_Renderer* StageManager::renderer = NULL;
-TTF_Font* StageManager::font;
+TTF_Font* StageManager::font; 
 bool StageManager::running;
+bool StageManager::dev_mode;
 Color Game::playerSkin;
 std::unordered_map<std::string, std::unique_ptr<Stage>> StageManager::stages;
 Stage* StageManager::current_stage = NULL;
@@ -57,7 +58,11 @@ void StageManager::initSDL() {
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 		std::cerr << Mix_GetError() << '\n';
 	}
+}
 
+void StageManager::quit() {
+	current_stage->deactivate();
+	running = false;
 }
 
 void StageManager::addStage(const std::string& name, std::unique_ptr<Stage> stage) {
@@ -65,6 +70,7 @@ void StageManager::addStage(const std::string& name, std::unique_ptr<Stage> stag
 }
 
 void StageManager::changeStage(const std::string& name) {
+	current_stage->deactivate();
 	if (stages.find(name) != stages.end()) {
 		if (current_stage) {
 			current_stage->deactivate();

@@ -152,6 +152,7 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="chooseMenu.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="deathMenu.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="colliderComponent.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="components.h" />
+    <ClInclude Include="deathMenu.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="game.h" />

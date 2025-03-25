@@ -54,12 +54,10 @@ void ChooseMenu::mouseEvent() {
 void ChooseMenu::keyEvent() {
 	switch (StageManager::event.type) {
 	case SDL_QUIT:
-		StageManager::current_stage->deactivate();
-		StageManager::running = false;
+		StageManager::quit();
 		break;
 	case SDL_KEYDOWN:
 		if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
-			StageManager::current_stage->deactivate();
 			StageManager::changeStage("Menu");
 		}
 		break;

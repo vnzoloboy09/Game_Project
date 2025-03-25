@@ -37,7 +37,7 @@ void Game::initPlayer() {
     playerHealth = PLAYER_BASE_HEALTH;
 }
 
-void Game::initEnemy() {
+void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
         enemy.addComponent<TransformComponent>();
@@ -57,6 +57,9 @@ void Game::initUI() {
     pauseMenu = new PauseMenu;
     pauseMenu->init();
 
+    deathMenu = new DeathMenu;
+    deathMenu->init();
+
     UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 16, 0, 32 * 3, 32, 2));
     UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 48, 27, playerHealth, 2, 2));
     UIS["score"] = std::move(std::make_unique<UI>("0.00", StageManager::font, SCORE_POS, 0));
@@ -68,7 +71,7 @@ void Game::initUI() {
 void Game::init() {
     initMap();
     initPlayer();
-    initEnemy();
+    initEnemies();
     initUI();
 }
 
@@ -100,35 +103,41 @@ void Game::reInit() {
     }
 
     pauseMenu->deactivate();
+    deathMenu->deactivate();
 }
 
 void Game::gameOver() {
     StageManager::current_stage->deactivate();
     StageManager::changeStage("Menu");
     std::cerr << "game over!!";
-}
+} 
 
 void Game::keyEvent() {
     switch (StageManager::event.type) {
     case SDL_QUIT:
-        StageManager::current_stage->deactivate();
-        StageManager::running = false;
+        StageManager::quit();
 
     case SDL_KEYDOWN:
         if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
             if (pauseMenu->isActive()) pauseMenu->deactivate();
             else pauseMenu->activate();
         }
+        if (StageManager::event.key.keysym.sym == SDLK_F11) {
+            StageManager::dev_mode = !StageManager::dev_mode;
+        }
     default:
         break;
     }
 }
 
-void Game::mouseEvent() {}
+void Game::mouseEvent() {} 
 
 void Game::handleEvent() {
     if (pauseMenu->isActive()) {
         pauseMenu->handleEvent();
+    }
+    else if (deathMenu->isActive()) {
+        deathMenu->handleEvent();
     }
     else {
         SDL_PollEvent(&StageManager::event);
@@ -136,7 +145,7 @@ void Game::handleEvent() {
         mouseEvent();
         handleCollision();
         stayInBound();
-        if (playerHealth <= 0) gameOver();
+        if (playerHealth <= 0) deathMenu->activate();
     }
 }
 
@@ -154,13 +163,18 @@ void Game::scoreUpdate() {
 } 
 
 void Game::update() {  
-    if (!pauseMenu->isActive()) {
-        cameraUpdate();
-        scoreUpdate();
-        manager.refresh();
-        manager.update();
+    if (pauseMenu->isActive()) {
+        pauseMenu->update();
+        return;
     }
-    else pauseMenu->update();
+    if (deathMenu->isActive()) {
+        deathMenu->update();
+        return;
+    }
+    cameraUpdate();
+    scoreUpdate();
+    manager.refresh();
+    manager.update();
 }
 
 void Game::render() {
@@ -173,6 +187,7 @@ void Game::render() {
         if(ui.second->isActive()) ui.second->render();
     }
     if (pauseMenu->isActive()) pauseMenu->render();
+    if (deathMenu->isActive()) deathMenu->render();
 
     SDL_RenderPresent(StageManager::renderer);
 }

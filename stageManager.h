@@ -28,6 +28,8 @@ public:
 	static SDL_Event event;
 	static TTF_Font* font;
 	static bool running;
+	static bool dev_mode;
 	static Stage* current_stage;
+	static void quit();
 	static void changeStage(const std::string& name);
 };

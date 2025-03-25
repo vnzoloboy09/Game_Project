@@ -46,14 +46,16 @@ public:
 		transform->velocity = { cos(angleRad), sin(angleRad) };
 	}
 
-    void render() override {  
-       SDL_SetRenderDrawColor(StageManager::renderer, 255, 0, 0, 255);
-       SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
-           static_cast<int>(self_center.y), static_cast<int>(target_center.x), 
-		   static_cast<int>(target_center.y));  
-       SDL_SetRenderDrawColor(StageManager::renderer, 0, 0, 255, 255);
-       SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
-		   static_cast<int>(self_center.y), static_cast<int>(self_center.x + 50*direction.x), 
-		   static_cast<int>(self_center.y + 50*direction.y));  
+    void render() override {
+		if (StageManager::dev_mode == true) {
+			SDL_SetRenderDrawColor(StageManager::renderer, 255, 0, 0, 255);
+			SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
+				static_cast<int>(self_center.y), static_cast<int>(target_center.x), 
+				static_cast<int>(target_center.y));  
+			SDL_SetRenderDrawColor(StageManager::renderer, 0, 0, 255, 255);
+			SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
+				static_cast<int>(self_center.y), static_cast<int>(self_center.x + 50*direction.x), 
+				static_cast<int>(self_center.y + 50*direction.y));  
+		}
     }
 };

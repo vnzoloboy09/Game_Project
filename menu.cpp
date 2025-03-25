@@ -15,8 +15,9 @@ Menu::~Menu() {
 void Menu::init() {
 	background = Graphics::loadTexture("imgs/menu/background.png");
 	// the numbers are the button {xpos, ypos, width, height}
-	buttons.push_back(new Button("imgs/menu/play_button.png", 520, 270, 200, 100, "play"));
-	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 450, 300, 100, "choose"));
+	buttons.push_back(new Button("imgs/menu/play_button.png", 520, 240, 200, 100, "play"));
+	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 420, 300, 100, "choose"));
+	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 600, 300, 100, "exit"));
 
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 }
@@ -28,8 +29,7 @@ void Menu::update() {}
 void Menu::keyEvent() {
 	switch (StageManager::event.type) {
 	case SDL_QUIT:
-		StageManager::current_stage->deactivate();
-		StageManager::running = false;
+		StageManager::quit();
 		break;
 
 	default:
@@ -44,13 +44,14 @@ void Menu::mouseEvent() {
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
 				Graphics::play(buttonClicked);
 				if (button->getTag() == "play") {
-					StageManager::current_stage->deactivate();
 					StageManager::changeStage("Game");
 					break;
 				}
 				else if (button->getTag() == "choose") {
-					StageManager::current_stage->deactivate();
 					StageManager::changeStage("ChooseMenu");
+				}
+				else if (button->getTag() == "exit") {
+					StageManager::quit();
 				}
 			}
 		}

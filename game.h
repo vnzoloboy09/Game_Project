@@ -7,6 +7,7 @@
 #include <string>
 #include "defs.h"
 #include "pauseMenu.h"
+#include "deathMenu.h"
 #include "UI.h"
 
 class ColliderComponent;
@@ -19,13 +20,14 @@ private:
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
 	PauseMenu* pauseMenu;
+	DeathMenu* deathMenu;
 
 public:
 	Game();
 	~Game();
 
 	void initPlayer();
-	void initEnemy();
+	void initEnemies();
 	void initMap();
 	void initUI();
 	void init() override;
@@ -38,8 +40,6 @@ public:
 	void handleCollision();
 	void update() override;
 	void render() override;
-
-	void pause();
 
 	void stayInBound();
 	void scoreUpdate();
