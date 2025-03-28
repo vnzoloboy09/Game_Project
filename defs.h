@@ -6,8 +6,8 @@
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 #define WINDOW_TITLE "Car"
-const int FPS = 60;
-const int timePerFrame = FPS/1000;
+const float FPS = 120.0f;
+const float frameDelay = 1000.0f/FPS;
 
 // for tiles
 const int TILE_SIZE = 32;
@@ -30,7 +30,7 @@ const int MAP_HEIGHT = 2560;
 
 const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = PLAYER_SPEED;
-const int PLAYER_BASE_HEALTH = 10;
+const int PLAYER_BASE_HEALTH = 77;
 const int SCORE_POS = 1200;
 
 typedef enum {

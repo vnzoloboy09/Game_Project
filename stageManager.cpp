@@ -117,9 +117,10 @@ void StageManager::presentStage() {
 				s.second->render();
 
 				frametime = SDL_GetTicks() - frameStart;
-				if (frametime < timePerFrame) {
-					SDL_Delay(timePerFrame - frametime);
+				if (frametime < frameDelay) {
+					SDL_Delay(frameDelay - frametime);
 				}
+				std::cerr << frametime << ' ' << frameDelay << '\n';
 			}
 		}
 	}
