@@ -120,7 +120,7 @@ void StageManager::presentStage() {
 				if (frametime < frameDelay) {
 					SDL_Delay(frameDelay - frametime);
 				}
-				std::cerr << frametime << ' ' << frameDelay << '\n';
+				//std::cerr << frametime << ' ' << frameDelay << '\n';
 			}
 		}
 	}

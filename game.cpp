@@ -9,7 +9,6 @@ Manager manager;
 Map *map;
 
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
-std::vector<ColliderComponent*> Game::colliders;
 
 auto& player(manager.addEntity());
 
@@ -42,6 +41,7 @@ void Game::initEnemies() {
         auto& enemy(manager.addEntity());
         enemy.addComponent<TransformComponent>();
         enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+        enemy.addComponent<ExploderComponent>();
         enemy.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
         enemy.addComponent<ColliderComponent>("enemy");
         enemy.addGroup(groupEnemies);
@@ -99,7 +99,13 @@ void Game::reInit() {
         break;
     }
     for (auto e : enemies) {
-        e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
+        if ((rand() % 2) % 2) {
+            e->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
+        }
+        else {
+            e->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
+        }
+        //e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
     }
 
     pauseMenu->deactivate();
@@ -173,10 +179,11 @@ void Game::update() {
     }
     cameraUpdate();
     scoreUpdate();
+	enemiesUpdate();
     manager.refresh();
     manager.update();
 }
-
+ 
 void Game::render() {
     SDL_RenderClear(StageManager::renderer);
 
@@ -206,37 +213,63 @@ void Game::cameraUpdate() {
     if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
 }
 
+void Game::makeExplosion(Entity* a) {
+	if (a->hasComponent<ExploderComponent>() && !a->getComponent<ExploderComponent>().isExploding()) {
+		a->getComponent<ExploderComponent>().explode();
+        a->getComponent<ColliderComponent>().disable();
+		a->getComponent<TransformComponent>().stop();
+	}
+}
+
 void Game::handleCollision() {
-    for (int i = 0; i < MAX_ENEMIES; i++) {
-        // decrease player health if got hit
+    for (int i = 0; i < MAX_ENEMIES; i++) { 
+        // player collides with enemy
         if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
             enemies[i]->getComponent<ColliderComponent>())) {
             playerHealth -= 10;
             UIS["health"]->setDest(48, 27, playerHealth, 2);
-            if ((rand() % 2) % 2) {
-                enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
-            }
-            else {
-                enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
-            }
+			makeExplosion(enemies[i]);
         }
 
-        // spawn enemy at random position outside of the map if got hit by another enemy
+        // enemy colides with other enemies
         for (int j = i + 1; j < MAX_ENEMIES; j++) {
             if (Collision::isCollidingSAT(
                 enemies[i]->getComponent<ColliderComponent>(),
                 enemies[j]->getComponent<ColliderComponent>()
             )) {
-                if ((rand() % 2) % 2) {
-                    enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
-                    enemies[j]->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT);
-                }
-                else {
-                    enemies[i]->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
-                    enemies[j]->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT);
-                }
+				makeExplosion(enemies[i]);
+				makeExplosion(enemies[j]);
             }
         }
+    }
+}
+
+void Game::respawnEnemyRandomly(Entity* enemy) {
+    int r = rand() % 4;
+	if (r == 0) {
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
+	}
+	else if (r == 1) {
+		enemy->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT);
+	}
+	else if (r == 2) {
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
+	}
+	else {
+		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT);
+	}
+}
+
+void Game::enemiesUpdate() {
+    for (auto& e : enemies) {
+        if (e->getComponent<ExploderComponent>().isExploding()) {
+            //e->getComponent<TransformComponent>().stop();
+		}
+		else if(e->getComponent<TransformComponent>().stopped){
+			respawnEnemyRandomly(e);
+            e->getComponent<ColliderComponent>().eneable();
+			e->getComponent<TransformComponent>().start();
+		}
     }
 }
 

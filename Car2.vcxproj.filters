@@ -63,6 +63,9 @@
     <ClCompile Include="deathMenu.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="exploderComponent.h">
+      <Filter>ECS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">

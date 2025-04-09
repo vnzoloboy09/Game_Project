@@ -20,6 +20,14 @@ public:
        setTex(path);  
    }  
 
+   SpriteComponent(const char* path, int nFrames, int startFrame,int mSpeed) {
+       isAnimated = true;
+       frames = nFrames;
+       speed = mSpeed;
+       start_frame = startFrame;
+       setTex(path);
+   }
+
    SpriteComponent(const char* path, int nFrames, int mSpeed) {
        isAnimated = true;
        frames = nFrames;
@@ -33,11 +41,12 @@ public:
    }  
 
    void setTex(const char* path) {  
+       SDL_DestroyTexture(texture);
        texture = Graphics::loadTexture(path);  
    }  
 
    void init() override {  
-       transform = &entity->getComponent<TransformComponent>();  
+       transform = &entity->getComponent<TransformComponent>(); 
 
        srcRect.x = 0;  
        srcRect.y = 0;  
@@ -59,7 +68,7 @@ public:
        destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
    }  
 
-   void render() override {  
+   void render() override { 
        Graphics::render(texture, srcRect, destRect, transform->angle, SDL_FLIP_NONE);  
    }  
 };

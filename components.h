@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "ECS.h"
 #include "transformComponent.h"
+#include "exploderComponent.h"
 #include "spriteComponent.h"
 #include "keyboardController.h"
 #include "colliderComponent.h"

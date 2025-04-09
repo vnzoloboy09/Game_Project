@@ -8,7 +8,6 @@ private:
 	TransformComponent* transform;
 
 public:
-
 	void init() override {
 		transform = &entity->getComponent<TransformComponent>();
 	}

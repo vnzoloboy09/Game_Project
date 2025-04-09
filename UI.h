@@ -45,6 +45,7 @@ public:
 	}
 	
 	void setTexture(const char* text, TTF_Font* font) {
+		SDL_DestroyTexture(texture);
 		texture = Graphics::loadText(text, font, { 0,0,0 });
 		TTF_SizeText(font, text, &destRect.w, &destRect.h);
 	}

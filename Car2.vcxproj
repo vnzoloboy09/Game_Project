@@ -154,6 +154,7 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="deathMenu.cpp" />
     <ClCompile Include="ECS.cpp" />
+    <ClCompile Include="exploderComponent.h" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="main.cpp" />

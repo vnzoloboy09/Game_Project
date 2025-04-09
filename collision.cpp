@@ -31,6 +31,7 @@ bool Collision::isCollidingSAT(const std::vector<SDL_FPoint> a_conrners, const s
 		if (maxA < minB || maxB < minA) return false;
 	}
 
+	// the code below has the same logic as the above 
 	// loop through the 4 b's corners same as a's
 	for (int i = 0; i < b_corners.size(); i++) {
 		int next = (i + 1) % b_corners.size();
@@ -64,6 +65,9 @@ bool Collision::isCollidingSAT(const std::vector<SDL_FPoint> a_conrners, const s
 }
 
 bool Collision::isCollidingSAT(const ColliderComponent& colA, const ColliderComponent& colB) {
+	//std::cerr << colA.active << ' ' << colB.active << '\n';
+	if (!colA.active || !colB.active) return false;
+	
 	std::vector<SDL_FPoint> a_corners = colA.collider;
 	std::vector<SDL_FPoint> b_corners = colB.collider;
 

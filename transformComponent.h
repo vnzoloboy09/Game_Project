@@ -12,6 +12,8 @@ public:
 	float angle = 0.0f; // degree
 	float speed = ENEMY_SPEED;
 
+	bool stopped = false;
+
 	TransformComponent() {
 		position.Zero();
 	}
@@ -68,9 +70,21 @@ public:
 	void setPos(float x, float y) {
 		position.x = x;
 		position.y = y;
+		corners[0] = { position.x, position.y };
+		corners[1] = { position.x + width, position.y };
+		corners[2] = { position.x + width, position.y + height };
+		corners[3] = { position.x, position.y + height };
 	}
 
+	void stop() {
+		stopped = true;
+	}
+	void start() {
+		stopped = false;
+	}	
+
 	void update() override {
+		if (stopped) return;
 		position.x += static_cast<float>(velocity.x * speed);
 		position.y += static_cast<float>(velocity.y * speed);
 

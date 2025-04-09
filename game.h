@@ -9,6 +9,7 @@
 #include "pauseMenu.h"
 #include "deathMenu.h"
 #include "UI.h"
+#include "ECS.h"
 
 class ColliderComponent;
 
@@ -44,10 +45,13 @@ public:
 	void stayInBound();
 	void scoreUpdate();
 	void cameraUpdate();
+	void enemiesUpdate();
 	void clear();
 
+	void makeExplosion(Entity* a);
+	void respawnEnemyRandomly(Entity* enemy);
+
 	static void addTile(int x, int y, int id);
-	static std::vector<ColliderComponent*> colliders;
 	static SDL_Rect camera;
 	static Color playerSkin;
 };

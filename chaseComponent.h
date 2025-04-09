@@ -22,6 +22,8 @@ public:
 	}
 
 	void update() override {
+		if (transform->stopped) return;
+
 		direction = { transform->corners[0].x - transform->corners[3].x,
 			transform->corners[0].y - transform->corners[3].y};
 		float nor = sqrt(direction.x * direction.x + direction.y * direction.y);
