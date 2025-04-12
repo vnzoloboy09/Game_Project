@@ -196,7 +196,7 @@ void Game::update() {
     if (game_over) {
         deathScenceTime--;
         if (deathScenceTime == 0) deathMenu->activate();
-		if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
+		else if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
     }
     cameraUpdate();
     scoreUpdate();
@@ -321,7 +321,7 @@ void Game::stayInBound() {
         }
     }
 }
-
+ 
 void Game::addTile(int x, int y, int id) {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, id);

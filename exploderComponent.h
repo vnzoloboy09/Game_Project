@@ -57,8 +57,8 @@ public:
 			srcRect.x = frame * srcRect.w;
 
 		}
-		destRect.x = static_cast<int>(transform->position.x) - Game::camera.x;
-		destRect.y = static_cast<int>(transform->position.y) - Game::camera.y;
+		destRect.x = static_cast<int>(transform->position.x - CAR_WIDTH) - Game::camera.x;
+		destRect.y = static_cast<int>(transform->position.y - CAR_WIDTH / 2.0f) - Game::camera.y;
 	}
 
 	void render() override {
