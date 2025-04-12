@@ -6,6 +6,7 @@
 class KeyboardController : public Component {
 private:
 	TransformComponent* transform;
+	bool active = true;
 
 public:
 	void init() override {
@@ -13,6 +14,7 @@ public:
 	}
 
 	void update() override {
+		if (!active) return;
 		const Uint8* keystate = SDL_GetKeyboardState(NULL);
 		// 180 * PI to convert angle to radian
 		// -90 since the imgs is import at 90 degree rather then 0 degree
@@ -35,4 +37,7 @@ public:
 			transform->velocity = { 0.0f, 0.0f };
 		}
 	}
+
+	void activate() { active = true; }
+	void deactivate() { active = false; }
 };

@@ -77,7 +77,6 @@ Mix_Chunk* Graphics::loadSound(const char* path) {
 void Graphics::play(Mix_Chunk* chunk) {  
    if (chunk != nullptr) {  
        Mix_PlayChannel(-1, chunk, 0);  
-       SDL_Delay(100); // prevent stage change faster than chunk 
    }  
 }
 

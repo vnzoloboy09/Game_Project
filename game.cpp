@@ -12,24 +12,34 @@ SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 
 auto& player(manager.addEntity());
 
+std::vector<Entity*> enemies;
+std::vector<Entity*> tiles;
+std::vector<Entity*> players;
+
 Game::Game() {}
 Game::~Game() {}
 
-void Game::initPlayer() {
-    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
-    switch (playerSkin) {
+void Game::setPlayerSkin(Color skin) {
+    switch (skin) {
     case YELLOW:
-        player.addComponent<SpriteComponent>("imgs/car/yellow_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
         break;
     case RED:
-        player.addComponent<SpriteComponent>("imgs/car/red_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/red_car.png");
         break;
     case BLUE:
-        player.addComponent<SpriteComponent>("imgs/car/blue_car.png");
+        player.getComponent<SpriteComponent>().setTex("imgs/car/blue_car.png");
         break;
     default:
         break;
     }
+}
+
+void Game::initPlayer() {
+    player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
+	player.addComponent<SpriteComponent>();
+    setPlayerSkin(playerSkin);
+    player.addComponent<ExploderComponent>();
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
@@ -42,9 +52,14 @@ void Game::initEnemies() {
         enemy.addComponent<TransformComponent>();
         enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
         enemy.addComponent<ExploderComponent>();
-        enemy.addComponent<ChaseComponent>(&(player.getComponent<TransformComponent>().position));
         enemy.addComponent<ColliderComponent>("enemy");
         enemy.addGroup(groupEnemies);
+    }
+}
+
+void Game::setEnemyTarget(Vector2D* target) {
+    for (auto &e : enemies) {
+        e->addComponent<ChaseComponent>(target);
     }
 }
 
@@ -54,6 +69,8 @@ void Game::initMap() {
 }
 
 void Game::initUI() {
+    explosionChunk = Graphics::loadSound("chunks/explosion.wav");
+
     pauseMenu = new PauseMenu;
     pauseMenu->init();
 
@@ -70,34 +87,27 @@ void Game::initUI() {
 
 void Game::init() {
     initMap();
-    initPlayer();
+	tiles = manager.getGroup(groupMap);
+
     initEnemies();
+    enemies = manager.getGroup(groupEnemies);
+    
+    initPlayer();
+	players = manager.getGroup(groupPlayers);
+
+	setEnemyTarget(&(player.getComponent<TransformComponent>().position));
     initUI();
 }
-
-auto& tiles(manager.getGroup(groupMap));
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
 
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
+    player.getComponent<ColliderComponent>().eneable();
+    player.getComponent<TransformComponent>().start();
     playerHealth = PLAYER_BASE_HEALTH;
     UIS["health"]->setDest(48, 27, playerHealth, 2);
     score = 0.0f;
-    switch (playerSkin) {
-    case YELLOW:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
-        break;
-    case RED:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/red_car.png");
-        break;
-    case BLUE:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/blue_car.png");
-        break;
-    default:
-        break;
-    }
+    setPlayerSkin(playerSkin);
     for (auto e : enemies) {
         if ((rand() % 2) % 2) {
             e->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
@@ -107,15 +117,17 @@ void Game::reInit() {
         }
         //e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
     }
+    player.getComponent<KeyboardController>().activate();
+     
+    deathScenceTime = DEATH_SCENCE_TIME;
+    game_over = false;
 
     pauseMenu->deactivate();
     deathMenu->deactivate();
 }
 
 void Game::gameOver() {
-    StageManager::current_stage->deactivate();
-    StageManager::changeStage("Menu");
-    std::cerr << "game over!!";
+    deathMenu->activate();
 } 
 
 void Game::keyEvent() {
@@ -151,7 +163,11 @@ void Game::handleEvent() {
         mouseEvent();
         handleCollision();
         stayInBound();
-        if (playerHealth <= 0) deathMenu->activate();
+        if (playerHealth <= 0 && !game_over) {
+            game_over = true;
+            player.getComponent<KeyboardController>().deactivate();
+            makeExplosion(&player);
+        }
     }
 }
 
@@ -177,6 +193,11 @@ void Game::update() {
         deathMenu->update();
         return;
     }
+    if (game_over) {
+        deathScenceTime--;
+        if (deathScenceTime == 0) deathMenu->activate();
+		if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
+    }
     cameraUpdate();
     scoreUpdate();
 	enemiesUpdate();
@@ -188,8 +209,8 @@ void Game::render() {
     SDL_RenderClear(StageManager::renderer);
 
     for (auto& t : tiles) t->render();
-    for (auto& p : players) p->render();
     for (auto& e : enemies) e->render();
+    for (auto& p : players) p->render();
     for (auto& ui : UIS) {
         if(ui.second->isActive()) ui.second->render();
     }
@@ -214,11 +235,18 @@ void Game::cameraUpdate() {
 }
 
 void Game::makeExplosion(Entity* a) {
-	if (a->hasComponent<ExploderComponent>() && !a->getComponent<ExploderComponent>().isExploding()) {
-		a->getComponent<ExploderComponent>().explode();
+    if (a->hasComponent<ExploderComponent>() && !a->getComponent<ExploderComponent>().isExploding()) {
+        a->getComponent<ExploderComponent>().explode();
         a->getComponent<ColliderComponent>().disable();
-		a->getComponent<TransformComponent>().stop();
-	}
+        a->getComponent<TransformComponent>().stop();
+
+        if (a->getComponent<TransformComponent>().position.x >= camera.x &&
+            a->getComponent<TransformComponent>().position.x < camera.x + SCREEN_WIDTH - CAR_WIDTH &&
+            a->getComponent<TransformComponent>().position.y >= camera.y &&
+            a->getComponent<TransformComponent>().position.y < camera.y + SCREEN_HEIGHT - CAR_HEIGHT) {
+            Graphics::play(explosionChunk);
+        } // if it in camera view then play exlosion sound
+    }
 }
 
 void Game::handleCollision() {
@@ -238,7 +266,7 @@ void Game::handleCollision() {
                 enemies[j]->getComponent<ColliderComponent>()
             )) {
 				makeExplosion(enemies[i]);
-				makeExplosion(enemies[j]);
+                makeExplosion(enemies[j]);
             }
         }
     }
@@ -247,23 +275,26 @@ void Game::handleCollision() {
 void Game::respawnEnemyRandomly(Entity* enemy) {
     int r = rand() % 4;
 	if (r == 0) {
-		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT); // top
 	}
 	else if (r == 1) {
-		enemy->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT);
+		enemy->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT); // right
 	}
 	else if (r == 2) {
-		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT); // bottom
 	}
 	else {
-		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT);
-	}
+		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT); // left
+	} // spawn enemy randomly outside of the map 
 }
 
 void Game::enemiesUpdate() {
     for (auto& e : enemies) {
-        if (e->getComponent<ExploderComponent>().isExploding()) {
-            //e->getComponent<TransformComponent>().stop();
+		if (playerHealth <= 0) {
+            e->getComponent<TransformComponent>().stop();
+        }
+        else if (e->getComponent<ExploderComponent>().isExploding()) {
+            continue;
 		}
 		else if(e->getComponent<TransformComponent>().stopped){
 			respawnEnemyRandomly(e);

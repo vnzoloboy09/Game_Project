@@ -1,6 +1,6 @@
 #pragma once
 
-// learning from https://austinmorlan.com/posts/entity_component_system/
+// learned from https://austinmorlan.com/posts/entity_component_system/
 
 #include <iostream>
 #include <vector>
@@ -105,6 +105,7 @@ class Manager {
 private:
 	std::vector<std::unique_ptr<Entity>> entities;
 	std::array<std::vector<Entity*>, maxGroups> groupedEntities;
+
 public:
 	void update() {
 		for (auto& e : entities) e->update();

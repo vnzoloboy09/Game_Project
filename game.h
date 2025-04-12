@@ -10,6 +10,7 @@
 #include "deathMenu.h"
 #include "UI.h"
 #include "ECS.h"
+#include "vector2D.h"
 
 class ColliderComponent;
 
@@ -20,8 +21,11 @@ private:
 	int playerHealth;
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
+	Mix_Chunk* explosionChunk;
 	PauseMenu* pauseMenu;
 	DeathMenu* deathMenu;
+	int deathScenceTime = DEATH_SCENCE_TIME; 
+	bool game_over = false;
 
 public:
 	Game();
@@ -29,6 +33,8 @@ public:
 
 	void initPlayer();
 	void initEnemies();
+	void setEnemyTarget(Vector2D* target);
+	void setPlayerSkin(Color skin);
 	void initMap();
 	void initUI();
 	void init() override;

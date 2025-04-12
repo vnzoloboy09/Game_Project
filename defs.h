@@ -35,6 +35,9 @@ const int SCORE_POS = 1200;
 
 const int NO_RANDOM_START_FRAME = 0;
 
+const int TIME_PER_EXPLOSION = 80; // 80 game loop
+const int DEATH_SCENCE_TIME = 3 * TIME_PER_EXPLOSION; 
+
 typedef enum {
 	RED,
 	BLUE,
