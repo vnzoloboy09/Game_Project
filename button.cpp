@@ -55,6 +55,11 @@ const char* Button::getTag() {
 	return tag;
 }
 
+void Button::setTex(const char* path) {
+	SDL_DestroyTexture(texture);
+	texture = Graphics::loadTexture(path);
+}
+
 Button::~Button() {
 	SDL_DestroyTexture(texture);
 }

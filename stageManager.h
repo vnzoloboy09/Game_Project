@@ -30,6 +30,7 @@ public:
 	static bool running;
 	static bool dev_mode;
 	static Stage* current_stage;
+	static bool mute;
 	static void quit();
 	static void changeStage(const std::string& name);
 };

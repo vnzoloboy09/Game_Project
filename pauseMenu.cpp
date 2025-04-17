@@ -24,6 +24,9 @@ void PauseMenu::init() {
 		200, 350, 300, 100, "restart"));
 	buttons.push_back(new Button("imgs/menu/exit_button.png",
 		200, 500, 300, 100, "exit"));
+	buttons.push_back(new Button("imgs/menu/speaker_button.png", 
+		900, SCREEN_HEIGHT / 2 - 32, 64, 64, "speaker"));
+
 }
 
 void PauseMenu::keyEvent() {
@@ -60,6 +63,11 @@ void PauseMenu::mouseEvent() {
 				else if (tag == "exit") {
 					StageManager::changeStage("Menu");
 				}
+				else if (button->getTag() == "speaker") {
+					StageManager::mute = !StageManager::mute;
+					if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+					else button->setTex("imgs/menu/mute_speaker_button.png");
+				}
 			}
 		}
 	}
@@ -83,6 +91,10 @@ void PauseMenu::render() {
 	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
 	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
 	for (auto button : buttons) {
+		if (button->getTag() == "speaker") {
+			if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+			else button->setTex("imgs/menu/mute_speaker_button.png");
+		}
 		button->render();
 	}
 }

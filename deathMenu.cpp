@@ -20,6 +20,8 @@ void DeathMenu::init() {
 		SCREEN_WIDTH/2-150, 350, 300, 100, "restart"));
 	buttons.push_back(new Button("imgs/menu/exit_button.png",
 		SCREEN_WIDTH / 2 - 150, 500, 300, 100, "exit"));
+	buttons.push_back(new Button("imgs/menu/speaker_button.png",
+		SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 2 - 100, 64, 64, "speaker"));
 }
 
 void DeathMenu::keyEvent() {
@@ -54,6 +56,11 @@ void DeathMenu::mouseEvent() {
 				else if (tag == "exit") {
 					StageManager::changeStage("Menu");
 				}
+				else if (button->getTag() == "speaker") {
+					StageManager::mute = !StageManager::mute;
+					if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+					else button->setTex("imgs/menu/mute_speaker_button.png");
+				}
 			}
 		}
 	}
@@ -76,6 +83,10 @@ void DeathMenu::render() {
 	SDL_SetTextureColorMod(background, 255, 255, 255);
 	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
 	for (auto button : buttons) {
+		if (button->getTag() == "speaker") {
+			if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+			else button->setTex("imgs/menu/mute_speaker_button.png");
+		}
 		button->render();
 	}
 }

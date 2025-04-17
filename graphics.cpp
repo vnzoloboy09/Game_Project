@@ -75,7 +75,7 @@ Mix_Chunk* Graphics::loadSound(const char* path) {
 }
 
 void Graphics::play(Mix_Chunk* chunk) {  
-   if (chunk != nullptr) {  
+   if (chunk != nullptr && !StageManager::mute) {  
        Mix_PlayChannel(-1, chunk, 0);  
    }  
 }

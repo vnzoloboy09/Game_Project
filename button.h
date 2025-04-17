@@ -21,5 +21,6 @@ public:
 	void render();
 	void select(const bool sel);
 	const char* getTag();
+	void setTex(const char* path);
 	bool isHover(int &x, int &y);
 };
