@@ -16,6 +16,8 @@ DeathMenu::~DeathMenu() {
 void DeathMenu::init() {
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 
+	// the numbers are the button {xpos, ypos, width, height}
+
 	buttons.push_back(new Button("imgs/menu/restart_button.png",
 		SCREEN_WIDTH/2-150, 350, 300, 100, "restart"));
 	buttons.push_back(new Button("imgs/menu/exit_button.png",

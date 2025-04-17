@@ -24,7 +24,7 @@ public:
        isAnimated = true;
        frames = nFrames;
        speed = mSpeed;
-       start_frame = startFrame;
+       start_frame = startFrame; // pass in random start frame to make the animation not weird
        setTex(path);
    }
 

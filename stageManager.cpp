@@ -106,7 +106,7 @@ bool StageManager::isRunning() const {
 void StageManager::presentStage() {
 	for (auto& s : stages) {
 		if (s.second->isActive()) {
-			s.second->reInit();
+			s.second->reInit(); // reinit so the stage be at default state
 
 			Uint32 frameStart;
 			int frametime;
@@ -120,7 +120,7 @@ void StageManager::presentStage() {
 				frametime = SDL_GetTicks() - frameStart;
 				if (frametime < frameDelay) {
 					SDL_Delay(frameDelay - frametime);
-				}
+				} // frame cap
 				//std::cerr << frametime << ' ' << frameDelay << '\n';
 			}
 		}

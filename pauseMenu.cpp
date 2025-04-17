@@ -18,6 +18,8 @@ PauseMenu::~PauseMenu() {
 void PauseMenu::init() {
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 
+	// the numbers are the button {xpos, ypos, width, height}
+
 	buttons.push_back(new Button("imgs/menu/continue_button.png",
 		200, 200, 300, 100, "continue"));
 	buttons.push_back(new Button("imgs/menu/restart_button.png",

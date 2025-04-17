@@ -28,6 +28,7 @@ const int MAX_ENEMIES = 10;
 const int MAP_WIDTH = 2560;
 const int MAP_HEIGHT = 2560;
 
+// Some other constants
 const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = PLAYER_SPEED;
 const int PLAYER_BASE_HEALTH = 77;

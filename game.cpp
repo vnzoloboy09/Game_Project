@@ -17,7 +17,7 @@ std::vector<Entity*> tiles;
 std::vector<Entity*> players;
 
 Game::Game() {}
-Game::~Game() {}
+Game::~Game() = default;
 
 void Game::setPlayerSkin(Color skin) {
     switch (skin) {
@@ -80,9 +80,10 @@ void Game::initUI() {
     UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 16, 0, 32 * 3, 32, 2));
     UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 48, 27, playerHealth, 2, 2));
     UIS["score"] = std::move(std::make_unique<UI>("0.00", StageManager::font, SCORE_POS, 0));
-    UIS["healthBar"]->activate();
-    UIS["health"]->activate();
-    UIS["score"]->activate();
+
+    for (auto& ui : UIS) {
+        ui.second->activate();
+    }
 }
 
 void Game::init() {
@@ -104,20 +105,14 @@ void Game::reInit() {
     player.getComponent<TransformComponent>().angle = 0.0f;
     player.getComponent<ColliderComponent>().eneable();
     player.getComponent<TransformComponent>().start();
+    player.getComponent<KeyboardController>().activate();
     playerHealth = PLAYER_BASE_HEALTH;
     UIS["health"]->setDest(48, 27, playerHealth, 2);
     score = 0.0f;
     setPlayerSkin(playerSkin);
     for (auto e : enemies) {
-        if ((rand() % 2) % 2) {
-            e->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT);
-        }
-        else {
-            e->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT);
-        }
-        //e->getComponent<TransformComponent>().setPos(0.0f, 0.0f);
+        respawnEnemyRandomly(e);
     }
-    player.getComponent<KeyboardController>().activate();
      
     deathScenceTime = DEATH_SCENCE_TIME;
     game_over = false;
@@ -163,6 +158,7 @@ void Game::handleEvent() {
         mouseEvent();
         handleCollision();
         stayInBound();
+        
         if (playerHealth <= 0 && !game_over) {
             game_over = true;
             player.getComponent<KeyboardController>().deactivate();
@@ -172,7 +168,7 @@ void Game::handleEvent() {
 }
 
 void Game::scoreUpdate() {
-    timeElapsed += 0.1f;
+    timeElapsed += 0.1f; // prevent score update too fast
     if (timeElapsed > incrementInterval) {
         score += 0.25f;  
         timeElapsed = 0.0f;
@@ -194,6 +190,7 @@ void Game::update() {
         return;
     }
     if (game_over) {
+        // make the death scene (play 3 exlosion)
         deathScenceTime--;
         if (deathScenceTime == 0) deathMenu->activate();
 		else if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
@@ -225,9 +222,11 @@ void Game::clear() {
 }
 
 void Game::cameraUpdate() {
+    // camera follow player
     camera.x = std::round(player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2.0f);
     camera.y = std::round(player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2.0f);
 
+    // prevent camera out of map
     if (camera.x < 0) camera.x = 0;
     if (camera.y < 0) camera.y = 0;
     if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
@@ -240,12 +239,13 @@ void Game::makeExplosion(Entity* a) {
         a->getComponent<ColliderComponent>().disable();
         a->getComponent<TransformComponent>().stop();
 
+        // if it in camera view then play exlosion sound
         if (a->getComponent<TransformComponent>().position.x >= camera.x &&
             a->getComponent<TransformComponent>().position.x < camera.x + SCREEN_WIDTH - CAR_WIDTH &&
             a->getComponent<TransformComponent>().position.y >= camera.y &&
             a->getComponent<TransformComponent>().position.y < camera.y + SCREEN_HEIGHT - CAR_HEIGHT) {
             Graphics::play(explosionChunk);
-        } // if it in camera view then play exlosion sound
+        } 
     }
 }
 
@@ -305,6 +305,7 @@ void Game::enemiesUpdate() {
 }
 
 void Game::stayInBound() {
+    // prevent player out of map
     player.getComponent<TransformComponent>().position;
     for (int i = 0; i < 4; i++) {
         if (player.getComponent<TransformComponent>().corners[i].x >= MAP_WIDTH) {

@@ -5,8 +5,13 @@
 class TransformComponent : public Component {
 public:
 	Vector2D position;
+	std::vector<SDL_FPoint> corners; 
+	// position is just the place of the car on the map and sprite will render according to the position
+	// corners are the car actual state and direction in the map
+	// corners contribute to the collision detection
+	// position is for rendering
+	
 	Vector2D velocity;
-	std::vector<SDL_FPoint> corners;
 	int width = CAR_WIDTH;
 	int height = CAR_HEIGHT;
 	float angle = 0.0f; // degree
@@ -79,6 +84,7 @@ public:
 	void stop() {
 		stopped = true;
 	}
+	
 	void start() {
 		stopped = false;
 	}	

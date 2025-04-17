@@ -3,6 +3,10 @@
 #include "components.h"
 #include "stageManager.h"
 
+// decide the enemy's direction according to the target
+/* draw line to the target and compare with the enemy's direction 
+   to decide whether to turn left or right */
+
 class ChaseComponent : public Component {
 private:
 	TransformComponent* transform = NULL;
@@ -49,6 +53,7 @@ public:
 	}
 
     void render() override {
+		// use F11 key when play to see the line
 		if (StageManager::dev_mode == true) {
 			SDL_SetRenderDrawColor(StageManager::renderer, 255, 0, 0, 255);
 			SDL_RenderDrawLine(StageManager::renderer, static_cast<int>(self_center.x),
