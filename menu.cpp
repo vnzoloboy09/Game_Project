@@ -26,7 +26,14 @@ void Menu::init() {
 
 void Menu::reInit() {}
 
-void Menu::update() {}
+void Menu::update() {
+	StageManager::getHightestScore();
+
+	std::string text = "Hightest Score: " + std::to_string(StageManager::hightest_score);
+	SDL_DestroyTexture(highestScore);
+	highestScore = Graphics::loadText(text.c_str(), StageManager::font, { 0, 0, 0 });
+	TTF_SizeText(StageManager::font, text.c_str(), &textRect.w, &textRect.h);
+}
 
 void Menu::keyEvent() {
 	switch (StageManager::event.type) {
@@ -82,6 +89,7 @@ void Menu::render() {
 	SDL_RenderClear(StageManager::renderer);
 
 	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
+	Graphics::render(highestScore, tsrcRect, textRect, 0, SDL_FLIP_NONE);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
 			if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");

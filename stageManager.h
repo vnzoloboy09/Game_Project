@@ -26,10 +26,12 @@ public:
 	static std::unordered_map<std::string, std::unique_ptr<Stage>> stages;
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
+	static void getHightestScore();
 	static TTF_Font* font;
 	static bool running;
 	static bool dev_mode;
 	static Stage* current_stage;
+	static int hightest_score;
 	static bool mute;
 	static void quit();
 	static void changeStage(const std::string& name);

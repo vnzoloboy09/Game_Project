@@ -4,6 +4,7 @@
 #include "components.h"
 #include "map.h"
 #include <sstream>
+#include <fstream>
 
 Manager manager;
 Map *map;
@@ -171,6 +172,7 @@ void Game::handleEvent() {
 }
 void Game::gameOver() {
     Graphics::play(gameoverChunk);
+    updateHightestScore();
     deathMenu->activate();
 } 
 
@@ -190,8 +192,8 @@ void Game::update() {
         if (deathScenceTime == 0) gameOver();
 		else if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
     }
+    else scoreUpdate();
     cameraUpdate();
-    scoreUpdate();
 	enemiesUpdate();
     powerUpsUpdate();
     manager.refresh();
@@ -255,6 +257,16 @@ void Game::powerUpsUpdate() {
 	        p->getComponent<ColliderComponent>().eneable();
         }
     }
+}
+void Game::updateHightestScore() {
+	std::ofstream file("hightest_score.txt");
+	if (file.is_open()) {
+		file << static_cast<int>(score);
+		file.close();
+	}
+	else {
+		std::cerr << "Unable to open score file.\n";
+	}
 }
 
 // collisions

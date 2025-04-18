@@ -9,8 +9,10 @@
 class Menu : public Stage{
 protected:
 	SDL_Texture* background;
+	SDL_Texture* highestScore;
 
 	SDL_Rect srcRect, destRect;
+	SDL_Rect textRect = {10, 10, 0 ,0}, tsrcRect = { 0,0,0,0 };
 	std::vector<Button*> buttons;
 	SDL_Point mouse;
 	Mix_Chunk* buttonClicked;

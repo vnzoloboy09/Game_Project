@@ -64,6 +64,7 @@ public:
 	void enemiesUpdate();
 	void cameraUpdate();
 	void powerUpsUpdate();
+	void updateHightestScore();
 	
 	// render
 	void render() override;

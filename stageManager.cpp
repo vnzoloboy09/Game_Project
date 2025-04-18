@@ -1,6 +1,7 @@
 #include "stageManager.h"
 #include "graphics.h"
 #include <iostream>
+#include <fstream>
 #include "chooseMenu.h"
 #include "howToPlayMenu.h"
 #include "game.h"
@@ -15,6 +16,7 @@ bool StageManager::mute = false;
 Color Game::playerSkin;
 std::unordered_map<std::string, std::unique_ptr<Stage>> StageManager::stages;
 Stage* StageManager::current_stage = NULL;
+int StageManager::hightest_score;
 
 StageManager::StageManager() {
 	running = true;
@@ -85,8 +87,21 @@ void StageManager::changeStage(const std::string& name) {
 	}
 }
 
+void StageManager::getHightestScore() {
+	std::ifstream file("hightest_score.txt");
+	if (file.is_open()) {
+		file >> hightest_score;
+		file.close();
+	}
+	else {
+		std::cerr << "Unable to open score file.\n";
+		hightest_score = 0; // Default value if file cannot be opened
+	}
+}
+
 void StageManager::init() {
 	initSDL();
+	getHightestScore();
     srand(static_cast<unsigned int>(time(0)));
 
 	addStage("Menu", std::make_unique<Menu>());
