@@ -19,6 +19,7 @@ void Menu::init() {
 	buttons.push_back(new Button("imgs/menu/choose_button.png", 475, 420, 300, 100, "choose"));
 	buttons.push_back(new Button("imgs/menu/exit_button.png", 475, 600, 300, 100, "exit"));
 	buttons.push_back(new Button("imgs/menu/speaker_button.png", 1100, 50, 64, 64, "speaker"));
+	buttons.push_back(new Button("imgs/menu/turtorial_button.png", 900, 600, 300, 100, "how to play"));
 
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 }
@@ -53,6 +54,9 @@ void Menu::mouseEvent() {
 				}
 				else if (button->getTag() == "exit") {
 					StageManager::quit();
+				}
+				else if (button->getTag() == "how to play") {
+					StageManager::changeStage("HowToPlayMenu");
 				}
 				else if (button->getTag() == "speaker") {
 					StageManager::mute = !StageManager::mute;

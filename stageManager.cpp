@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include <iostream>
 #include "chooseMenu.h"
+#include "howToPlayMenu.h"
 #include "game.h"
 
 SDL_Event StageManager::event;
@@ -91,6 +92,7 @@ void StageManager::init() {
 	addStage("Menu", std::make_unique<Menu>());
 	addStage("ChooseMenu", std::make_unique<ChooseMenu>());
 	addStage("Game", std::make_unique<Game>());
+	addStage("HowToPlayMenu", std::make_unique<HowToPlayMenu>());
 	current_stage = stages["Menu"].get();
 
 	for (auto& s : stages) {

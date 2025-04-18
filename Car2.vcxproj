@@ -157,6 +157,7 @@
     <ClCompile Include="exploderComponent.h" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="howToPlayMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="menu.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="ECS.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="howToPlayMenu.h" />
     <ClInclude Include="keyboardController.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="menu.h" />
