@@ -22,6 +22,7 @@ const int CAR_HEIGHT = 64;
 const int CAR_WIDTH = 32;
 const float ENEMY_SPEED = 4.0f;
 const float PLAYER_SPEED = 5.0f;
+const int GHOST_SPEED = 14.0f;
 const int MAX_ENEMIES = 10;
 
 // for map
@@ -52,7 +53,8 @@ enum groupLables : unsigned int {
 	groupMap,
 	groupPlayers,
 	groupEnemies,
-	groupColliders
+	groupColliders,
+	groupPowerUps
 };
 
 typedef enum {

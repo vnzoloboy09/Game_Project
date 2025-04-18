@@ -31,33 +31,44 @@ public:
 	Game();
 	~Game();
 
+	// inits
+	static void addTile(int x, int y, int id);
 	void initPlayer();
 	void initEnemies();
-	void setEnemyTarget(Vector2D* target);
-	void setPlayerSkin(Color skin);
 	void initMap();
 	void initUI();
+	void initPowerUps();
 	void init() override;
 	void reInit() override;
-	void gameOver();
 
+	// events
 	void keyEvent() override;
 	void mouseEvent() override;
 	void handleEvent() override;
+	
+	// collisions
+	void handlePowerUpsCollision();
+	void handleEnemiesCollision();
 	void handleCollision();
+	
+	// updates
 	void update() override;
-	void render() override;
-
-	void stayInBound();
 	void scoreUpdate();
-	void cameraUpdate();
 	void enemiesUpdate();
-	void clear();
-
+	void cameraUpdate();
+	void powerUpsUpdate();
+	
+	// render
+	void render() override;
+	
+	// extras
+	void setEnemyTarget(Vector2D* target);
+	void setPlayerSkin(Color skin);
+	void stayInBound();
+	void gameOver();
 	void makeExplosion(Entity* a);
 	void respawnEnemyRandomly(Entity* enemy);
 
-	static void addTile(int x, int y, int id);
 	static SDL_Rect camera;
 	static Color playerSkin;
 };

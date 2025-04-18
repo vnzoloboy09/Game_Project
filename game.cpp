@@ -15,26 +15,17 @@ auto& player(manager.addEntity());
 std::vector<Entity*> enemies;
 std::vector<Entity*> tiles;
 std::vector<Entity*> players;
+std::vector<Entity*> powerUps;
 
 Game::Game() {}
-Game::~Game() = default;
+Game::~Game() = default; 
 
-void Game::setPlayerSkin(Color skin) {
-    switch (skin) {
-    case YELLOW:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
-        break;
-    case RED:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/red_car.png");
-        break;
-    case BLUE:
-        player.getComponent<SpriteComponent>().setTex("imgs/car/blue_car.png");
-        break;
-    default:
-        break;
-    }
+// inits
+void Game::addTile(int x, int y, int id) {
+    auto& tile(manager.addEntity());
+    tile.addComponent<TileComponent>(x, y, id);
+    tile.addGroup(groupMap);
 }
-
 void Game::initPlayer() {
     player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
 	player.addComponent<SpriteComponent>();
@@ -45,7 +36,6 @@ void Game::initPlayer() {
     player.addGroup(groupPlayers);
     playerHealth = PLAYER_BASE_HEALTH;
 }
-
 void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
@@ -56,18 +46,10 @@ void Game::initEnemies() {
         enemy.addGroup(groupEnemies);
     }
 }
-
-void Game::setEnemyTarget(Vector2D* target) {
-    for (auto &e : enemies) {
-        e->addComponent<ChaseComponent>(target);
-    }
-}
-
 void Game::initMap() {
     map = new Map();
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 }
-
 void Game::initUI() {
     explosionChunk = Graphics::loadSound("chunks/explosion.wav");
 
@@ -85,7 +67,21 @@ void Game::initUI() {
         ui.second->activate();
     }
 }
+void Game::initPowerUps() {
+    // init -32 -32 out of the map
+    auto &heal_powerup(manager.addEntity());
+    heal_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
+    heal_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 4, 300);
+    heal_powerup.addComponent<ColliderComponent>("heal power up");
+    heal_powerup.addGroup(groupPowerUps);
 
+    auto &shield_powerup(manager.addEntity());
+    shield_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
+    shield_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 4, 300);
+    shield_powerup.addComponent<ColliderComponent>("ghost power up");
+    shield_powerup.addGroup(groupPowerUps);
+
+}
 void Game::init() {
     initMap();
 	tiles = manager.getGroup(groupMap);
@@ -93,13 +89,15 @@ void Game::init() {
     initEnemies();
     enemies = manager.getGroup(groupEnemies);
     
+	initPowerUps();
+    powerUps = manager.getGroup(groupPowerUps);
+
     initPlayer();
 	players = manager.getGroup(groupPlayers);
 
 	setEnemyTarget(&(player.getComponent<TransformComponent>().position));
     initUI();
 }
-
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
@@ -111,9 +109,12 @@ void Game::reInit() {
     score = 0.0f;
     setPlayerSkin(playerSkin);
     for (auto e : enemies) {
-        respawnEnemyRandomly(e);
+		e->getComponent<TransformComponent>().setPos(-CAR_WIDTH, -CAR_HEIGHT);
     }
-     
+	for (auto p : powerUps) {
+		p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of the map
+		p->getComponent<ColliderComponent>().eneable();
+	}
     deathScenceTime = DEATH_SCENCE_TIME;
     game_over = false;
 
@@ -121,10 +122,8 @@ void Game::reInit() {
     deathMenu->deactivate();
 }
 
-void Game::gameOver() {
-    deathMenu->activate();
-} 
-
+// events
+void Game::mouseEvent() {} 
 void Game::keyEvent() {
     switch (StageManager::event.type) {
     case SDL_QUIT:
@@ -142,9 +141,6 @@ void Game::keyEvent() {
         break;
     }
 }
-
-void Game::mouseEvent() {} 
-
 void Game::handleEvent() {
     if (pauseMenu->isActive()) {
         pauseMenu->handleEvent();
@@ -166,20 +162,11 @@ void Game::handleEvent() {
         }
     }
 }
-
-void Game::scoreUpdate() {
-    timeElapsed += 0.1f; // prevent score update too fast
-    if (timeElapsed > incrementInterval) {
-        score += 0.25f;  
-        timeElapsed = 0.0f;
-    }
-    std::ostringstream os;
-    os << static_cast<int>(score);
-
-    UIS["score"]->setTexture(os.str().c_str(), StageManager::font);
-    UIS["score"]->setDest(SCORE_POS - 30*(os.str().size()), 0); // prevent score render out of screen
+void Game::gameOver() {
+    deathMenu->activate();
 } 
 
+// updates
 void Game::update() {  
     if (pauseMenu->isActive()) {
         pauseMenu->update();
@@ -198,96 +185,22 @@ void Game::update() {
     cameraUpdate();
     scoreUpdate();
 	enemiesUpdate();
+    powerUpsUpdate();
     manager.refresh();
     manager.update();
 }
- 
-void Game::render() {
-    SDL_RenderClear(StageManager::renderer);
-
-    for (auto& t : tiles) t->render();
-    for (auto& e : enemies) e->render();
-    for (auto& p : players) p->render();
-    for (auto& ui : UIS) {
-        if(ui.second->isActive()) ui.second->render();
+void Game::scoreUpdate() {
+    timeElapsed += 0.1f; // prevent score update too fast
+    if (timeElapsed > incrementInterval) {
+        score += 0.25f;  
+        timeElapsed = 0.0f;
     }
-    if (pauseMenu->isActive()) pauseMenu->render();
-    if (deathMenu->isActive()) deathMenu->render();
+    std::ostringstream os;
+    os << static_cast<int>(score);
 
-    SDL_RenderPresent(StageManager::renderer);
-}
-
-void Game::clear() {
-    
-}
-
-void Game::cameraUpdate() {
-    // camera follow player
-    camera.x = std::round(player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2.0f);
-    camera.y = std::round(player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2.0f);
-
-    // prevent camera out of map
-    if (camera.x < 0) camera.x = 0;
-    if (camera.y < 0) camera.y = 0;
-    if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
-    if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
-}
-
-void Game::makeExplosion(Entity* a) {
-    if (a->hasComponent<ExploderComponent>() && !a->getComponent<ExploderComponent>().isExploding()) {
-        a->getComponent<ExploderComponent>().explode();
-        a->getComponent<ColliderComponent>().disable();
-        a->getComponent<TransformComponent>().stop();
-
-        // if it in camera view then play exlosion sound
-        if (a->getComponent<TransformComponent>().position.x >= camera.x &&
-            a->getComponent<TransformComponent>().position.x < camera.x + SCREEN_WIDTH - CAR_WIDTH &&
-            a->getComponent<TransformComponent>().position.y >= camera.y &&
-            a->getComponent<TransformComponent>().position.y < camera.y + SCREEN_HEIGHT - CAR_HEIGHT) {
-            Graphics::play(explosionChunk);
-        } 
-    }
-}
-
-void Game::handleCollision() {
-    for (int i = 0; i < MAX_ENEMIES; i++) { 
-        // player collides with enemy
-        if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
-            enemies[i]->getComponent<ColliderComponent>())) {
-            playerHealth -= 10;
-            UIS["health"]->setDest(48, 27, playerHealth, 2);
-			makeExplosion(enemies[i]);
-        }
-
-        // enemy colides with other enemies
-        for (int j = i + 1; j < MAX_ENEMIES; j++) {
-            if (Collision::isCollidingSAT(
-                enemies[i]->getComponent<ColliderComponent>(),
-                enemies[j]->getComponent<ColliderComponent>()
-            )) {
-				makeExplosion(enemies[i]);
-                makeExplosion(enemies[j]);
-            }
-        }
-    }
-}
-
-void Game::respawnEnemyRandomly(Entity* enemy) {
-    int r = rand() % 4;
-	if (r == 0) {
-		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT); // top
-	}
-	else if (r == 1) {
-		enemy->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT); // right
-	}
-	else if (r == 2) {
-		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT); // bottom
-	}
-	else {
-		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT); // left
-	} // spawn enemy randomly outside of the map 
-}
-
+    UIS["score"]->setTexture(os.str().c_str(), StageManager::font);
+    UIS["score"]->setDest(SCORE_POS - 30*(os.str().size()), 0); // prevent score render out of screen
+} 
 void Game::enemiesUpdate() {
     for (auto& e : enemies) {
 		if (playerHealth <= 0) {
@@ -303,7 +216,131 @@ void Game::enemiesUpdate() {
 		}
     }
 }
+void Game::cameraUpdate() {
+    // camera follow player
+    camera.x = std::round(player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2.0f);
+    camera.y = std::round(player.getComponent<TransformComponent>().position.y - SCREEN_HEIGHT / 2.0f);
 
+    // prevent camera out of map
+    if (camera.x < 0) camera.x = 0;
+    if (camera.y < 0) camera.y = 0;
+    if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
+    if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
+}
+void Game::powerUpsUpdate() {
+    if (player.getComponent<TransformComponent>().speed > PLAYER_SPEED) {
+		player.getComponent<TransformComponent>().speed -= 0.1;
+    }
+    for (auto& p : powerUps) {
+        if (p->getComponent<TransformComponent>().position.x < 0) {
+            int xpos = rand() % MAP_WIDTH + 100;
+            int ypos = rand() % MAP_HEIGHT + 100;
+            while (xpos == p->getComponent<TransformComponent>().position.x) {
+                int xpos = rand() % MAP_WIDTH + 100;
+            }
+            while (ypos == p->getComponent<TransformComponent>().position.y) {
+                int ypos = rand() % MAP_WIDTH + 100;
+            } // add 100 so it dont spawn too near the bound
+    
+            p->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
+	        p->getComponent<ColliderComponent>().eneable();
+        }
+    }
+}
+
+// collisions
+void Game::handlePowerUpsCollision() {
+    for (auto& p : powerUps) {
+        if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
+            p->getComponent<ColliderComponent>())) {
+            p->getComponent<ColliderComponent>().disable();
+			p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of map
+            
+            if (p->getComponent<ColliderComponent>().tag == "heal power up") {
+                playerHealth = (playerHealth + 10 > PLAYER_BASE_HEALTH ? PLAYER_BASE_HEALTH : playerHealth + 10);
+                UIS["health"]->setDest(48, 27, playerHealth, 2);
+            }
+            else if (p->getComponent<ColliderComponent>().tag == "ghost power up") {
+                player.getComponent<TransformComponent>().speed = GHOST_SPEED;
+            }
+        }
+    }
+}
+void Game::handleEnemiesCollision() {
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        // player collides with enemy
+        if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
+            enemies[i]->getComponent<ColliderComponent>())) {
+            playerHealth -= 10;
+            UIS["health"]->setDest(48, 27, playerHealth, 2);
+            makeExplosion(enemies[i]);
+        }
+
+        // enemy colides with other enemies
+        for (int j = i + 1; j < MAX_ENEMIES; j++) {
+            if (Collision::isCollidingSAT(
+                enemies[i]->getComponent<ColliderComponent>(),
+                enemies[j]->getComponent<ColliderComponent>()
+            )) {
+                makeExplosion(enemies[i]);
+                makeExplosion(enemies[j]);
+            }
+        }
+    }
+}
+void Game::handleCollision() {
+    handlePowerUpsCollision();
+    handleEnemiesCollision();
+}
+
+// render
+void Game::render() {
+    SDL_RenderClear(StageManager::renderer);
+
+    for (auto& t : tiles) t->render();
+    for (auto& e : enemies) e->render();
+    for (auto& po : powerUps) po->render();
+    for (auto& p : players) p->render();
+    for (auto& ui : UIS) {
+        if(ui.second->isActive()) ui.second->render();
+    }
+    if (pauseMenu->isActive()) pauseMenu->render();
+    if (deathMenu->isActive()) deathMenu->render();
+
+    SDL_RenderPresent(StageManager::renderer);
+}
+
+// extras
+void Game::makeExplosion(Entity* a) {
+    if (a->hasComponent<ExploderComponent>() && !a->getComponent<ExploderComponent>().isExploding()) {
+        a->getComponent<ExploderComponent>().explode();
+        a->getComponent<ColliderComponent>().disable();
+        a->getComponent<TransformComponent>().stop();
+
+        // if it in camera view then play exlosion sound
+        if (a->getComponent<TransformComponent>().position.x >= camera.x &&
+            a->getComponent<TransformComponent>().position.x < camera.x + SCREEN_WIDTH - CAR_WIDTH &&
+            a->getComponent<TransformComponent>().position.y >= camera.y &&
+            a->getComponent<TransformComponent>().position.y < camera.y + SCREEN_HEIGHT - CAR_HEIGHT) {
+            Graphics::play(explosionChunk);
+        } 
+    }
+}
+void Game::respawnEnemyRandomly(Entity* enemy) {
+    int r = rand() % 4;
+	if (r == 0) {
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, -CAR_HEIGHT); // top
+	}
+	else if (r == 1) {
+		enemy->getComponent<TransformComponent>().setPos(MAP_WIDTH, rand() % MAP_HEIGHT); // right
+	}
+	else if (r == 2) {
+		enemy->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, MAP_HEIGHT); // bottom
+	}
+	else {
+		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT); // left
+	} // spawn enemy randomly outside of the map 
+}
 void Game::stayInBound() {
     // prevent player out of map
     player.getComponent<TransformComponent>().position;
@@ -322,9 +359,24 @@ void Game::stayInBound() {
         }
     }
 }
- 
-void Game::addTile(int x, int y, int id) {
-    auto& tile(manager.addEntity());
-    tile.addComponent<TileComponent>(x, y, id);
-    tile.addGroup(groupMap);
+void Game::setPlayerSkin(Color skin) {
+    switch (skin) {
+    case YELLOW:
+        player.getComponent<SpriteComponent>().setTex("imgs/car/yellow_car.png");
+        break;
+    case RED:
+        player.getComponent<SpriteComponent>().setTex("imgs/car/red_car.png");
+        break;
+    case BLUE:
+        player.getComponent<SpriteComponent>().setTex("imgs/car/blue_car.png");
+        break;
+    default:
+        break;
+    }
 }
+void Game::setEnemyTarget(Vector2D* target) {
+    for (auto &e : enemies) {
+        e->addComponent<ChaseComponent>(target);
+    }
+}
+ 

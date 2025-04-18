@@ -21,6 +21,7 @@ public:
 
 	TransformComponent() {
 		position.Zero();
+		velocity.Zero();
 	}
 
 	TransformComponent(float x, float y) {
