@@ -50,8 +50,14 @@ void Game::initMap() {
     map = new Map();
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 }
-void Game::initUI() {
+void Game::initChunks() {
+    healChunk = Graphics::loadSound("chunks/heal.wav");
+    ghostChunk = Graphics::loadSound("chunks/ghost.wav");
     explosionChunk = Graphics::loadSound("chunks/explosion.wav");
+    gameoverChunk = Graphics::loadSound("chunks/game_over.wav");
+
+}
+void Game::initUI() {
 
     pauseMenu = new PauseMenu;
     pauseMenu->init();
@@ -66,18 +72,18 @@ void Game::initUI() {
     for (auto& ui : UIS) {
         ui.second->activate();
     }
-}
+}   
 void Game::initPowerUps() {
     // init -32 -32 out of the map
     auto &heal_powerup(manager.addEntity());
     heal_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
-    heal_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 4, 300);
+    heal_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 8, 200);
     heal_powerup.addComponent<ColliderComponent>("heal power up");
     heal_powerup.addGroup(groupPowerUps);
 
     auto &shield_powerup(manager.addEntity());
     shield_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
-    shield_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 4, 300);
+    shield_powerup.addComponent<SpriteComponent>("imgs/ob/ghost.png", 4, 200);
     shield_powerup.addComponent<ColliderComponent>("ghost power up");
     shield_powerup.addGroup(groupPowerUps);
 
@@ -97,6 +103,7 @@ void Game::init() {
 
 	setEnemyTarget(&(player.getComponent<TransformComponent>().position));
     initUI();
+    initChunks();
 }
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
@@ -163,6 +170,7 @@ void Game::handleEvent() {
     }
 }
 void Game::gameOver() {
+    Graphics::play(gameoverChunk);
     deathMenu->activate();
 } 
 
@@ -179,7 +187,7 @@ void Game::update() {
     if (game_over) {
         // make the death scene (play 3 exlosion)
         deathScenceTime--;
-        if (deathScenceTime == 0) deathMenu->activate();
+        if (deathScenceTime == 0) gameOver();
 		else if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
     }
     cameraUpdate();
@@ -230,7 +238,8 @@ void Game::cameraUpdate() {
 void Game::powerUpsUpdate() {
     if (player.getComponent<TransformComponent>().speed > PLAYER_SPEED) {
 		player.getComponent<TransformComponent>().speed -= 0.1;
-    }
+    } // slowly decrease ghost effect
+
     for (auto& p : powerUps) {
         if (p->getComponent<TransformComponent>().position.x < 0) {
             int xpos = rand() % MAP_WIDTH + 100;
@@ -259,9 +268,11 @@ void Game::handlePowerUpsCollision() {
             if (p->getComponent<ColliderComponent>().tag == "heal power up") {
                 playerHealth = (playerHealth + 10 > PLAYER_BASE_HEALTH ? PLAYER_BASE_HEALTH : playerHealth + 10);
                 UIS["health"]->setDest(48, 27, playerHealth, 2);
+                Graphics::play(healChunk);
             }
             else if (p->getComponent<ColliderComponent>().tag == "ghost power up") {
                 player.getComponent<TransformComponent>().speed = GHOST_SPEED;
+                Graphics::play(ghostChunk);
             }
         }
     }

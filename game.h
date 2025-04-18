@@ -21,9 +21,15 @@ private:
 	int playerHealth;
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
+	
+	Mix_Chunk* healChunk;
+	Mix_Chunk* ghostChunk;
 	Mix_Chunk* explosionChunk;
+	Mix_Chunk* gameoverChunk;
+
 	PauseMenu* pauseMenu;
 	DeathMenu* deathMenu;
+
 	int deathScenceTime = DEATH_SCENCE_TIME; 
 	bool game_over = false;
 
@@ -38,6 +44,7 @@ public:
 	void initMap();
 	void initUI();
 	void initPowerUps();
+	void initChunks();
 	void init() override;
 	void reInit() override;
 
