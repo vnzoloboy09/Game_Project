@@ -18,6 +18,8 @@ public:
 	static void render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
 		float angle, SDL_RendererFlip flip);
 
+	static void drawArc(int cx, int cy, int r, float startDeg, float endDeg);
+
 	static TTF_Font* loadFont(const char* path, int size);
 
 	static Mix_Chunk* loadSound(const char* path);

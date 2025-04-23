@@ -21,6 +21,8 @@ void Menu::init() {
 	buttons.push_back(new Button("imgs/menu/speaker_button.png", 1100, 50, 64, 64, "speaker"));
 	buttons.push_back(new Button("imgs/menu/turtorial_button.png", 900, 600, 300, 100, "how to play"));
 
+	buttons[3]->hoverOff(); // 3 is speaker button
+
 	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
 }
 
@@ -50,6 +52,16 @@ void Menu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
+			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
+				if (StageManager::event.wheel.y > 0) {
+					StageManager::volume += VOLUME_STEP;
+					StageManager::volume = StageManager::volume > MAX_VOLUME ? MAX_VOLUME : StageManager::volume;
+				}
+				else if (StageManager::event.wheel.y < 0) {
+					StageManager::volume -= VOLUME_STEP;
+					StageManager::volume = StageManager::volume < 0 ? 0 : StageManager::volume;
+				}
+			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
 				Graphics::play(buttonClicked);
 				if (button->getTag() == "play") {
@@ -85,6 +97,15 @@ std::vector<Button*> Menu::getButtons() {
 	return buttons;
 }
 
+void Menu::renderVolumeControl(int x, int y) {
+	// render volume control
+	if (!StageManager::mute) {
+		Graphics::setColor(GREEN);
+		Graphics::drawArc(x, y, 64, 0.0f, static_cast<float>(StageManager::volume) * DEGREE_PER_VOLUME);
+		Graphics::drawArc(x, y, 65, 0.0f, static_cast<float>(StageManager::volume) * DEGREE_PER_VOLUME);
+	} 
+}
+
 void Menu::render() {
 	SDL_RenderClear(StageManager::renderer);
 
@@ -97,6 +118,7 @@ void Menu::render() {
 		}
 		button->render();
 	}
+	renderVolumeControl(1132, 82); // 1132 and 82 are the speaker button center
 
 	SDL_RenderPresent(StageManager::renderer);
 }

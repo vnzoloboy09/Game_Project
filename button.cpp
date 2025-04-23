@@ -27,11 +27,15 @@ void Button::select(const bool sel) {
 	isSelected = sel;
 }
 
+void Button::hoverOff() {
+	canHover = false;
+}
+
 bool Button::isHover(int &x, int &y) {
 	if (current_destRect.x <= x && x <= current_destRect.x + current_destRect.w &&
 		current_destRect.y <= y && y <= current_destRect.y + current_destRect.h)
 	{
-		current_destRect = destRectZoom;
+		if (canHover) current_destRect = destRectZoom;
 		if (playChunk == true) {
 			Graphics::play(buttonHover);
 			playChunk = false;

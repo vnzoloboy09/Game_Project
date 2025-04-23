@@ -40,6 +40,10 @@ const int NO_RANDOM_START_FRAME = 0;
 const int TIME_PER_EXPLOSION = 80; // 80 game loop
 const int DEATH_SCENCE_TIME = 3 * TIME_PER_EXPLOSION; 
 
+const int MAX_VOLUME = 128;
+const float DEGREE_PER_VOLUME = 360.0f / MAX_VOLUME;
+const int VOLUME_STEP = 4;
+
 typedef enum {
 	RED,
 	BLUE,

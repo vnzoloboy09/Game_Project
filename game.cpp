@@ -172,7 +172,7 @@ void Game::handleEvent() {
 }
 void Game::gameOver() {
     Graphics::play(gameoverChunk);
-    updateHightestScore();
+    if(score > StageManager::hightest_score) updateHightestScore();
     deathMenu->activate();
 } 
 

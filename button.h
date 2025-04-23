@@ -12,6 +12,7 @@ private:
 	bool isSelected;
 	bool playChunk = false;
 	Mix_Chunk* buttonHover;
+	bool canHover = true;
 
 public:
 	Button();
@@ -21,6 +22,7 @@ public:
 	void render();
 	void select(const bool sel);
 	const char* getTag();
+	void hoverOff();
 	void setTex(const char* path);
 	bool isHover(int &x, int &y);
 };

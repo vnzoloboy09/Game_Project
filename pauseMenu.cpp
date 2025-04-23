@@ -28,7 +28,8 @@ void PauseMenu::init() {
 		200, 500, 300, 100, "exit"));
 	buttons.push_back(new Button("imgs/menu/speaker_button.png", 
 		900, SCREEN_HEIGHT / 2 - 32, 64, 64, "speaker"));
-
+	
+	buttons[3]->hoverOff(); // 3 is speaker button
 }
 
 void PauseMenu::keyEvent() {
@@ -51,6 +52,16 @@ void PauseMenu::mouseEvent() {
 
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
+			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
+				if (StageManager::event.wheel.y > 0) {
+					StageManager::volume += VOLUME_STEP;
+					StageManager::volume = StageManager::volume > MAX_VOLUME ? MAX_VOLUME : StageManager::volume;
+				}
+				else if (StageManager::event.wheel.y < 0) {
+					StageManager::volume -= VOLUME_STEP;
+					StageManager::volume = StageManager::volume < 0 ? 0 : StageManager::volume;
+				}
+			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
 				Graphics::play(buttonClicked);
 				std::string tag = button->getTag();
@@ -99,4 +110,6 @@ void PauseMenu::render() {
 		}
 		button->render();
 	}
+
+	renderVolumeControl(932, 360); // 932 and 360 are the center of speaker button
 }

@@ -23,7 +23,8 @@ void DeathMenu::init() {
 	buttons.push_back(new Button("imgs/menu/exit_button.png",
 		SCREEN_WIDTH / 2 - 150, 500, 300, 100, "exit"));
 	buttons.push_back(new Button("imgs/menu/speaker_button.png",
-		SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 2 - 100, 64, 64, "speaker"));
+		SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 2 - 200, 64, 64, "speaker"));
+	buttons[2]->hoverOff(); // 2 is speaker button
 }
 
 void DeathMenu::keyEvent() {
@@ -48,6 +49,16 @@ void DeathMenu::mouseEvent() {
 
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
+			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
+				if (StageManager::event.wheel.y > 0) {
+					StageManager::volume += VOLUME_STEP;
+					StageManager::volume = StageManager::volume > MAX_VOLUME ? MAX_VOLUME : StageManager::volume;
+				}
+				else if (StageManager::event.wheel.y < 0) {
+					StageManager::volume -= VOLUME_STEP;
+					StageManager::volume = StageManager::volume < 0 ? 0 : StageManager::volume;
+				}
+			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
 				Graphics::play(buttonClicked);
 				std::string tag = button->getTag();
@@ -91,4 +102,6 @@ void DeathMenu::render() {
 		}
 		button->render();
 	}
+
+	renderVolumeControl(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 200 + 32);
 }

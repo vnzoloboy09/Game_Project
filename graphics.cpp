@@ -68,6 +68,25 @@ void Graphics::drawRect(SDL_Rect rect, Color color, int thickness) {
     }
 }
 
+void Graphics::drawArc(int cx, int cy, int r, float startDeg, float endDeg) {
+    const int segments = MAX_VOLUME;
+    float startRad = startDeg * M_PI / 180.0f;
+    float endRad = endDeg * M_PI / 180.0f;
+    float step = (endRad - startRad) / segments;
+
+    for (int i = 0; i < segments; ++i) {
+        float theta1 = startRad + i * step;
+        float theta2 = startRad + (i + 1) * step;
+
+        int x1 = static_cast<int>(cx + r * cos(theta1));
+        int y1 = static_cast<int>(cy + r * sin(theta1));
+        int x2 = static_cast<int>(cx + r * cos(theta2));
+        int y2 = static_cast<int>(cy + r * sin(theta2));
+
+        SDL_RenderDrawLine(StageManager::renderer, x1, y1, x2, y2);
+    }
+}
+
 Mix_Chunk* Graphics::loadSound(const char* path) {
     Mix_Chunk* gChunk = Mix_LoadWAV(path);
     if (gChunk == NULL) {
@@ -78,6 +97,7 @@ Mix_Chunk* Graphics::loadSound(const char* path) {
 
 void Graphics::play(Mix_Chunk* chunk) {  
    if (chunk != nullptr && !StageManager::mute) {  
+       Mix_VolumeChunk(chunk, StageManager::volume);
        Mix_PlayChannel(-1, chunk, 0);  
    }  
 }
