@@ -176,7 +176,7 @@ void Game::gameOver() {
     deathMenu->activate();
 } 
 
-// updates
+// updates 
 void Game::update() {  
     if (pauseMenu->isActive()) {
         pauseMenu->update();
