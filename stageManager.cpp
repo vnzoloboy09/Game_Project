@@ -88,7 +88,7 @@ void StageManager::changeStage(const std::string& name) {
 }
 
 void StageManager::getHightestScore() {
-	std::ifstream file("hightest_score.txt");
+	std::ifstream file("hightest_score.dat");
 	if (file.is_open()) {
 		file >> hightest_score;
 		file.close();

@@ -290,7 +290,7 @@ void Game::powerUpsUpdate() {
     }
 }
 void Game::updateHightestScore() {
-	std::ofstream file("hightest_score.txt");
+	std::ofstream file("hightest_score.dat");
 	if (file.is_open()) {
 		file << static_cast<int>(score);
 		file.close();
