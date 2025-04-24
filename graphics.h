@@ -25,6 +25,9 @@ public:
 	static Mix_Chunk* loadSound(const char* path);
 	static void play(Mix_Chunk* chunk);
 	
+	static Mix_Music* loadMusic(const char* path);
+	static void play(Mix_Music* music);
+
 	// render text
 	static SDL_Texture* loadText(const char* text, TTF_Font* font, SDL_Color textColor);
 };

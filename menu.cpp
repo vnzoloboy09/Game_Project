@@ -29,6 +29,8 @@ void Menu::init() {
 void Menu::reInit() {}
 
 void Menu::update() {
+
+	Mix_HaltMusic();
 	StageManager::getHightestScore();
 
 	std::string text = "Hightest Score: " + std::to_string(StageManager::hightest_score);

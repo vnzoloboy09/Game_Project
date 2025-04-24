@@ -102,6 +102,21 @@ void Graphics::play(Mix_Chunk* chunk) {
    }  
 }
 
+void Graphics::play(Mix_Music* music) {
+	if (music != nullptr && !StageManager::mute) {
+		Mix_VolumeMusic(StageManager::volume);
+		Mix_PlayMusic(music, -1);
+	}
+}
+
+Mix_Music* Graphics::loadMusic(const char* path) {
+	Mix_Music* gMusic = Mix_LoadMUS(path);
+	if (gMusic == NULL) {
+		std::cerr << path << ' ' << Mix_GetError() << '\n';
+	}
+	return gMusic;
+}
+
 void Graphics::setColor(Color color) {
     switch (color) {
     case RED:

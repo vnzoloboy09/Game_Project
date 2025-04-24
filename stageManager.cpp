@@ -151,6 +151,7 @@ void StageManager::clear() {
 
 	IMG_Quit();
 	TTF_Quit();
+	Mix_CloseAudio();
 	Mix_Quit();
 	SDL_Quit();
 }

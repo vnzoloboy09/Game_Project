@@ -56,7 +56,7 @@ void Game::initChunks() {
     ghostChunk = Graphics::loadSound("chunks/ghost.wav");
     explosionChunk = Graphics::loadSound("chunks/explosion.wav");
     gameoverChunk = Graphics::loadSound("chunks/game_over.wav");
-
+    backgroundMusic = Graphics::loadMusic("chunks/bg_music.mp3");
 }
 void Game::initUI() {
 
@@ -128,6 +128,8 @@ void Game::reInit() {
 
     pauseMenu->deactivate();
     deathMenu->deactivate();
+
+    Graphics::play(backgroundMusic);
 }
 
 // events
@@ -178,6 +180,7 @@ void Game::gameOver() {
 
 // updates 
 void Game::update() {  
+    Mix_VolumeMusic(StageManager::volume);
     if (pauseMenu->isActive()) {
         pauseMenu->update();
         return;

@@ -87,7 +87,7 @@ void DeathMenu::handleEvent() {
 }
 
 void DeathMenu::update() {
-
+	Mix_HaltMusic();
 }
 
 void DeathMenu::render() {

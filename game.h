@@ -26,6 +26,7 @@ private:
 	Mix_Chunk* ghostChunk;
 	Mix_Chunk* explosionChunk;
 	Mix_Chunk* gameoverChunk;
+	Mix_Music* backgroundMusic;
 
 	PauseMenu* pauseMenu;
 	DeathMenu* deathMenu;
