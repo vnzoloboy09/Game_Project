@@ -1,6 +1,7 @@
 #include "stageManager.h"
 #include "game.h"
 #include "collision.h"
+#include "audio.h"
 #include "components.h"
 #include "map.h"
 #include <sstream>
@@ -62,13 +63,13 @@ void Game::initMap() {
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 }
 void Game::initChunks() {
-    healChunk = Graphics::loadSound("chunks/heal.wav");
-    ghostChunk = Graphics::loadSound("chunks/ghost.wav");
-    explosionChunk = Graphics::loadSound("chunks/explosion.wav");
-    gameoverChunk = Graphics::loadSound("chunks/game_over.wav");
-    driftChunk = Graphics::loadSound("chunks/drift.wav");
-    carEngineChunk = Graphics::loadSound("chunks/car_engine.wav");
-    backgroundMusic = Graphics::loadMusic("chunks/bg_music.mp3");
+    healChunk = Audio::loadSound("chunks/heal.wav");
+    ghostChunk = Audio::loadSound("chunks/ghost.wav");
+    explosionChunk = Audio::loadSound("chunks/explosion.wav");
+    gameoverChunk = Audio::loadSound("chunks/game_over.wav");
+    driftChunk = Audio::loadSound("chunks/drift.wav");
+    carEngineChunk = Audio::loadSound("chunks/car_engine.wav");
+    backgroundMusic = Audio::loadMusic("chunks/bg_music.mp3");
 }
 void Game::initUI() {
 
@@ -141,7 +142,7 @@ void Game::reInit() {
     pauseMenu->deactivate();
     deathMenu->deactivate();
 
-    Graphics::play(backgroundMusic);
+    Audio::play(backgroundMusic);
 }
 
 
@@ -157,7 +158,7 @@ void Game::keyEvent() {
             if (StageManager::event.key.keysym.sym == SDLK_d ||
                 StageManager::event.key.keysym.sym == SDLK_a) {
                 drifting = true;
-                Graphics::play(driftChunk);
+                Audio::play(driftChunk);
             }
         }
         if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
@@ -200,7 +201,7 @@ void Game::handleEvent() {
     }
 }
 void Game::gameOver() {
-    Graphics::play(gameoverChunk);
+    Audio::play(gameoverChunk);
     if(score > StageManager::hightest_score) updateHightestScore();
     deathMenu->activate();
 } 
@@ -311,11 +312,11 @@ void Game::handlePowerUpsCollision() {
             if (p->getComponent<ColliderComponent>().tag == "heal power up") {
                 playerHealth = (playerHealth + 10 > PLAYER_BASE_HEALTH ? PLAYER_BASE_HEALTH : playerHealth + 10);
                 UIS["health"]->setDest(48, 27, playerHealth, 2);
-                Graphics::play(healChunk);
+                Audio::play(healChunk);
             }
             else if (p->getComponent<ColliderComponent>().tag == "ghost power up") {
                 player.getComponent<TransformComponent>().speed = GHOST_SPEED;
-                Graphics::play(ghostChunk);
+                Audio::play(ghostChunk);
             }
         }
     }
@@ -377,7 +378,7 @@ void Game::makeExplosion(Entity* a) {
             a->getComponent<TransformComponent>().position.x < camera.x + SCREEN_WIDTH - CAR_WIDTH &&
             a->getComponent<TransformComponent>().position.y >= camera.y &&
             a->getComponent<TransformComponent>().position.y < camera.y + SCREEN_HEIGHT - CAR_HEIGHT) {
-            Graphics::play(explosionChunk);
+            Audio::play(explosionChunk);
         } 
     }
 }

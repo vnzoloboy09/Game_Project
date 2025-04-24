@@ -31,8 +31,6 @@ public:
 	static bool dev_mode;
 	static Stage* current_stage;
 	static int hightest_score;
-	static bool mute;
-	static int volume;
 	static void quit();
 	static void changeStage(const std::string& name);
 	static void getHightestScore();

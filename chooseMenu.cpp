@@ -1,6 +1,7 @@
 #include "chooseMenu.h"
 #include "graphics.h"
 #include "stageManager.h"
+#include "audio.h"
 #include "game.h"
 
 ChooseMenu::ChooseMenu() {
@@ -14,7 +15,7 @@ ChooseMenu::~ChooseMenu() {
 }
 
 void ChooseMenu::init() {
-	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
+	buttonClicked = Audio::loadSound("chunks/click_button.wav");
 
 	buttons.push_back(new Button("imgs/car/yellow_car.png", 
 		325, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "yellow_car"));
@@ -33,7 +34,7 @@ void ChooseMenu::mouseEvent() {
 		Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
 		if (button->isHover(mouse.x, mouse.y)) {
 			if(StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-				Graphics::play(buttonClicked);
+				Audio::play(buttonClicked);
 				std::string tag = button->getTag();
 				if (tag == "back_button") {
 					StageManager::changeStage("Menu");

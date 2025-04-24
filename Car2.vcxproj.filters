@@ -69,6 +69,9 @@
     <ClCompile Include="howToPlayMenu.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="audio.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="howToPlayMenu.h">
       <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="audio.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

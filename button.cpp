@@ -1,11 +1,12 @@
 #include "button.h"
 #include "graphics.h"
+#include "audio.h"
 
 Button::Button() = default;
 
 Button::Button(const char* path, int x, int y, int w, int h, const char* tg) {
 	texture = Graphics::loadTexture(path);
-	buttonHover = Graphics::loadSound("chunks/hover_button.wav");
+	buttonHover = Audio::loadSound("chunks/hover_button.wav");
 
 	srcRect = { 0, 0, w, h };
 	destRect.x = x;
@@ -37,7 +38,7 @@ bool Button::isHover(int &x, int &y) {
 	{
 		if (canHover) current_destRect = destRectZoom;
 		if (playChunk == true) {
-			Graphics::play(buttonHover);
+			Audio::play(buttonHover);
 			playChunk = false;
 		}
 		return true;

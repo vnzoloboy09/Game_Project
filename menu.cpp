@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "graphics.h"
+#include "audio.h"
 #include "stageManager.h"
 #include <iostream>
 
@@ -23,7 +24,7 @@ void Menu::init() {
 
 	buttons[3]->hoverOff(); // 3 is speaker button
 
-	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
+	buttonClicked = Audio::loadSound("chunks/click_button.wav");
 }
 
 void Menu::reInit() {}
@@ -56,16 +57,16 @@ void Menu::mouseEvent() {
 		if (button->isHover(mouse.x, mouse.y)) {
 			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
 				if (StageManager::event.wheel.y > 0) {
-					StageManager::volume += VOLUME_STEP;
-					StageManager::volume = StageManager::volume > MAX_VOLUME ? MAX_VOLUME : StageManager::volume;
+					Audio::volume += VOLUME_STEP;
+					Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
 				}
 				else if (StageManager::event.wheel.y < 0) {
-					StageManager::volume -= VOLUME_STEP;
-					StageManager::volume = StageManager::volume < 0 ? 0 : StageManager::volume;
+					Audio::volume -= VOLUME_STEP;
+					Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
 				}
 			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-				Graphics::play(buttonClicked);
+				Audio::play(buttonClicked);
 				if (button->getTag() == "play") {
 					StageManager::changeStage("Game");
 					break;
@@ -80,8 +81,8 @@ void Menu::mouseEvent() {
 					StageManager::changeStage("HowToPlayMenu");
 				}
 				else if (button->getTag() == "speaker") {
-					StageManager::mute = !StageManager::mute;
-					if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+					Audio::mute = !Audio::mute;
+					if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
 					else button->setTex("imgs/menu/mute_speaker_button.png");
 				}
 			}
@@ -101,10 +102,10 @@ std::vector<Button*> Menu::getButtons() {
 
 void Menu::renderVolumeControl(int x, int y) {
 	// render volume control
-	if (!StageManager::mute) {
+	if (!Audio::mute) {
 		Graphics::setColor(GREEN);
-		Graphics::drawArc(x, y, 64, 0.0f, static_cast<float>(StageManager::volume) * DEGREE_PER_VOLUME);
-		Graphics::drawArc(x, y, 65, 0.0f, static_cast<float>(StageManager::volume) * DEGREE_PER_VOLUME);
+		Graphics::drawArc(x, y, 64, 0.0f, static_cast<float>(Audio::volume) * DEGREE_PER_VOLUME);
+		Graphics::drawArc(x, y, 65, 0.0f, static_cast<float>(Audio::volume) * DEGREE_PER_VOLUME);
 	} 
 }
 
@@ -115,7 +116,7 @@ void Menu::render() {
 	Graphics::render(highestScore, tsrcRect, textRect, 0, SDL_FLIP_NONE);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
-			if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+			if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
 			else button->setTex("imgs/menu/mute_speaker_button.png");
 		}
 		button->render();

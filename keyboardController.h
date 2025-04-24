@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audio.h"
 #include "game.h"
 #include "components.h"
 
@@ -12,7 +13,7 @@ private:
 public:
 	void init() override {
 		transform = &entity->getComponent<TransformComponent>();
-		hornChunk = Graphics::loadSound("chunks/car_horn.wav");
+		hornChunk = Audio::loadSound("chunks/car_horn.wav");
 	}
 
 	void update() override {
@@ -42,7 +43,7 @@ public:
 		if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) {
 			transform->velocity = { 0.0f, 0.0f };
 		}
-		if (keystate[SDL_SCANCODE_SPACE]) Graphics::play(hornChunk);
+		if (keystate[SDL_SCANCODE_SPACE]) Audio::play(hornChunk);
 	}
 
 	void activate() { active = true; }

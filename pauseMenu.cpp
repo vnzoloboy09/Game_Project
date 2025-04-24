@@ -1,5 +1,6 @@
 #include "pauseMenu.h"
 #include "graphics.h"
+#include "audio.h"
 #include "stageManager.h"
 #include "game.h"
 
@@ -16,7 +17,7 @@ PauseMenu::~PauseMenu() {
 }
 
 void PauseMenu::init() {
-	buttonClicked = Graphics::loadSound("chunks/click_button.wav");
+	buttonClicked = Audio::loadSound("chunks/click_button.wav");
 
 	// the numbers are the button {xpos, ypos, width, height}
 
@@ -54,16 +55,16 @@ void PauseMenu::mouseEvent() {
 		if (button->isHover(mouse.x, mouse.y)) {
 			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
 				if (StageManager::event.wheel.y > 0) {
-					StageManager::volume += VOLUME_STEP;
-					StageManager::volume = StageManager::volume > MAX_VOLUME ? MAX_VOLUME : StageManager::volume;
+					Audio::volume += VOLUME_STEP;
+					Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
 				}
 				else if (StageManager::event.wheel.y < 0) {
-					StageManager::volume -= VOLUME_STEP;
-					StageManager::volume = StageManager::volume < 0 ? 0 : StageManager::volume;
+					Audio::volume -= VOLUME_STEP;
+					Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
 				}
 			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-				Graphics::play(buttonClicked);
+				Audio::play(buttonClicked);
 				std::string tag = button->getTag();
 				if (tag == "continue") {
 					deactivate();
@@ -77,8 +78,8 @@ void PauseMenu::mouseEvent() {
 					StageManager::changeStage("Menu");
 				}
 				else if (button->getTag() == "speaker") {
-					StageManager::mute = !StageManager::mute;
-					if (!StageManager::mute) {
+					Audio::mute = !Audio::mute;
+					if (!Audio::mute) {
 						button->setTex("imgs/menu/speaker_button.png");
 						Mix_ResumeMusic();
 					}
@@ -97,11 +98,11 @@ void PauseMenu::handleEvent() {
 }
 
 void PauseMenu::update() {
-	if (StageManager::mute) {
+	if (Audio::mute) {
 		Mix_PauseMusic();
 	}
 	else {
-		Mix_VolumeMusic(StageManager::volume);
+		Mix_VolumeMusic(Audio::volume);
 	}
 }
 
@@ -113,7 +114,7 @@ void PauseMenu::render() {
 	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
-			if (!StageManager::mute) {
+			if (!Audio::mute) {
 				button->setTex("imgs/menu/speaker_button.png");
 			}
 			else {
