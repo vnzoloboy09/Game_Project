@@ -26,6 +26,8 @@ private:
 	Mix_Chunk* ghostChunk;
 	Mix_Chunk* explosionChunk;
 	Mix_Chunk* gameoverChunk;
+	Mix_Chunk* driftChunk;
+	Mix_Chunk* carEngineChunk;
 	Mix_Music* backgroundMusic;
 
 	PauseMenu* pauseMenu;
@@ -33,6 +35,7 @@ private:
 
 	int deathScenceTime = DEATH_SCENCE_TIME; 
 	bool game_over = false;
+	bool drifting = false;
 
 public:
 	Game();

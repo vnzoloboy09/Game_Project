@@ -92,6 +92,7 @@ public:
 
 	void update() override {
 		if (stopped) return;
+
 		position.x += static_cast<float>(velocity.x * speed);
 		position.y += static_cast<float>(velocity.y * speed);
 

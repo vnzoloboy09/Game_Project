@@ -7,10 +7,12 @@ class KeyboardController : public Component {
 private:
 	TransformComponent* transform;
 	bool active = true;
+	Mix_Chunk* hornChunk;
 
 public:
 	void init() override {
 		transform = &entity->getComponent<TransformComponent>();
+		hornChunk = Graphics::loadSound("chunks/car_horn.wav");
 	}
 
 	void update() override {
@@ -20,8 +22,12 @@ public:
 		// -90 since the imgs is import at 90 degree rather than 0 degree
 		float angleRad = (transform->angle - 90) / 180 * M_PI;
 
-		if (keystate[SDL_SCANCODE_W]) transform->velocity = { cos(angleRad), sin(angleRad) };
-		if (keystate[SDL_SCANCODE_S]) transform->velocity = { -cos(angleRad), -sin(angleRad) };
+		if (keystate[SDL_SCANCODE_W]) {
+			transform->velocity = { cos(angleRad), sin(angleRad) };
+		}
+		if (keystate[SDL_SCANCODE_S]) {
+			transform->velocity = { -cos(angleRad), -sin(angleRad) };
+		}
 
 		if (keystate[SDL_SCANCODE_D]) {
 			if (keystate[SDL_SCANCODE_W]) transform->angle += 1.5f;
@@ -36,6 +42,7 @@ public:
 		if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) {
 			transform->velocity = { 0.0f, 0.0f };
 		}
+		if (keystate[SDL_SCANCODE_SPACE]) Graphics::play(hornChunk);
 	}
 
 	void activate() { active = true; }

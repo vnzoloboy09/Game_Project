@@ -18,8 +18,17 @@ std::vector<Entity*> tiles;
 std::vector<Entity*> players;
 std::vector<Entity*> powerUps;
 
-Game::Game() {}
-Game::~Game() = default; 
+Game::Game() = default;
+Game::~Game() {
+	delete map;
+	delete pauseMenu;
+	delete deathMenu;
+	Mix_FreeChunk(healChunk);
+	Mix_FreeChunk(ghostChunk);
+	Mix_FreeChunk(explosionChunk);
+	Mix_FreeChunk(gameoverChunk);
+	Mix_FreeMusic(backgroundMusic);
+}
 
 // inits
 void Game::addTile(int x, int y, int id) {
@@ -56,6 +65,8 @@ void Game::initChunks() {
     ghostChunk = Graphics::loadSound("chunks/ghost.wav");
     explosionChunk = Graphics::loadSound("chunks/explosion.wav");
     gameoverChunk = Graphics::loadSound("chunks/game_over.wav");
+    driftChunk = Graphics::loadSound("chunks/drift.wav");
+    carEngineChunk = Graphics::loadSound("chunks/car_engine.wav");
     backgroundMusic = Graphics::loadMusic("chunks/bg_music.mp3");
 }
 void Game::initUI() {
@@ -140,6 +151,13 @@ void Game::keyEvent() {
         StageManager::quit();
 
     case SDL_KEYDOWN:
+        if (!drifting && !game_over) {
+            if (StageManager::event.key.keysym.sym == SDLK_d ||
+                StageManager::event.key.keysym.sym == SDLK_a) {
+                drifting = true;
+                Graphics::play(driftChunk);
+            }
+        }
         if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
             if (pauseMenu->isActive()) pauseMenu->deactivate();
             else pauseMenu->activate();
@@ -147,6 +165,13 @@ void Game::keyEvent() {
         if (StageManager::event.key.keysym.sym == SDLK_F11) {
             StageManager::dev_mode = !StageManager::dev_mode;
         }
+        break;
+    case SDL_KEYUP:
+        if (StageManager::event.key.keysym.sym == SDLK_d ||
+            StageManager::event.key.keysym.sym == SDLK_a) {
+            drifting = false;
+        }
+        break;
     default:
         break;
     }
