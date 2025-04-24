@@ -14,4 +14,5 @@ public:
 	void mouseEvent() override;
 	void handleEvent() override;
 	void keyEvent() override;
+	void render() override;
 };

@@ -73,3 +73,15 @@ void ChooseMenu::handleEvent() {
 }
 
 void ChooseMenu::update() {}
+
+void ChooseMenu::render() {
+	SDL_RenderClear(StageManager::renderer);
+
+	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
+
+	for (auto button : buttons) {
+		button->render();
+	}
+
+	SDL_RenderPresent(StageManager::renderer);
+}

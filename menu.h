@@ -29,5 +29,5 @@ public:
  	void update() override;
 	std::vector<Button*> getButtons();
 	void renderVolumeControl(int x, int y);
-	void render();
+	void render() override;
 };
