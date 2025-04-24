@@ -103,10 +103,11 @@ void Graphics::play(Mix_Chunk* chunk) {
 }
 
 void Graphics::play(Mix_Music* music) {
-	if (music != nullptr && !StageManager::mute) {
+	if (music != nullptr) {
 		Mix_VolumeMusic(StageManager::volume);
 		Mix_PlayMusic(music, -1);
 	}
+    if (StageManager::mute) Mix_PauseMusic();
 }
 
 Mix_Music* Graphics::loadMusic(const char* path) {

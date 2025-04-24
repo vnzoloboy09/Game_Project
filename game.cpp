@@ -30,6 +30,7 @@ Game::~Game() {
 	Mix_FreeMusic(backgroundMusic);
 }
 
+
 // inits
 void Game::addTile(int x, int y, int id) {
     auto& tile(manager.addEntity());
@@ -143,6 +144,7 @@ void Game::reInit() {
     Graphics::play(backgroundMusic);
 }
 
+
 // events
 void Game::mouseEvent() {} 
 void Game::keyEvent() {
@@ -203,9 +205,9 @@ void Game::gameOver() {
     deathMenu->activate();
 } 
 
+
 // updates 
 void Game::update() {  
-    Mix_VolumeMusic(StageManager::volume);
     if (pauseMenu->isActive()) {
         pauseMenu->update();
         return;
@@ -297,6 +299,7 @@ void Game::updateHightestScore() {
 	}
 }
 
+
 // collisions
 void Game::handlePowerUpsCollision() {
     for (auto& p : powerUps) {
@@ -360,6 +363,7 @@ void Game::render() {
 
     SDL_RenderPresent(StageManager::renderer);
 }
+
 
 // extras
 void Game::makeExplosion(Entity* a) {

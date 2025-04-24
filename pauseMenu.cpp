@@ -78,7 +78,10 @@ void PauseMenu::mouseEvent() {
 				}
 				else if (button->getTag() == "speaker") {
 					StageManager::mute = !StageManager::mute;
-					if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
+					if (!StageManager::mute) {
+						button->setTex("imgs/menu/speaker_button.png");
+						Mix_ResumeMusic();
+					}
 					else button->setTex("imgs/menu/mute_speaker_button.png");
 				}
 			}
@@ -94,7 +97,12 @@ void PauseMenu::handleEvent() {
 }
 
 void PauseMenu::update() {
-
+	if (StageManager::mute) {
+		Mix_PauseMusic();
+	}
+	else {
+		Mix_VolumeMusic(StageManager::volume);
+	}
 }
 
 void PauseMenu::render() {
@@ -105,8 +113,12 @@ void PauseMenu::render() {
 	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
-			if (!StageManager::mute) button->setTex("imgs/menu/speaker_button.png");
-			else button->setTex("imgs/menu/mute_speaker_button.png");
+			if (!StageManager::mute) {
+				button->setTex("imgs/menu/speaker_button.png");
+			}
+			else {
+				button->setTex("imgs/menu/mute_speaker_button.png");
+			}
 		}
 		button->render();
 	}
