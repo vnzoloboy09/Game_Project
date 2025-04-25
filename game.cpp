@@ -13,6 +13,9 @@ Map *map;
 SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 
 auto& player(manager.addEntity());
+auto& rainEntity(manager.addEntity());
+
+int lastTime = SDL_GetTicks();
 
 std::vector<Entity*> enemies;
 std::vector<Entity*> tiles;
@@ -61,6 +64,12 @@ void Game::initEnemies() {
 void Game::initMap() {
     map = new Map();
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
+
+    // rain map
+    rainEntity.addComponent<TransformComponent>(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
+    rainEntity.addComponent<SpriteComponent>("imgs/ob/rain.png", 4, 200);
+    rainEntity.getComponent<SpriteComponent>().setBlend(true);
+    rainBg = Graphics::loadTexture("imgs/menu/pause_background.png"); // same as the pause bg =))
 }
 void Game::initChunks() {
     healChunk = Audio::loadSound("chunks/heal.wav");
@@ -136,6 +145,11 @@ void Game::reInit() {
 		p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of the map
 		p->getComponent<ColliderComponent>().eneable();
 	}
+    rainning = false;
+    rainning_before = false;
+    check_weather = false;
+    rainBg_transparency = 0;
+
     deathScenceTime = DEATH_SCENCE_TIME;
     game_over = false;
 
@@ -144,7 +158,6 @@ void Game::reInit() {
 
     Audio::play(backgroundMusic);
 }
-
 
 // events
 void Game::mouseEvent() {} 
@@ -161,7 +174,7 @@ void Game::keyEvent() {
                 Audio::play(driftChunk);
             }
         }
-        if (StageManager::event.key.keysym.sym == SDLK_ESCAPE) {
+        if (StageManager::event.key.keysym.sym == SDLK_ESCAPE && !game_over) {
             if (pauseMenu->isActive()) pauseMenu->deactivate();
             else pauseMenu->activate();
         }
@@ -206,7 +219,6 @@ void Game::gameOver() {
     deathMenu->activate();
 } 
 
-
 // updates 
 void Game::update() {  
     if (pauseMenu->isActive()) {
@@ -224,9 +236,11 @@ void Game::update() {
 		else if (deathScenceTime % TIME_PER_EXPLOSION == 0) makeExplosion(&player);
     }
     else scoreUpdate();
+
     cameraUpdate();
 	enemiesUpdate();
     powerUpsUpdate();
+    rainUpdate();
     manager.refresh();
     manager.update();
 }
@@ -235,6 +249,10 @@ void Game::scoreUpdate() {
     if (timeElapsed > incrementInterval) {
         score += 0.25f;  
         timeElapsed = 0.0f;
+        if (static_cast<int>(score * 100) % 100 == 0 && // if score are int (x.00)
+            static_cast<int>(score) % WEATHER_CHECK == 0) {
+            check_weather = true; // every 20 scores make a weather check
+        }
     }
     std::ostringstream os;
     os << static_cast<int>(score);
@@ -299,6 +317,26 @@ void Game::updateHightestScore() {
 		std::cerr << "Unable to open score file.\n";
 	}
 }
+void Game::rainUpdate() {
+    if (check_weather) {
+        int r = rand() % (rainning ? 3 : 2); // 50% start rainning and 66.66% stop rainning;
+        if (r) rainning = false;
+        else rainning = true;
+        check_weather = false;
+    }
+    rainEntity.getComponent<TransformComponent>().setPos(camera.x, camera.y);
+
+    if (rainning && !rainning_before) {
+        rainBg_transparency += 1;
+        if (rainBg_transparency >= 180) rainning_before = true;
+    }
+    if (!rainning && rainning_before) {
+        rainBg_transparency -= 1;
+        if (rainBg_transparency <= 0) rainning_before = false;
+    }
+    rainEntity.getComponent<SpriteComponent>().setTransparency(rainBg_transparency);
+	std::cerr << rainBg_transparency << std::endl;
+}
 
 
 // collisions
@@ -349,22 +387,35 @@ void Game::handleCollision() {
 }
 
 // render
+void Game::renderRain() {
+    Graphics::makeTransparent(rainBg, rainBg_transparency);
+    Graphics::draw(rainBg, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH);
+    if (rainning) {
+        if (rainBg_transparency >= RAIN_IN) rainEntity.render();
+    }
+    else {
+        if (rainBg_transparency >= RAIN_OUT) rainEntity.render();
+    }
+}
 void Game::render() {
     SDL_RenderClear(StageManager::renderer);
 
     for (auto& t : tiles) t->render();
     for (auto& e : enemies) e->render();
     for (auto& po : powerUps) po->render();
-    for (auto& p : players) p->render();
+    
+    player.render();
+    renderRain();
+
     for (auto& ui : UIS) {
         if(ui.second->isActive()) ui.second->render();
     }
+
     if (pauseMenu->isActive()) pauseMenu->render();
     if (deathMenu->isActive()) deathMenu->render();
 
     SDL_RenderPresent(StageManager::renderer);
 }
-
 
 // extras
 void Game::makeExplosion(Entity* a) {

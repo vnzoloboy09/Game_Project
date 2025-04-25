@@ -12,7 +12,9 @@ private:
    int frames;
    int speed;
    bool isAnimated = false;
+   bool blend_mode = false;
    int start_frame;
+   int transparency = 0;
 
 public:  
    SpriteComponent() = default;  
@@ -45,6 +47,10 @@ public:
        texture = Graphics::loadTexture(path);  
    }  
 
+   void setTransparency(int tr) {
+       transparency = tr;
+   }
+
    void init() override {  
        transform = &entity->getComponent<TransformComponent>(); 
 
@@ -59,6 +65,10 @@ public:
        destRect.h = srcRect.h;  
    }  
 
+   void setBlend(bool bl) {
+       blend_mode = bl;
+   }
+
    void update() override {  
        if (isAnimated) {
            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed + start_frame) % frames);
@@ -69,6 +79,9 @@ public:
    }  
 
    void render() override { 
+       if (blend_mode) {
+           Graphics::makeTransparent(texture, transparency);
+       }
        Graphics::render(texture, srcRect, destRect, transform->angle, SDL_FLIP_NONE);  
    }  
 };

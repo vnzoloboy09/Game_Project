@@ -29,6 +29,11 @@ const int MAX_ENEMIES = 10;
 const int MAP_WIDTH = 2560;
 const int MAP_HEIGHT = 2560;
 
+// weather
+const int WEATHER_CHECK = 15;
+const int RAIN_IN = 100;
+const int RAIN_OUT = 50;
+
 // Some other constants
 const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = PLAYER_SPEED;
@@ -43,6 +48,7 @@ const int DEATH_SCENCE_TIME = 3 * TIME_PER_EXPLOSION;
 const int MAX_VOLUME = 128;
 const float DEGREE_PER_VOLUME = 360.0f / MAX_VOLUME;
 const int VOLUME_STEP = 4;
+
 
 typedef enum {
 	RED,

@@ -10,6 +10,8 @@ public:
 	Graphics();
 	~Graphics();
 
+	static void makeTransparent(SDL_Texture* texture, int transparency);
+
 	static SDL_Texture* loadTexture(const char* path);
 	static void draw(SDL_Texture* texture, int x, int y, int w, int h);
 	static void drawRect(SDL_Rect rect, Color color, int thickness);

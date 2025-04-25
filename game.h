@@ -21,7 +21,9 @@ private:
 	int playerHealth;
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
-	
+
+	SDL_Texture* rainBg;
+
 	Mix_Chunk* healChunk;
 	Mix_Chunk* ghostChunk;
 	Mix_Chunk* explosionChunk;
@@ -36,6 +38,10 @@ private:
 	int deathScenceTime = DEATH_SCENCE_TIME; 
 	bool game_over = false;
 	bool drifting = false;
+	int rainBg_transparency = 0;
+	bool rainning = false;
+	bool check_weather = false;
+	bool rainning_before = false;
 
 public:
 	Game();
@@ -69,8 +75,10 @@ public:
 	void cameraUpdate();
 	void powerUpsUpdate();
 	void updateHightestScore();
+	void rainUpdate();
 	
 	// render
+	void renderRain();
 	void render() override;
 	
 	// extras
