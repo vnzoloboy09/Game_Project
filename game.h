@@ -62,6 +62,7 @@ public:
 	void initUI();
 	void initPowerUps();
 	void initChunks();
+	void reinitWeather();
 	void init() override;
 	void reInit() override;
 

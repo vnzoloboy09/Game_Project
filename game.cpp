@@ -129,6 +129,16 @@ void Game::init() {
     initUI();
     initChunks();
 }
+void Game::reinitWeather() {
+    check_weather = false;
+    rainning = false;
+    rainning_before = false;
+    rainBg_transparency = 0;
+
+    lightningStriking = false;
+    lightning_trasparency = 0;
+    lightningInc = false;
+}
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
@@ -146,10 +156,8 @@ void Game::reInit() {
 		p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of the map
 		p->getComponent<ColliderComponent>().eneable();
 	}
-    rainning = false;
-    rainning_before = false;
-    check_weather = false;
-    rainBg_transparency = 0;
+    
+    reinitWeather();
 
     deathScenceTime = DEATH_SCENCE_TIME;
     game_over = false;
@@ -159,6 +167,7 @@ void Game::reInit() {
 
     Audio::play(backgroundMusic);
 }
+
 
 // events
 void Game::mouseEvent() {} 
@@ -252,7 +261,7 @@ void Game::scoreUpdate() {
         timeElapsed = 0.0f;
         if (static_cast<int>(score * 100) % 100 == 0 && // if score are int (x.00)
             static_cast<int>(score) % WEATHER_CHECK == 0) {
-            check_weather = true; // every 20 scores make a weather check
+            check_weather = true; // every WEATHER_CHECK scores make a weather check
         }
     }
     std::ostringstream os;
