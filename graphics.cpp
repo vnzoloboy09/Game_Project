@@ -24,6 +24,13 @@ void Graphics::draw(SDL_Texture* texture, int x, int y, int w, int h) {
 	SDL_RenderCopy(StageManager::renderer, texture, NULL, &destRect);
 }
 
+void Graphics::makeTransparent(SDL_Texture* texture, int transparency) {
+    SDL_SetRenderDrawBlendMode(StageManager::renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(texture, transparency);
+}
+
+
+
 // use for rendering sprites, ones that need spinning
 void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
     float angle, SDL_RendererFlip flip) {
