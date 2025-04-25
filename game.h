@@ -23,6 +23,7 @@ private:
 	float incrementInterval = 2.0f;
 
 	SDL_Texture* rainBg;
+	SDL_Texture* lightningTexture;
 
 	Mix_Chunk* healChunk;
 	Mix_Chunk* ghostChunk;
@@ -30,6 +31,7 @@ private:
 	Mix_Chunk* gameoverChunk;
 	Mix_Chunk* driftChunk;
 	Mix_Chunk* carEngineChunk;
+	Mix_Chunk* lightningChunk;
 	Mix_Music* backgroundMusic;
 
 	PauseMenu* pauseMenu;
@@ -38,10 +40,15 @@ private:
 	int deathScenceTime = DEATH_SCENCE_TIME; 
 	bool game_over = false;
 	bool drifting = false;
+	
 	int rainBg_transparency = 0;
+	int lightning_trasparency = 0;
+	
 	bool rainning = false;
 	bool check_weather = false;
 	bool rainning_before = false;
+	bool lightningInc = false;
+	bool lightningStriking = false;
 
 public:
 	Game();
@@ -88,6 +95,7 @@ public:
 	void gameOver();
 	void makeExplosion(Entity* a);
 	void respawnEnemyRandomly(Entity* enemy);
+	void lightningStrike();
 
 	static SDL_Rect camera;
 	static Color playerSkin;
