@@ -96,6 +96,7 @@ public:
 	void gameOver();
 	void makeExplosion(Entity* a);
 	void respawnEnemyRandomly(Entity* enemy);
+	void keepRainning();
 	void lightningStrike();
 
 	static SDL_Rect camera;

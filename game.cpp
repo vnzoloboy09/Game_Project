@@ -233,10 +233,12 @@ void Game::gameOver() {
 void Game::update() {  
     if (pauseMenu->isActive()) {
         pauseMenu->update();
+        keepRainning();
         return;
     }
     if (deathMenu->isActive()) {
         deathMenu->update();
+        keepRainning();
         return;
     }
     if (game_over) {
@@ -527,3 +529,8 @@ void Game::lightningStrike() {
         }
 	}
 };
+void Game::keepRainning() {
+    rainUpdate();
+    rainEntity.update();
+    renderRain();
+}
