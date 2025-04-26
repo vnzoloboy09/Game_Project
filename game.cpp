@@ -532,5 +532,4 @@ void Game::lightningStrike() {
 void Game::keepRainning() {
     rainUpdate();
     rainEntity.update();
-    renderRain();
 }
