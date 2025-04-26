@@ -51,40 +51,51 @@ void Menu::keyEvent() {
 	}
 }
 
+void Menu::mouseWheelEvent() {
+	if (Audio::mute) Audio::mute = false;
+	if (StageManager::event.wheel.y > 0) {
+		Audio::volume += VOLUME_STEP;
+		Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
+	}
+	else if (StageManager::event.wheel.y < 0) {
+		Audio::volume -= VOLUME_STEP;
+		Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
+	}
+}
+
+void Menu::mouseClickEvent(Button* button) {
+	Audio::play(buttonClicked);
+	if (button->getTag() == "play") {
+		StageManager::changeStage("Game");
+	}
+	else if (button->getTag() == "choose") {
+		StageManager::changeStage("ChooseMenu");
+	}
+	else if (button->getTag() == "exit") {
+		StageManager::quit();
+	}
+	else if (button->getTag() == "how to play") {
+		StageManager::changeStage("HowToPlayMenu");
+	}
+	else if (button->getTag() == "speaker") {
+		Audio::mute = !Audio::mute;
+		if (!Audio::mute) {
+			if (Audio::volume == 0) Audio::volume = MAX_VOLUME / 2;
+			button->setTex("imgs/menu/speaker_button.png");
+		}
+		else button->setTex("imgs/menu/mute_speaker_button.png");
+	}
+}
+
 void Menu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
 			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
-				if (StageManager::event.wheel.y > 0) {
-					Audio::volume += VOLUME_STEP;
-					Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
-				}
-				else if (StageManager::event.wheel.y < 0) {
-					Audio::volume -= VOLUME_STEP;
-					Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
-				}
+				mouseWheelEvent();
 			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-				Audio::play(buttonClicked);
-				if (button->getTag() == "play") {
-					StageManager::changeStage("Game");
-					break;
-				}
-				else if (button->getTag() == "choose") {
-					StageManager::changeStage("ChooseMenu");
-				}
-				else if (button->getTag() == "exit") {
-					StageManager::quit();
-				}
-				else if (button->getTag() == "how to play") {
-					StageManager::changeStage("HowToPlayMenu");
-				}
-				else if (button->getTag() == "speaker") {
-					Audio::mute = !Audio::mute;
-					if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
-					else button->setTex("imgs/menu/mute_speaker_button.png");
-				}
+				mouseClickEvent(button);
 			}
 		}
 	}
@@ -116,6 +127,7 @@ void Menu::render() {
 	Graphics::render(highestScore, tsrcRect, textRect, 0, SDL_FLIP_NONE);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
+			if (Audio::volume == 0) Audio::mute = true;
 			if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
 			else button->setTex("imgs/menu/mute_speaker_button.png");
 		}

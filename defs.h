@@ -36,7 +36,7 @@ const int RAIN_OUT = 50;
 const int START_RAINNING_CHANCE = 2; // 50%
 const int STOP_RAINNING_CHANCE = 3; // 66%
 const int LIGHTNING_STRIKE_CHANCE = 210; // 0.0047%
-const int LIGHTNING_MAX = 240;
+const int LIGHTNING_MAX = 225;
 
 // Some other constants
 const int SPRITE_DELAY = 300;

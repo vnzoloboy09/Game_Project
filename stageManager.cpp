@@ -102,7 +102,7 @@ void StageManager::getHightestScore() {
 void StageManager::init() {
 	initSDL();
 	getHightestScore();
-    srand(static_cast<unsigned int>(time(0)));
+    srand(time(0));
 
 	addStage("Menu", std::make_unique<Menu>());
 	addStage("ChooseMenu", std::make_unique<ChooseMenu>());

@@ -343,6 +343,7 @@ void Game::rainUpdate() {
                 lightningStriking = true;
                 Audio::play(lightningChunk);
             }
+            std::cerr << r << '\n';
         }
         else lightningStrike();
     }
@@ -520,6 +521,7 @@ void Game::lightningStrike() {
 	else {
 		lightning_trasparency -= 10;
         if (lightning_trasparency <= 0) {
+            lightning_trasparency = 0;
             lightningInc = true;
             lightningStriking = false;
         }

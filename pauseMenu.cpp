@@ -48,43 +48,41 @@ void PauseMenu::keyEvent() {
 	}
 }
 
+void PauseMenu::mouseClickEvent(Button* button) {
+	Audio::play(buttonClicked);
+	std::string tag = button->getTag();
+	if (tag == "continue") {
+		deactivate();
+	}
+	else if (tag == "restart") {
+		Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
+		game->reInit();
+		deactivate();
+	}
+	else if (tag == "exit") {
+		StageManager::changeStage("Menu");
+	}
+	else if (button->getTag() == "speaker") {
+		Audio::mute = !Audio::mute;
+		if (!Audio::mute) {
+			if (Audio::volume == 0) Audio::volume = MAX_VOLUME / 2;
+			button->setTex("imgs/menu/speaker_button.png");
+			Mix_ResumeMusic();
+		}
+		else button->setTex("imgs/menu/mute_speaker_button.png");
+	}
+}
+
 void PauseMenu::mouseEvent() {
 	SDL_GetMouseState(&mouse.x, &mouse.y);
 
 	for (auto button : getButtons()) {
 		if (button->isHover(mouse.x, mouse.y)) {
 			if (button->getTag() == "speaker" && StageManager::event.type == SDL_MOUSEWHEEL) {
-				if (StageManager::event.wheel.y > 0) {
-					Audio::volume += VOLUME_STEP;
-					Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
-				}
-				else if (StageManager::event.wheel.y < 0) {
-					Audio::volume -= VOLUME_STEP;
-					Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
-				}
+				mouseWheelEvent();
 			}
 			if (StageManager::event.type == SDL_MOUSEBUTTONDOWN) {
-				Audio::play(buttonClicked);
-				std::string tag = button->getTag();
-				if (tag == "continue") {
-					deactivate();
-				}
-				else if (tag == "restart") {
-					Game* game = dynamic_cast<Game*>(StageManager::stages["Game"].get());
-					game->reInit();
-					deactivate();
-				}
-				else if (tag == "exit") {
-					StageManager::changeStage("Menu");
-				}
-				else if (button->getTag() == "speaker") {
-					Audio::mute = !Audio::mute;
-					if (!Audio::mute) {
-						button->setTex("imgs/menu/speaker_button.png");
-						Mix_ResumeMusic();
-					}
-					else button->setTex("imgs/menu/mute_speaker_button.png");
-				}
+				mouseClickEvent(button);
 			}
 		}
 	}
@@ -107,19 +105,14 @@ void PauseMenu::update() {
 }
 
 void PauseMenu::render() {
-	SDL_SetRenderDrawBlendMode(StageManager::renderer, SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(background, 140);
-	SDL_SetTextureColorMod(background, 255, 255, 255);
-	Graphics::render(background, srcRect, destRect, 0, SDL_FLIP_NONE);
+	Graphics::makeTransparent(background, 140);
+	Graphics::draw(background, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
-			if (!Audio::mute) {
-				button->setTex("imgs/menu/speaker_button.png");
-			}
-			else {
-				button->setTex("imgs/menu/mute_speaker_button.png");
-			}
+			if (Audio::volume == 0) Audio::mute = true;
+			if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
+			else button->setTex("imgs/menu/mute_speaker_button.png");
 		}
 		button->render();
 	}

@@ -12,6 +12,7 @@ public:
 
 	void init() override;
 	void update() override;
+	void mouseClickEvent(Button* button) override;
 	void mouseEvent() override;
 	void handleEvent() override;
 	void keyEvent() override;

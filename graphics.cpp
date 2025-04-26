@@ -29,8 +29,6 @@ void Graphics::makeTransparent(SDL_Texture* texture, int transparency) {
     SDL_SetTextureAlphaMod(texture, transparency);
 }
 
-
-
 // use for rendering sprites, ones that need spinning
 void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRect,
     float angle, SDL_RendererFlip flip) {

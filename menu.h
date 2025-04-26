@@ -6,7 +6,7 @@
 #include "button.h"
 #include "stage.h"
 
-class Menu : public Stage{
+class Menu : public Stage {
 protected:
 	SDL_Texture* background;
 	SDL_Texture* highestScore;
@@ -23,6 +23,8 @@ public:
 
 	void init() override;
 	void reInit() override;
+	virtual void mouseWheelEvent();
+	virtual void mouseClickEvent(Button* button);
 	void mouseEvent() override;
 	void keyEvent() override;
 	void handleEvent() override;
