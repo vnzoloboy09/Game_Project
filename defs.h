@@ -43,6 +43,7 @@ const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = PLAYER_SPEED;
 const int PLAYER_BASE_HEALTH = 77;
 const int SCORE_POS = 1200;
+const int POWER_SPAWN_BORDER = 500;
 
 const int NO_RANDOM_START_FRAME = 0;
 

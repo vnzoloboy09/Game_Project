@@ -69,10 +69,8 @@ void Game::initMap() {
 
     // rain map
     rainEntity.addComponent<TransformComponent>(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-    rainBg = Graphics::loadTexture("imgs/menu/pause_background.png"); // same as the pause bg =))
     rainEntity.addComponent<RainComponent>(&camera.x, &camera.y, &check_weather);
 
-    lightningTexture = Graphics::loadTexture("imgs/ob/lightning.png");
 }
 
 void Game::initChunks() {
@@ -135,6 +133,7 @@ void Game::init() {
     initChunks();
 }
 
+
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
@@ -163,6 +162,7 @@ void Game::reInit() {
 
     Audio::play(backgroundMusic);
 }
+
 
 
 // events
@@ -308,16 +308,13 @@ void Game::powerUpsUpdate() {
 
     for (auto& p : powerUps) {
         if (p->getComponent<TransformComponent>().position.x < 0) {
-            int xpos = rand() % MAP_WIDTH + 100;
-            int ypos = rand() % MAP_HEIGHT + 100;
-            while (xpos == p->getComponent<TransformComponent>().position.x) {
-                int xpos = rand() % MAP_WIDTH + 100;
-            }
-            while (ypos == p->getComponent<TransformComponent>().position.y) {
-                int ypos = rand() % MAP_WIDTH + 100;
-            } // add 100 so it dont spawn too near the bound
-    
-            p->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
+            // make sure power ups dont spawn too near the border
+            int xpos = POWER_SPAWN_BORDER + rand() % (MAP_WIDTH - 2 * POWER_SPAWN_BORDER);
+            int ypos = POWER_SPAWN_BORDER + rand() % (MAP_HEIGHT - 2 * POWER_SPAWN_BORDER);
+            
+            //std::cerr << xpos << " " << ypos << '\n';
+
+            p->getComponent<TransformComponent>().setPos(xpos, ypos); 
 	        p->getComponent<ColliderComponent>().eneable();
         }
     }
@@ -397,7 +394,6 @@ void Game::render() {
     
     player.render();
     rainEntity.render();
-    //renderRain();
 
     for (auto& ui : UIS) {
         if(ui.second->isActive()) ui.second->render();

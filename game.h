@@ -22,9 +22,6 @@ private:
 	float timeElapsed = 0.0f;
 	float incrementInterval = 2.0f;
 
-	SDL_Texture* rainBg;
-	SDL_Texture* lightningTexture;
-
 	Mix_Chunk* healChunk;
 	Mix_Chunk* ghostChunk;
 	Mix_Chunk* explosionChunk;
@@ -35,19 +32,10 @@ private:
 	PauseMenu* pauseMenu;
 	DeathMenu* deathMenu;
 
-	int deathScenceTime = DEATH_SCENCE_TIME; 
+	int deathScenceTime = DEATH_SCENCE_TIME;
+	bool check_weather = false;
 	bool game_over = false;
 	bool drifting = false;
-	
-	int rainBg_transparency = 0;
-	int lightning_trasparency = 0;
-	
-	bool raining = false;
-	bool check_weather = false;
-	bool raining_before = false;
-	bool lightningInc = false;
-	bool lightningStriking = false;
-
 public:
 	Game();
 	~Game();
@@ -60,7 +48,6 @@ public:
 	void initUI();
 	void initPowerUps();
 	void initChunks();
-	void reinitWeather();
 	void init() override;
 	void reInit() override;
 
