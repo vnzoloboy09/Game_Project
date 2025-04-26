@@ -33,9 +33,9 @@ const int MAP_HEIGHT = 2560;
 const int WEATHER_CHECK = 8;
 const int RAIN_IN = 100;
 const int RAIN_OUT = 50;
-const int START_RAINNING_CHANCE = 2; // 50%
-const int STOP_RAINNING_CHANCE = 3; // 66%
-const int LIGHTNING_STRIKE_CHANCE = 210; // 0.0047%
+const int START_RAINNING_CHANCE = 2;     // 50% to start a rain every weather check
+const int STOP_RAINNING_CHANCE = 3;      // 66% to end a rain every weather check
+const int LIGHTNING_STRIKE_CHANCE = 210; // 0.47% to have thunder during the rain
 const int LIGHTNING_MAX = 225;
 
 // Some other constants

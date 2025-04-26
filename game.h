@@ -30,8 +30,6 @@ private:
 	Mix_Chunk* explosionChunk;
 	Mix_Chunk* gameoverChunk;
 	Mix_Chunk* driftChunk;
-	Mix_Chunk* carEngineChunk;
-	Mix_Chunk* lightningChunk;
 	Mix_Music* backgroundMusic;
 
 	PauseMenu* pauseMenu;
@@ -44,9 +42,9 @@ private:
 	int rainBg_transparency = 0;
 	int lightning_trasparency = 0;
 	
-	bool rainning = false;
+	bool raining = false;
 	bool check_weather = false;
-	bool rainning_before = false;
+	bool raining_before = false;
 	bool lightningInc = false;
 	bool lightningStriking = false;
 
@@ -83,10 +81,8 @@ public:
 	void cameraUpdate();
 	void powerUpsUpdate();
 	void updateHightestScore();
-	void rainUpdate();
 	
 	// render
-	void renderRain();
 	void render() override;
 	
 	// extras
@@ -96,8 +92,7 @@ public:
 	void gameOver();
 	void makeExplosion(Entity* a);
 	void respawnEnemyRandomly(Entity* enemy);
-	void keepRainning();
-	void lightningStrike();
+	void keepRaining();
 
 	static SDL_Rect camera;
 	static Color playerSkin;

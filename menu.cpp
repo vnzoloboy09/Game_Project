@@ -11,6 +11,9 @@ Menu::Menu() {
 
 Menu::~Menu() {
 	SDL_DestroyTexture(background);
+	for (auto& button : buttons) {
+		delete button;
+	}
 }
 
 void Menu::init() {
@@ -54,6 +57,7 @@ void Menu::keyEvent() {
 void Menu::mouseWheelEvent() {
 	if (Audio::mute) Audio::mute = false;
 	if (StageManager::event.wheel.y > 0) {
+		Mix_ResumeMusic();
 		Audio::volume += VOLUME_STEP;
 		Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
 	}
