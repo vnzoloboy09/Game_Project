@@ -12,6 +12,9 @@ ChooseMenu::ChooseMenu() {
 
 ChooseMenu::~ChooseMenu() {
 	SDL_DestroyTexture(background);
+	for (auto& button : buttons) {
+		delete button;
+	}
 }
 
 void ChooseMenu::init() {

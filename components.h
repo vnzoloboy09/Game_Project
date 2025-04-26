@@ -2,9 +2,11 @@
 
 #include "vector2D.h"
 #include "graphics.h"
+#include "audio.h"
 #include "ECS.h"
 #include "transformComponent.h"
 #include "exploderComponent.h"
+#include "rainComponent.h"
 #include "spriteComponent.h"
 #include "keyboardController.h"
 #include "colliderComponent.h"

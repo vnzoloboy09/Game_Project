@@ -12,6 +12,9 @@ DeathMenu::DeathMenu() {
 
 DeathMenu::~DeathMenu() {
 	SDL_DestroyTexture(background);
+	for (auto& button : buttons) {
+		delete button;
+	}
 }
 
 void DeathMenu::init() {

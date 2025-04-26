@@ -72,6 +72,9 @@
     <ClCompile Include="audio.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="rainComponent.h">
+      <Filter>ECS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">

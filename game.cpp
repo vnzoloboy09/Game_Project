@@ -29,6 +29,7 @@ Game::~Game() {
 	Mix_FreeChunk(ghostChunk);
 	Mix_FreeChunk(explosionChunk);
 	Mix_FreeChunk(gameoverChunk);
+    Mix_FreeChunk(driftChunk);
 	Mix_FreeMusic(backgroundMusic);
 }
 
@@ -39,6 +40,7 @@ void Game::addTile(int x, int y, int id) {
     tile.addComponent<TileComponent>(x, y, id);
     tile.addGroup(groupMap);
 }
+
 void Game::initPlayer() {
     player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
 	player.addComponent<SpriteComponent>();
@@ -49,6 +51,7 @@ void Game::initPlayer() {
     player.addGroup(groupPlayers);
     playerHealth = PLAYER_BASE_HEALTH;
 }
+
 void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
@@ -59,28 +62,26 @@ void Game::initEnemies() {
         enemy.addGroup(groupEnemies);
     }
 }
+
 void Game::initMap() {
     map = new Map();
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 
     // rain map
     rainEntity.addComponent<TransformComponent>(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-    rainEntity.addComponent<SpriteComponent>("imgs/ob/rain.png", 4, 100);
-    rainEntity.getComponent<SpriteComponent>().setBlend(true);
-    rainBg = Graphics::loadTexture("imgs/menu/pause_background.png"); // same as the pause bg =))
+    rainEntity.addComponent<RainComponent>(&camera.x, &camera.y, &check_weather);
 
-    lightningTexture = Graphics::loadTexture("imgs/ob/lightning.png");
 }
+
 void Game::initChunks() {
     healChunk = Audio::loadSound("chunks/heal.wav");
     ghostChunk = Audio::loadSound("chunks/ghost.wav");
     explosionChunk = Audio::loadSound("chunks/explosion.wav");
     gameoverChunk = Audio::loadSound("chunks/game_over.wav");
     driftChunk = Audio::loadSound("chunks/drift.wav");
-    carEngineChunk = Audio::loadSound("chunks/car_engine.wav");
-    lightningChunk = Audio::loadSound("chunks/lightning.wav");
     backgroundMusic = Audio::loadMusic("chunks/bg_music.mp3");
 }
+
 void Game::initUI() {
 
     pauseMenu = new PauseMenu;
@@ -97,6 +98,7 @@ void Game::initUI() {
         ui.second->activate();
     }
 }   
+
 void Game::initPowerUps() {
     // init -32 -32 out of the map
     auto &heal_powerup(manager.addEntity());
@@ -112,6 +114,7 @@ void Game::initPowerUps() {
     shield_powerup.addGroup(groupPowerUps);
 
 }
+
 void Game::init() {
     initMap();
 	tiles = manager.getGroup(groupMap);
@@ -129,16 +132,8 @@ void Game::init() {
     initUI();
     initChunks();
 }
-void Game::reinitWeather() {
-    check_weather = false;
-    rainning = false;
-    rainning_before = false;
-    rainBg_transparency = 0;
 
-    lightningStriking = false;
-    lightning_trasparency = 0;
-    lightningInc = false;
-}
+
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
     player.getComponent<TransformComponent>().angle = 0.0f;
@@ -157,8 +152,8 @@ void Game::reInit() {
 		p->getComponent<ColliderComponent>().eneable();
 	}
     
-    reinitWeather();
-
+    rainEntity.getComponent<RainComponent>().reinit();
+     
     deathScenceTime = DEATH_SCENCE_TIME;
     game_over = false;
 
@@ -169,8 +164,10 @@ void Game::reInit() {
 }
 
 
+
 // events
 void Game::mouseEvent() {} 
+
 void Game::keyEvent() {
     switch (StageManager::event.type) {
     case SDL_QUIT:
@@ -202,6 +199,7 @@ void Game::keyEvent() {
         break;
     }
 }
+
 void Game::handleEvent() {
     if (pauseMenu->isActive()) {
         pauseMenu->handleEvent();
@@ -223,22 +221,24 @@ void Game::handleEvent() {
         }
     }
 }
+
 void Game::gameOver() {
     Audio::play(gameoverChunk);
     if(score > StageManager::hightest_score) updateHightestScore();
     deathMenu->activate();
 } 
 
+
 // updates 
 void Game::update() {  
     if (pauseMenu->isActive()) {
         pauseMenu->update();
-        keepRainning();
+        keepRaining();
         return;
     }
     if (deathMenu->isActive()) {
         deathMenu->update();
-        keepRainning();
+        keepRaining();
         return;
     }
     if (game_over) {
@@ -252,10 +252,10 @@ void Game::update() {
     cameraUpdate();
 	enemiesUpdate();
     powerUpsUpdate();
-    rainUpdate();
     manager.refresh();
     manager.update();
 }
+
 void Game::scoreUpdate() {
     timeElapsed += 0.1f; // prevent score update too fast
     if (timeElapsed > incrementInterval) {
@@ -272,6 +272,7 @@ void Game::scoreUpdate() {
     UIS["score"]->setTexture(os.str().c_str(), StageManager::font);
     UIS["score"]->setDest(SCORE_POS - 30*(os.str().size()), 0); // prevent score render out of screen
 } 
+
 void Game::enemiesUpdate() {
     for (auto& e : enemies) {
 		if (playerHealth <= 0) {
@@ -287,6 +288,7 @@ void Game::enemiesUpdate() {
 		}
     }
 }
+
 void Game::cameraUpdate() {
     // camera follow player
     camera.x = std::round(player.getComponent<TransformComponent>().position.x - SCREEN_WIDTH / 2.0f);
@@ -298,6 +300,7 @@ void Game::cameraUpdate() {
     if (camera.x + SCREEN_WIDTH > MAP_WIDTH) camera.x = MAP_WIDTH - SCREEN_WIDTH;
     if (camera.y + SCREEN_HEIGHT > MAP_HEIGHT) camera.y = MAP_HEIGHT - SCREEN_HEIGHT;
 }
+
 void Game::powerUpsUpdate() {
     if (player.getComponent<TransformComponent>().speed > PLAYER_SPEED) {
 		player.getComponent<TransformComponent>().speed -= 0.1;
@@ -305,20 +308,18 @@ void Game::powerUpsUpdate() {
 
     for (auto& p : powerUps) {
         if (p->getComponent<TransformComponent>().position.x < 0) {
-            int xpos = rand() % MAP_WIDTH + 100;
-            int ypos = rand() % MAP_HEIGHT + 100;
-            while (xpos == p->getComponent<TransformComponent>().position.x) {
-                int xpos = rand() % MAP_WIDTH + 100;
-            }
-            while (ypos == p->getComponent<TransformComponent>().position.y) {
-                int ypos = rand() % MAP_WIDTH + 100;
-            } // add 100 so it dont spawn too near the bound
-    
-            p->getComponent<TransformComponent>().setPos(rand() % MAP_WIDTH, rand() % MAP_HEIGHT);
+            // make sure power ups dont spawn too near the border
+            int xpos = POWER_SPAWN_BORDER + rand() % (MAP_WIDTH - 2 * POWER_SPAWN_BORDER);
+            int ypos = POWER_SPAWN_BORDER + rand() % (MAP_HEIGHT - 2 * POWER_SPAWN_BORDER);
+            
+            //std::cerr << xpos << " " << ypos << '\n';
+
+            p->getComponent<TransformComponent>().setPos(xpos, ypos); 
 	        p->getComponent<ColliderComponent>().eneable();
         }
     }
 }
+
 void Game::updateHightestScore() {
 	std::ofstream file("hightest_score.dat");
 	if (file.is_open()) {
@@ -328,37 +329,6 @@ void Game::updateHightestScore() {
 	else {
 		std::cerr << "Unable to open score file.\n";
 	}
-}
-void Game::rainUpdate() {
-    if (check_weather) {
-        int r = rand() % (rainning ? STOP_RAINNING_CHANCE : START_RAINNING_CHANCE);
-        if (r) rainning = false;
-        else rainning = true;
-        check_weather = false;
-    }
-    rainEntity.getComponent<TransformComponent>().setPos(camera.x, camera.y);
-
-    if (rainning) {
-        if (!lightningStriking) {
-            int r = rand() % LIGHTNING_STRIKE_CHANCE;
-            if (!r) {
-                lightningStriking = true;
-                Audio::play(lightningChunk);
-            }
-            //std::cerr << r << '\n';
-        }
-        else lightningStrike();
-    }
-
-    if (rainning && !rainning_before) {
-        rainBg_transparency += 1;
-        if (rainBg_transparency >= 180) rainning_before = true;
-    }
-    if (!rainning && rainning_before) {
-        rainBg_transparency -= 1;
-        if (rainBg_transparency <= 0) rainning_before = false;
-    }
-    rainEntity.getComponent<SpriteComponent>().setTransparency(rainBg_transparency);
 }
 
 
@@ -382,6 +352,7 @@ void Game::handlePowerUpsCollision() {
         }
     }
 }
+
 void Game::handleEnemiesCollision() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         // player collides with enemy
@@ -406,26 +377,14 @@ void Game::handleEnemiesCollision() {
         }
     }
 }
+
 void Game::handleCollision() {
     handlePowerUpsCollision();
     handleEnemiesCollision();
 }
 
+
 // render
-void Game::renderRain() {
-    Graphics::makeTransparent(rainBg, rainBg_transparency);
-    Graphics::draw(rainBg, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH);
-    if (rainning) {
-        if (lightningStriking) {
-            Graphics::makeTransparent(lightningTexture, lightning_trasparency);
-            Graphics::draw(lightningTexture, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        }
-        if (rainBg_transparency >= RAIN_IN) rainEntity.render();
-    }
-    else {
-        if (rainBg_transparency >= RAIN_OUT) rainEntity.render();
-    }
-}
 void Game::render() {
     SDL_RenderClear(StageManager::renderer);
 
@@ -434,7 +393,7 @@ void Game::render() {
     for (auto& po : powerUps) po->render();
     
     player.render();
-    renderRain();
+    rainEntity.render();
 
     for (auto& ui : UIS) {
         if(ui.second->isActive()) ui.second->render();
@@ -445,6 +404,7 @@ void Game::render() {
 
     SDL_RenderPresent(StageManager::renderer);
 }
+
 
 // extras
 void Game::makeExplosion(Entity* a) {
@@ -462,6 +422,7 @@ void Game::makeExplosion(Entity* a) {
         } 
     }
 }
+
 void Game::respawnEnemyRandomly(Entity* enemy) {
     int r = rand() % 4;
 	if (r == 0) {
@@ -477,6 +438,7 @@ void Game::respawnEnemyRandomly(Entity* enemy) {
 		enemy->getComponent<TransformComponent>().setPos(-CAR_WIDTH, rand() % MAP_HEIGHT); // left
 	} // spawn enemy randomly outside of the map 
 }
+
 void Game::stayInBound() {
     // prevent player out of map
     player.getComponent<TransformComponent>().position;
@@ -495,6 +457,7 @@ void Game::stayInBound() {
         }
     }
 }
+
 void Game::setPlayerSkin(Color skin) {
     switch (skin) {
     case YELLOW:
@@ -510,26 +473,14 @@ void Game::setPlayerSkin(Color skin) {
         break;
     }
 }
+
 void Game::setEnemyTarget(Vector2D* target) {
     for (auto &e : enemies) {
         e->addComponent<ChaseComponent>(target);
     }
 }
-void Game::lightningStrike() {
-	if (lightningInc) {
-		lightning_trasparency += 15;
-        if (lightning_trasparency >= LIGHTNING_MAX) lightningInc = false;
-	}
-	else {
-		lightning_trasparency -= 10;
-        if (lightning_trasparency <= 0) {
-            lightning_trasparency = 0;
-            lightningInc = true;
-            lightningStriking = false;
-        }
-	}
-};
-void Game::keepRainning() {
-    rainUpdate();
+
+void Game::keepRaining() {
     rainEntity.update();
+    rainEntity.render();
 }

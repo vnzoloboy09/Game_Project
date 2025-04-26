@@ -14,6 +14,9 @@ PauseMenu::PauseMenu() {
 PauseMenu::~PauseMenu() {
 	SDL_DestroyTexture(background);
 	SDL_DestroyTexture(title);
+	for (auto& button : buttons) {
+		delete button;
+	}
 }
 
 void PauseMenu::init() {
