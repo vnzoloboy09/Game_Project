@@ -345,7 +345,7 @@ void Game::rainUpdate() {
                 lightningStriking = true;
                 Audio::play(lightningChunk);
             }
-            std::cerr << r << '\n';
+            //std::cerr << r << '\n';
         }
         else lightningStrike();
     }

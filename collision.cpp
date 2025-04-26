@@ -72,7 +72,7 @@ bool Collision::isCollidingSAT(const ColliderComponent& colA, const ColliderComp
 	std::vector<SDL_FPoint> b_corners = colB.collider;
 
 	if (isCollidingSAT(a_corners, b_corners)) {
-		std::cerr << colA.tag << " hit " << colB.tag << '\n';
+		//std::cerr << colA.tag << " hit " << colB.tag << '\n';
 		return true;
 	}
 	return false;
