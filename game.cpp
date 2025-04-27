@@ -14,7 +14,7 @@ SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 
 auto& player(manager.addEntity());
 auto& rainEntity(manager.addEntity());
- 
+  
 std::vector<Entity*> enemies; 
 std::vector<Entity*> tiles;
 std::vector<Entity*> players;

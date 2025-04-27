@@ -9,7 +9,7 @@ private:
 	TransformComponent* transform;
 	bool active = true;
 	Mix_Chunk* hornChunk;
-	Uint32 cooldown = 100; // miliseconds
+	Uint32 cooldown = 200; // miliseconds
 	Uint32 lastPress = 0;
 
 public:
