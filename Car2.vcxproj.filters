@@ -72,9 +72,6 @@
     <ClCompile Include="audio.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="rainComponent.h">
-      <Filter>ECS</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">
@@ -145,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="audio.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rainComponent.h">
+      <Filter>ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,8 +14,8 @@ SDL_Rect Game::camera = { 0, 0, MAP_WIDTH, MAP_HEIGHT };
 
 auto& player(manager.addEntity());
 auto& rainEntity(manager.addEntity());
-
-std::vector<Entity*> enemies;
+ 
+std::vector<Entity*> enemies; 
 std::vector<Entity*> tiles;
 std::vector<Entity*> players;
 std::vector<Entity*> powerUps;
@@ -32,24 +32,24 @@ Game::~Game() {
     Mix_FreeChunk(driftChunk);
 	Mix_FreeMusic(backgroundMusic);
 }
+  
 
-
-// inits
+// inits  
 void Game::addTile(int x, int y, int id) {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, id);
     tile.addGroup(groupMap);
 }
-
+  
 void Game::initPlayer() {
     player.addComponent<TransformComponent>(START_POSITION_X, START_POSITION_X, CAR_WIDTH, CAR_HEIGHT, PLAYER_SPEED);
 	player.addComponent<SpriteComponent>();
     setPlayerSkin(playerSkin);
-    player.addComponent<ExploderComponent>();
+    player.addComponent<ExploderComponent>(); 
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
-    playerHealth = PLAYER_BASE_HEALTH;
+    playerHealth = PLAYER_BASE_HEALTH; 
 }
 
 void Game::initEnemies() {
@@ -63,16 +63,17 @@ void Game::initEnemies() {
     }
 }
 
-void Game::initMap() {
+void Game::initMap() { 
     map = new Map();
     Map::loadMap("imgs/tilemap80x80.map", 80, 80);
 
     // rain map
     rainEntity.addComponent<TransformComponent>(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-    rainEntity.addComponent<RainComponent>(&camera.x, &camera.y, &check_weather);
+    rainEntity.addComponent<RainComponent>(&camera.x, &camera.y, &check_weather, 
+        &(player.getComponent<TransformComponent>().position), &player.getComponent<TransformComponent>().angle);
 
 }
-
+ 
 void Game::initChunks() {
     healChunk = Audio::loadSound("chunks/heal.wav");
     ghostChunk = Audio::loadSound("chunks/ghost.wav");
@@ -116,9 +117,6 @@ void Game::initPowerUps() {
 }
 
 void Game::init() {
-    initMap();
-	tiles = manager.getGroup(groupMap);
-
     initEnemies();
     enemies = manager.getGroup(groupEnemies);
     
@@ -127,12 +125,14 @@ void Game::init() {
 
     initPlayer();
 	players = manager.getGroup(groupPlayers);
+    
+    initMap();
+	tiles = manager.getGroup(groupMap);
 
 	setEnemyTarget(&(player.getComponent<TransformComponent>().position));
     initUI();
     initChunks();
 }
-
 
 void Game::reInit() {
     player.getComponent<TransformComponent>().setPos(START_POSITION_X, START_POSITION_X);
@@ -163,11 +163,10 @@ void Game::reInit() {
     Audio::play(backgroundMusic);
 }
 
-
-
+ 
 // events
 void Game::mouseEvent() {} 
-
+ 
 void Game::keyEvent() {
     switch (StageManager::event.type) {
     case SDL_QUIT:
@@ -319,7 +318,7 @@ void Game::powerUpsUpdate() {
         }
     }
 }
-
+   
 void Game::updateHightestScore() {
 	std::ofstream file("hightest_score.dat");
 	if (file.is_open()) {

@@ -41,6 +41,17 @@ void Graphics::render(SDL_Texture* texture, SDL_Rect &srcRect, SDL_Rect &destRec
     }
 }
 
+void Graphics::render(SDL_Texture* texture, SDL_Rect& srcRect, SDL_Rect& destRect,
+    float angle, SDL_Point& center, SDL_RendererFlip flip) {
+
+    if (srcRect.x != 0 || srcRect.y != 0 || srcRect.w != 0 || srcRect.h != 0) {
+        SDL_RenderCopyEx(StageManager::renderer, texture, &srcRect, &destRect, angle, &center, flip);
+    }
+    else {
+        SDL_RenderCopyEx(StageManager::renderer, texture, NULL, &destRect, angle, &center, flip);
+    }
+}
+
 TTF_Font* Graphics::loadFont(const char* path, int size) {
     TTF_Font* gFont = TTF_OpenFont(path, size);
     if (gFont == NULL) {

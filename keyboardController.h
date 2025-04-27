@@ -9,6 +9,8 @@ private:
 	TransformComponent* transform;
 	bool active = true;
 	Mix_Chunk* hornChunk;
+	Uint32 cooldown = 100; // miliseconds
+	Uint32 lastPress = 0;
 
 public:
 	void init() override {
@@ -43,7 +45,10 @@ public:
 		if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) {
 			transform->velocity = { 0.0f, 0.0f };
 		}
-		if (keystate[SDL_SCANCODE_SPACE]) Audio::play(hornChunk);
+		if (keystate[SDL_SCANCODE_SPACE] && SDL_GetTicks() - lastPress >= cooldown) {
+			Audio::play(hornChunk);
+			lastPress = SDL_GetTicks();
+		}
 	}
 
 	void activate() { active = true; }
