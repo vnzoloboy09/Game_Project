@@ -155,7 +155,7 @@ public:
 			if (rainBg_transparency <= 0) raining_before = false;
 		}
 		transform->setPos(*posx, *posy);
-		srcRect.x = srcRect.w * (static_cast<int>(SDL_GetTicks() / 100) % frames);
+		srcRect.x = srcRect.w * (static_cast<int>(SDL_GetTicks() / RAIN_SPEED) % frames);
 		
 		Graphics::makeTransparent(rainBgTexture, rainBg_transparency);
 		Graphics::makeTransparent(rainTexture, rainBg_transparency);

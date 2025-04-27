@@ -110,7 +110,7 @@ void PauseMenu::update() {
 void PauseMenu::render() {
 	Graphics::makeTransparent(background, 140);
 	Graphics::draw(background, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100);
+	Graphics::draw(title, SCREEN_WIDTH / 2 - 150, 50, 300, 100); // magic numbers are the pos, width, height
 	for (auto button : buttons) {
 		if (button->getTag() == "speaker") {
 			if (Audio::volume == 0) Audio::mute = true;

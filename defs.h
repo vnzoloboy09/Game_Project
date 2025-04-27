@@ -11,9 +11,9 @@ const float frameDelay = 1000.0f/FPS;
 
 // for tiles
 const int TILE_SIZE = 32;
-constexpr auto dirt = 0;
-constexpr auto light_grass = 1;
-constexpr auto dark_grass = 2;
+constexpr auto DIRT = 0;
+constexpr auto LIGHT_GRASS = 1;
+constexpr auto DARK_GRASS = 2;
 
 // for cars
 const int START_POSITION_X = SCREEN_WIDTH / 2 - 16;
@@ -24,6 +24,20 @@ const float ENEMY_SPEED = 4.0f;
 const float PLAYER_SPEED = 5.0f;
 const int GHOST_SPEED = 14.0f;
 const int MAX_ENEMIES = 10;
+const int ENEMY_SPRITE_SPEED = 280;
+const int EXPLOSION_TIME = 100;
+
+// health bar;
+const int PLAYER_BASE_HEALTH = 77;
+const int HIT_DAMAGE = 10;
+const int HEALTH_XPOS = 48;
+const int HEALTH_YPOS = 27;
+const int HEALTH_BAR_XPOS = 16;
+const int HEALTH_BAR_YPOS = 0;
+const int HEALTH_BAR_WIDTH = 96;
+const int HEALTH_BAR_HEIGHT = 32;
+const int HEALTH_BAR_SCALE = 2;
+const int HEALTH_BAR_THICKNESS = 2;
 
 // for map
 const int MAP_WIDTH = 2560;
@@ -37,11 +51,11 @@ const int START_RAINNING_CHANCE = 2;     // 50% to start a rain every weather ch
 const int STOP_RAINNING_CHANCE = 3;      // 66% to end a rain every weather check
 const int LIGHTNING_STRIKE_CHANCE = 210; // 0.47% to have thunder during the rain
 const int LIGHTNING_MAX = 225;
+const int RAIN_SPEED = 150;
 
 // Some other constants
 const int SPRITE_DELAY = 300;
 const float BOUND_BLOCK = PLAYER_SPEED;
-const int PLAYER_BASE_HEALTH = 77;
 const int SCORE_POS = 1200;
 const int POWER_SPAWN_BORDER = 500;
 
@@ -54,6 +68,7 @@ const int MAX_VOLUME = 128;
 const float DEGREE_PER_VOLUME = 360.0f / MAX_VOLUME;
 const int VOLUME_STEP = 4;
 
+const int TILE_NUM = 80;
 
 typedef enum {
 	RED,

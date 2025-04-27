@@ -16,6 +16,7 @@ HowToPlayMenu::~HowToPlayMenu() {
 
 void HowToPlayMenu::init() {
 	buttonClicked = Audio::loadSound("chunks/click_button.wav");
+	// 16 is the pos
 	buttons.push_back(new Button("imgs/menu/back_button.png",
 		16, 16, CAR_WIDTH * 2, CAR_WIDTH * 2, "back_button"));
 }

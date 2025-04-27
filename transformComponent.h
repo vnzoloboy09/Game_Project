@@ -45,7 +45,7 @@ public:
 	}
 
 	SDL_FPoint rotatePoint(SDL_FPoint point, float cenx, float ceny, float angle) {
-		float radian = angle / 180 * M_PI;
+		float radian = angle / 180 * M_PI; // degree to radian
 		float s = sin(radian);
 		float c = cos(radian);
 

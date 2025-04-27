@@ -50,7 +50,7 @@ public:
 
 	void update() override {
 		if (exploding) {
-			frame = static_cast<int>((SDL_GetTicks() - startTime) / 100) % frames;
+			frame = static_cast<int>((SDL_GetTicks() - startTime) / EXPLOSION_TIME) % frames;
 			if (frame == frames-1) { // reach the last frame
 				stop();
 			}

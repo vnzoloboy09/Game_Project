@@ -56,7 +56,7 @@ void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
         enemy.addComponent<TransformComponent>();
-        enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, 300);
+        enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, ENEMY_SPRITE_SPEED); // 4 frames
         enemy.addComponent<ExploderComponent>();
         enemy.addComponent<ColliderComponent>("enemy");
         enemy.addGroup(groupEnemies);
@@ -65,7 +65,7 @@ void Game::initEnemies() {
 
 void Game::initMap() { 
     map = new Map();
-    Map::loadMap("imgs/tilemap80x80.map", 80, 80);
+    Map::loadMap("imgs/tilemap80x80.map", TILE_NUM, TILE_NUM);
 
     // rain map
     rainEntity.addComponent<TransformComponent>(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -91,8 +91,10 @@ void Game::initUI() {
     deathMenu = new DeathMenu;
     deathMenu->init();
 
-    UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 16, 0, 32 * 3, 32, 2));
-    UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 48, 27, playerHealth, 2, 2));
+    UIS["healthBar"] = std::move(std::make_unique<UI>("imgs/UI/healthbar.png", 
+        HEALTH_BAR_XPOS, HEALTH_BAR_YPOS, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, HEALTH_BAR_SCALE));
+    UIS["health"] = std::move(std::make_unique<UI>("imgs/UI/health.png", 
+        HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_THICKNESS, HEALTH_BAR_SCALE));
     UIS["score"] = std::move(std::make_unique<UI>("0.00", StageManager::font, SCORE_POS, 0));
 
     for (auto& ui : UIS) {
@@ -103,13 +105,13 @@ void Game::initUI() {
 void Game::initPowerUps() {
     // init -32 -32 out of the map
     auto &heal_powerup(manager.addEntity());
-    heal_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
+    heal_powerup.addComponent<TransformComponent>(-CAR_WIDTH, -CAR_WIDTH, CAR_WIDTH, CAR_WIDTH);
     heal_powerup.addComponent<SpriteComponent>("imgs/ob/heal.png", 8, 200);
     heal_powerup.addComponent<ColliderComponent>("heal power up");
     heal_powerup.addGroup(groupPowerUps);
 
     auto &shield_powerup(manager.addEntity());
-    shield_powerup.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_WIDTH);
+    shield_powerup.addComponent<TransformComponent>(-CAR_WIDTH, -CAR_WIDTH, CAR_WIDTH, CAR_WIDTH);
     shield_powerup.addComponent<SpriteComponent>("imgs/ob/ghost.png", 4, 200);
     shield_powerup.addComponent<ColliderComponent>("ghost power up");
     shield_powerup.addGroup(groupPowerUps);
@@ -141,14 +143,14 @@ void Game::reInit() {
     player.getComponent<TransformComponent>().start();
     player.getComponent<KeyboardController>().activate();
     playerHealth = PLAYER_BASE_HEALTH;
-    UIS["health"]->setDest(48, 27, playerHealth, 2);
+    UIS["health"]->setDest(HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_SCALE);
     score = 0.0f;
     setPlayerSkin(playerSkin);
     for (auto e : enemies) {
 		e->getComponent<TransformComponent>().setPos(-CAR_WIDTH, -CAR_HEIGHT);
     }
 	for (auto p : powerUps) {
-		p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of the map
+		p->getComponent<TransformComponent>().setPos(-CAR_WIDTH, -CAR_WIDTH); // move power up out of the map
 		p->getComponent<ColliderComponent>().eneable();
 	}
     
@@ -340,8 +342,8 @@ void Game::handlePowerUpsCollision() {
 			p->getComponent<TransformComponent>().setPos(-32, -32); // move power up out of map
             
             if (p->getComponent<ColliderComponent>().tag == "heal power up") {
-                playerHealth = (playerHealth + 10 > PLAYER_BASE_HEALTH ? PLAYER_BASE_HEALTH : playerHealth + 10);
-                UIS["health"]->setDest(48, 27, playerHealth, 2);
+                playerHealth = (playerHealth + HIT_DAMAGE > PLAYER_BASE_HEALTH ? PLAYER_BASE_HEALTH : playerHealth + 10);
+                UIS["health"]->setDest(HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_SCALE);
                 Audio::play(healChunk);
             }
             else if (p->getComponent<ColliderComponent>().tag == "ghost power up") {
@@ -359,7 +361,7 @@ void Game::handleEnemiesCollision() {
             enemies[i]->getComponent<ColliderComponent>())) { 
             if (!StageManager::dev_mode) {// invisible when dev mode on
                 playerHealth -= 10;
-                UIS["health"]->setDest(48, 27, playerHealth, 2);
+                UIS["health"]->setDest(HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_SCALE);
             }
             makeExplosion(enemies[i]);
         }

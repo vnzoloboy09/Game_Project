@@ -20,6 +20,7 @@ ChooseMenu::~ChooseMenu() {
 void ChooseMenu::init() {
 	buttonClicked = Audio::loadSound("chunks/click_button.wav");
 
+	// those magic numbers are there pos on the screen
 	buttons.push_back(new Button("imgs/car/yellow_car.png", 
 		325, 300, CAR_WIDTH * scale, CAR_HEIGHT * scale, "yellow_car"));
 	buttons.push_back(new Button("imgs/car/red_car.png", 

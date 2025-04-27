@@ -105,6 +105,6 @@ void DeathMenu::render() {
 		}
 		button->render();
 	}
-
+	// magic numbers are the pos
 	renderVolumeControl(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 200 + 32);
 }

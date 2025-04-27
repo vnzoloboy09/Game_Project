@@ -17,13 +17,13 @@ public:
 	TileComponent(int x, int y, int id) {
 		tileID = id;
 		switch (tileID) {
-		case dirt:
+		case DIRT:
 			path = "imgs/tile/dirt.png";
 			break;
-		case light_grass:
+		case LIGHT_GRASS:
 			path = "imgs/tile/light_grass.png";
 			break;
-		case dark_grass:
+		case DARK_GRASS:
 			path = "imgs/tile/dark_grass.png";
 			break;
 		default:

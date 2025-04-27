@@ -14,7 +14,7 @@ Button::Button(const char* path, int x, int y, int w, int h, const char* tg) {
 	destRect.w = w;
 	destRect.h = h;
 
-	destRectZoom.x = x - w / 4;
+	destRectZoom.x = x - w / 4; // zoom button in and out 
 	destRectZoom.y = y - h / 4;
 	destRectZoom.w = w + w / 2;
 	destRectZoom.h = h + h / 2;
