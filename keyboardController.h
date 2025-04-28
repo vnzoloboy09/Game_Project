@@ -33,13 +33,13 @@ public:
 		}
 
 		if (keystate[SDL_SCANCODE_D]) {
-			if (keystate[SDL_SCANCODE_W]) transform->angle += 1.5f;
-			if (keystate[SDL_SCANCODE_S]) transform->angle -= 1.5f;
+			if (keystate[SDL_SCANCODE_W]) transform->angle += STEER_ANGEL;
+			if (keystate[SDL_SCANCODE_S]) transform->angle -= STEER_ANGEL;
 		}
 
 		if (keystate[SDL_SCANCODE_A]) {
-			if (keystate[SDL_SCANCODE_W]) transform->angle -= 1.5f;
-			if (keystate[SDL_SCANCODE_S]) transform->angle += 1.5f;
+			if (keystate[SDL_SCANCODE_W]) transform->angle -= STEER_ANGEL;
+			if (keystate[SDL_SCANCODE_S]) transform->angle += STEER_ANGEL;
 		}
 
 		if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S]) {

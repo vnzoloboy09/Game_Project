@@ -47,15 +47,16 @@ void Game::initPlayer() {
     setPlayerSkin(playerSkin);
     player.addComponent<ExploderComponent>(); 
     player.addComponent<KeyboardController>();
+    player.addComponent<ShieldComponent>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
     playerHealth = PLAYER_BASE_HEALTH; 
-}
+}   
 
 void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
-        enemy.addComponent<TransformComponent>();
+        enemy.addComponent<TransformComponent>(-32, -32, 32, 64, ENEMY_SPEED + i / 3.0f);
         enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, ENEMY_SPRITE_SPEED); // 4 frames
         enemy.addComponent<ExploderComponent>();
         enemy.addComponent<ColliderComponent>("enemy");
@@ -110,12 +111,17 @@ void Game::initPowerUps() {
     heal_powerup.addComponent<ColliderComponent>("heal power up");
     heal_powerup.addGroup(groupPowerUps);
 
+    auto& ghost_powerup(manager.addEntity());
+    ghost_powerup.addComponent<TransformComponent>(-CAR_WIDTH, -CAR_WIDTH, CAR_WIDTH, CAR_WIDTH);
+    ghost_powerup.addComponent<SpriteComponent>("imgs/ob/ghost.png", 4, 200);
+    ghost_powerup.addComponent<ColliderComponent>("ghost power up");
+    ghost_powerup.addGroup(groupPowerUps);
+     
     auto &shield_powerup(manager.addEntity());
     shield_powerup.addComponent<TransformComponent>(-CAR_WIDTH, -CAR_WIDTH, CAR_WIDTH, CAR_WIDTH);
-    shield_powerup.addComponent<SpriteComponent>("imgs/ob/ghost.png", 4, 200);
-    shield_powerup.addComponent<ColliderComponent>("ghost power up");
+    shield_powerup.addComponent<SpriteComponent>("imgs/ob/shield_icon.png", 7, 200);
+    shield_powerup.addComponent<ColliderComponent>("shield power up");
     shield_powerup.addGroup(groupPowerUps);
-
 }
 
 void Game::init() {
@@ -142,6 +148,7 @@ void Game::reInit() {
     player.getComponent<ColliderComponent>().eneable();
     player.getComponent<TransformComponent>().start();
     player.getComponent<KeyboardController>().activate();
+    player.getComponent<ShieldComponent>().shieldOff();
     playerHealth = PLAYER_BASE_HEALTH;
     UIS["health"]->setDest(HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_SCALE);
     score = 0.0f;
@@ -165,7 +172,7 @@ void Game::reInit() {
     Audio::play(backgroundMusic);
 }
 
- 
+
 // events
 void Game::mouseEvent() {} 
  
@@ -333,7 +340,7 @@ void Game::updateHightestScore() {
 }
 
 
-// collisions
+// collisions 
 void Game::handlePowerUpsCollision() {
     for (auto& p : powerUps) {
         if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
@@ -350,6 +357,9 @@ void Game::handlePowerUpsCollision() {
                 player.getComponent<TransformComponent>().speed = GHOST_SPEED;
                 Audio::play(ghostChunk);
             }
+            else if (p->getComponent<ColliderComponent>().tag == "shield power up") {
+                player.getComponent<ShieldComponent>().shieldOn();
+            }
         }
     }
 }
@@ -359,7 +369,8 @@ void Game::handleEnemiesCollision() {
         // player collides with enemy
         if (Collision::isCollidingSAT(player.getComponent<ColliderComponent>(),
             enemies[i]->getComponent<ColliderComponent>())) { 
-            if (!StageManager::dev_mode) {// invisible when dev mode on
+            // invisible when dev mode on or has shield
+            if (!StageManager::dev_mode && !player.getComponent<ShieldComponent>().hasShiled()) {
                 playerHealth -= 10;
                 UIS["health"]->setDest(HEALTH_XPOS, HEALTH_YPOS, playerHealth, HEALTH_BAR_SCALE);
             }

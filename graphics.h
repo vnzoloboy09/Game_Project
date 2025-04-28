@@ -11,7 +11,6 @@ public:
 	~Graphics();
 
 	static void makeTransparent(SDL_Texture* texture, int transparency);
-	static void setBlend(SDL_Texture* texture, SDL_BlendMode blend);
 
 	static SDL_Texture* loadTexture(const char* path);
 	static void draw(SDL_Texture* texture, int x, int y, int w, int h);

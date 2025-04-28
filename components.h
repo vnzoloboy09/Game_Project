@@ -5,6 +5,7 @@
 #include "audio.h"
 #include "ECS.h"
 #include "transformComponent.h"
+#include "shieldComponent.h"
 #include "exploderComponent.h"
 #include "rainComponent.h"
 #include "spriteComponent.h"

@@ -186,6 +186,7 @@ public:
 		SDL_DestroyTexture(rainBgTexture);
 		SDL_DestroyTexture(rainTexture);
 		SDL_DestroyTexture(lightningTexture);
+		SDL_DestroyTexture(headlightTexture);
 		Mix_FreeChunk(lightningChunk);
 	}
 };

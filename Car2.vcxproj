@@ -163,6 +163,7 @@
     <ClCompile Include="map.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="pauseMenu.cpp" />
+    <ClCompile Include="shieldComponent.h" />
     <ClCompile Include="spriteComponent.h" />
     <ClCompile Include="stageManager.cpp" />
     <ClCompile Include="vector2D.cpp" />

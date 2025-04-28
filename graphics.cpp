@@ -18,7 +18,7 @@ SDL_Texture* Graphics::loadTexture(const char* path) {
 	return texture;
 }
 
-// use for quick rendering mostly for debug
+// use for quick rendering mostly for debug or fullscreen stuff
 void Graphics::draw(SDL_Texture* texture, int x, int y, int w, int h) {
     SDL_Rect destRect = { x, y, w, h };
 	SDL_RenderCopy(StageManager::renderer, texture, NULL, &destRect);

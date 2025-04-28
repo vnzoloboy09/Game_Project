@@ -5,7 +5,7 @@
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
-#define WINDOW_TITLE "Car"
+#define WINDOW_TITLE "Car 2"
 const float FPS = 60.0f;
 const float frameDelay = 1000.0f/FPS;
 
@@ -21,8 +21,9 @@ const int START_POSITION_Y = SCREEN_HEIGHT / 2 - 32;
 const int CAR_HEIGHT = 64;
 const int CAR_WIDTH = 32;
 const float ENEMY_SPEED = 4.0f;
-const float PLAYER_SPEED = 5.0f;
-const int GHOST_SPEED = 14.0f;
+const float PLAYER_SPEED = 7.0f;
+const float GHOST_SPEED = 14.0f;
+const float STEER_ANGEL = 1.7f;
 const int MAX_ENEMIES = 10;
 const int ENEMY_SPRITE_SPEED = 280;
 const int EXPLOSION_TIME = 100;
@@ -44,7 +45,7 @@ const int MAP_WIDTH = 2560;
 const int MAP_HEIGHT = 2560;
 
 // weather
-const int WEATHER_CHECK = 8;
+const int WEATHER_CHECK = 8; // weather might change every 8 scores
 const int RAIN_IN = 100;
 const int RAIN_OUT = 50;
 const int START_RAINNING_CHANCE = 2;     // 50% to start a rain every weather check
@@ -67,6 +68,11 @@ const int DEATH_SCENCE_TIME = 3 * TIME_PER_EXPLOSION;
 const int MAX_VOLUME = 128;
 const float DEGREE_PER_VOLUME = 360.0f / MAX_VOLUME;
 const int VOLUME_STEP = 4;
+const int SHIELD_WIDTH = CAR_WIDTH + 4;
+const int SHIELD_HEIGHT = CAR_HEIGHT + 4;
+const int SHIELD_DURATON = 550;
+const int SHIELD_DURATION_LOW = 200;
+const int SHIELD_SPRITE_SPEED = 200;
 
 const int TILE_NUM = 80;
 
