@@ -43,8 +43,9 @@ public:
 		line_to_target = { target_center.x - self_center.x, target_center.y - self_center.y };
 
 		float cross = direction.x * line_to_target.y - direction.y * line_to_target.x;
-		if (cross > 0) transform->angle += 1.5f; // turn right
-		if (cross <= 0) transform->angle -= 1.5f; // turn left
+		if (cross > 0) transform->angle += STEER_ANGEL - 0.2f; // turn right
+		if (cross <= 0) transform->angle -= STEER_ANGEL - 0.2f; // turn left
+		// -0.2 so enemy can turn less than the player
 
 		// 180 * PI to convert angle to radian
 		// -90 since the imgs is import 90 degree rather then 0 degree

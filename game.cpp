@@ -56,7 +56,7 @@ void Game::initPlayer() {
 void Game::initEnemies() {
     for (int i = 0; i < MAX_ENEMIES; i++) {
         auto& enemy(manager.addEntity());
-        enemy.addComponent<TransformComponent>(-32, -32, 32, 64, ENEMY_SPEED + i / 3.0f);
+        enemy.addComponent<TransformComponent>(-32, -32, CAR_WIDTH, CAR_HEIGHT, ENEMY_SPEED + i / 3.0f); // -32: outside the map
         enemy.addComponent<SpriteComponent>("imgs/car/spritesheet.png", 4, ENEMY_SPRITE_SPEED); // 4 frames
         enemy.addComponent<ExploderComponent>();
         enemy.addComponent<ColliderComponent>("enemy");
