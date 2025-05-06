@@ -62,7 +62,10 @@ void DeathMenu::mouseClickEvent(Button* button) {
 		Audio::mute = !Audio::mute;
 		if (Audio::volume == 0) Audio::volume = MAX_VOLUME / 2;
 		if (!Audio::mute) button->setTex("imgs/menu/speaker_button.png");
-		else button->setTex("imgs/menu/mute_speaker_button.png");
+		else {
+			button->setTex("imgs/menu/mute_speaker_button.png");
+			Mix_HaltChannel(-1);
+		}
 	}
 }
 

@@ -62,6 +62,7 @@ void Menu::mouseWheelEvent() {
 		Audio::volume = Audio::volume > MAX_VOLUME ? MAX_VOLUME : Audio::volume;
 	}
 	else if (StageManager::event.wheel.y < 0) {
+		Mix_ResumeMusic();
 		Audio::volume -= VOLUME_STEP;
 		Audio::volume = Audio::volume < 0 ? 0 : Audio::volume;
 	}
@@ -87,7 +88,9 @@ void Menu::mouseClickEvent(Button* button) {
 			if (Audio::volume == 0) Audio::volume = MAX_VOLUME / 2;
 			button->setTex("imgs/menu/speaker_button.png");
 		}
-		else button->setTex("imgs/menu/mute_speaker_button.png");
+		else {
+			button->setTex("imgs/menu/mute_speaker_button.png");
+		}
 	}
 }
 

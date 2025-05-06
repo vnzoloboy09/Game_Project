@@ -72,7 +72,10 @@ void PauseMenu::mouseClickEvent(Button* button) {
 			button->setTex("imgs/menu/speaker_button.png");
 			Mix_ResumeMusic();
 		}
-		else button->setTex("imgs/menu/mute_speaker_button.png");
+		else {
+			button->setTex("imgs/menu/mute_speaker_button.png");
+			Mix_HaltChannel(-1);
+		}
 	}
 }
 
